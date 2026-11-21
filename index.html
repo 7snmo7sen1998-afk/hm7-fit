@@ -180,7 +180,7 @@ window.addEventListener('error',function(e){var d=document.getElementById('errbo
 <script>
 'use strict';
 /* ============ HM Fit v4 — النسخة النيون ============ */
-const VER='4.8.2';
+const VER='4.10.0';
 const GOALS={lose:'تخسيس',same:'ثبات',gain:'زيادة'};
 const ICONS={
 home:'<path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V21h5v-6h4v6h5V9.5"/>',
@@ -270,7 +270,7 @@ function openPicker(){
 const _lbCache={};
 function openLb(name){const t=document.getElementById('lbT'),im=document.getElementById('lbI'),dd=document.getElementById('lbD');if(t)t.textContent=name;if(im){im.alt=name;const full=exSrc(name,true);im.src=full;if(full&&!_lbCache[full]){const f=new Image();f.onload=function(){_lbCache[full]=1;};f.src=full;}}if(dd)dd.textContent=libDesc(name)||'';const x=document.getElementById('lbX');if(x){x.innerHTML=icon('x');x.onclick=closeLb;}document.getElementById('lb').style.display='flex';}
 function closeLb(){document.getElementById('lb').style.display='none';}
-function exThumb(name){const u=exSrc(name,false);if(u)return '<img class="exthumb" loading="lazy" decoding="async" width="52" height="52" data-src="'+u+'" src="" onerror="this.style.display=\'none\'" alt="" onclick="event.stopPropagation();openLb(\''+name.replace(/'/g,"\\'")+'\')">';return '<span class="thumb exthumb fallback">'+icon('gym')+'</span>';}
+function exThumb(name){const u=exSrc(name,false);if(u)return '<img class="exthumb" loading="lazy" decoding="async" width="52" height="52" src="'+u+'" onerror="this.style.display=\'none\'" alt="" onclick="event.stopPropagation();openLb(\''+name.replace(/'/g,"\\'")+'\')">';return '<span class="thumb exthumb fallback">'+icon('gym')+'</span>';}
 function closePicker(){document.getElementById('picker').style.display='none';}
 function pkRender(){
   const chips=document.getElementById('pkChips');
@@ -278,7 +278,7 @@ function pkRender(){
   const q=pk.q.trim();pk.items=[];
   LIB.forEach(function(g){if(pk.m!=='الكل'&&pk.m!==g[0])return;g[1].forEach(function(t){if(!q||t[0].indexOf(q)>-1)pk.items.push({m:g[0],n:t[0],d:t[1]});});});
   let h='';
-  pk.items.forEach(function(x,i){const _u=exImg(x.n);h+='<button class="pk" onclick="pickEx('+i+')">'+(_u?'<img class="exthumb" loading="lazy" decoding="async" style="width:44px;height:44px" data-src="'+_u+'" src="">':icon('gym'))+' '+esc(x.n)+'<small>'+esc(x.m)+'</small></button>';});
+  pk.items.forEach(function(x,i){const _u=exImg(x.n);h+='<button class="pk" onclick="pickEx('+i+')">'+(_u?'<img class="exthumb" loading="lazy" decoding="async" style="width:44px;height:44px" src="'+_u+'">':icon('gym'))+' '+esc(x.n)+'<small>'+esc(x.m)+'</small></button>';});
   if(q)h+='<button class="pk" style="border-color:var(--neon)" onclick="pickEx(-1)">'+icon('plus')+' أضف &laquo;'+esc(q)+'&raquo; كتمرين جديد</button>';
   document.getElementById('pkList').innerHTML=h||'<p class="muted" style="text-align:center">مفيش نتائج</p>';
 }
@@ -561,23 +561,57 @@ function wSaveForm(n){
 function wQuickAdd(n){view.wex=n;go('weights');}
 
 /* ============ التغذية ============ */
+const FGROUPS={prot:'بروتين',carb:'نشويات',fat:'دهون صحية',dairy:'ألبان',fruit:'فاكهة',veg:'خضار',free:'بدائل خاصة'};
+const FALL={oat:['شوفان','جلوتين/شوفان'],milk:['لبن','ألبان'],egg:['بيض','بيض'],fish:['سمك','سمك/سي فود'],nuts:['مكسرات','مكسرات'],wheat:['قمح','جلوتين/قمح'],soy:['صويا','صويا']};
 const FOODS=[
- {a:['شوفان 40جم',150],b:['كورن فليكس 35جم',150]},
- {a:['فول مدمس 150جم',180],b:['عدس بجبة 150جم',180]},
- {a:['بيض مسلوق 3 حبات',210],b:['تونة مصفاة 150جم',210]},
- {a:['جبنة قريش 150جم',155],b:['زبادي يوناني 170جم',155]},
- {a:['عيش بلدي 1 رغيف',250],b:['توست بني 3 شرايح',250]},
- {a:['رز مسلوق 200جم',260],b:['مكرونة مسلوقة 200جم',260]},
- {a:['صدر فراخ 150جم',250],b:['سمك مشوي 200جم',250]},
- {a:['لحم مشوي 130جم',260],b:['كفتة مشوية 130جم',260]},
- {a:['بطاطس مسلوقة 250جم',200],b:['بطاطا مشوية 200جم',200]},
- {a:['خضار سوتيه 250جم',90],b:['سلطة خضرا طبق كبير',90]},
- {a:['لبن خالي الدسم 250مل',90],b:['رايب لايت 250مل',90]},
- {a:['تفاح 2 حبة',190],b:['برتقال 3 حبات',190]},
- {a:['موزة كبيرة',120],b:['بلح 5 حبات',120]},
- {a:['مكسرات 30جم',180],b:['فول سوداني 30جم',180]},
- {a:['عسل أبيض معلقة كبيرة',60],b:['مربى لايت معلقة كبيرة',60]},
- {a:['فشار بدون زيت 40جم',150],b:['ترمس 100جم',150]}
+ {g:'carb',p:5,al:['oat'],a:['شوفان 40جم',150],b:['كورن فليكس 35جم',150]},
+ {g:'carb',p:4,al:[],a:['كورن فليكس 35جم',150],b:['رز بلبن لايت 150جم',150]},
+ {g:'prot',p:13,al:[],a:['فول مدمس 150جم',180],b:['عدس بجبة 150جم',180]},
+ {g:'prot',p:12,al:[],a:['عدس أصفر 150جم مطبوخ',180],b:['لوبيا مسلوقة 150جم',180]},
+ {g:'prot',p:14,al:[],a:['حمص مسلوق 150جم',180],b:['فاصوليا بيضا 150جم',180]},
+ {g:'prot',p:19,al:['egg'],a:['بيض مسلوق 3 حبات',210],b:['تونة مصفاة 150جم',210]},
+ {g:'prot',p:20,al:['milk'],a:['جبنة قريش 150جم',155],b:['زبادي يوناني 170جم',155]},
+ {g:'prot',p:8,al:['milk'],a:['لبن خالي الدسم 250مل',90],b:['رايب لايت 250مل',90]},
+ {g:'prot',p:15,al:['milk'],a:['زبادي يوناني 200جم + عسل',180],b:['لبن رايب 300مل + تمرتين',180]},
+ {g:'prot',p:6,al:['milk','soy'],a:['لبن صويا 250مل',100],b:['لبن لوز 250مل',60]},
+ {g:'carb',p:5,al:['wheat'],a:['عيش بلدي 1 رغيف',250],b:['توست بني 3 شرايح',250]},
+ {g:'carb',p:4,al:['wheat'],a:['عيش سن 1 رغيف',200],b:['توست أبيض 2 شريحة',200]},
+ {g:'carb',p:6,al:[],a:['رز مسلوق 200جم',260],b:['مكرونة مسلوقة 200جم',260]},
+ {g:'carb',p:6,al:[],a:['رز بسمتي 180جم',250],b:['مكرونة قمح كامل 180جم',250]},
+ {g:'carb',p:7,al:[],a:['برغل مسلوق 200جم',250],b:['كينوا مسلوقة 180جم',250]},
+ {g:'carb',p:4,al:[],a:['ذرة مشوية 1 كوز',180],b:['بطاطا مشوية 150جم',180]},
+ {g:'prot',p:35,al:[],a:['صدر فراخ 150جم',250],b:['سمك مشوي 200جم',250]},
+ {g:'prot',p:35,al:[],a:['صدور ديك رومي 150جم',240],b:['صدور فراخ 140جم',240]},
+ {g:'prot',p:30,al:[],a:['لحم مشوي 130جم',260],b:['كفتة مشوية 130جم',260]},
+ {g:'prot',p:28,al:[],a:['فراخ مشوية (ورك) 150جم',260],b:['لحم مفروم قليل الدسم 130جم',260]},
+ {g:'prot',p:30,al:['fish'],a:['سمك بلطي 200جم',220],b:['جمبري مشوي 150جم',220]},
+ {g:'prot',p:24,al:['fish'],a:['سلمون مشوي 120جم',250],b:['تونة 150جم + معلقة زيت زيتون',250]},
+ {g:'prot',p:25,al:['egg'],a:['بياض بيض 5 حبات',150],b:['تونة لايت 120جم',150]},
+ {g:'prot',p:16,al:[],a:['ترمس 100جم',150],b:['فشار بدون زيت 40جم',150]},
+ {g:'prot',p:22,al:[],a:['كبدة مشوية 130جم',240],b:['قوانص مسلوقة 150جم',240]},
+ {g:'prot',p:30,al:['milk'],a:['واي بروتين سكوب',120],b:['بيض مسلوق 2 + بياض 2',120]},
+ {g:'carb',p:5,al:[],a:['بطاطس مسلوقة 250جم',200],b:['بطاطا مشوية 200جم',200]},
+ {g:'carb',p:3,al:['wheat'],a:['باتيه صغير سادة',240],b:['عيش توست أبيض 3 شرايح',240]},
+ {g:'veg',p:3,al:[],a:['خضار سوتيه 250جم',90],b:['سلطة خضرا طبق كبير',90]},
+ {g:'veg',p:2,al:[],a:['شوربة خضار طبق',100],b:['شوربة عدس طبق',100]},
+ {g:'veg',p:3,al:['fish'],a:['سلطة تونة لايت صغيرة',100],b:['سلطة فراخ صغيرة',100]},
+ {g:'veg',p:2,al:[],a:['ملوخية طبق (من غير تقلية)',90],b:['سبانخ مطبوخة طبق',90]},
+ {g:'veg',p:4,al:[],a:['فاصوليا خضرا سوتيه 200جم',110],b:['بامية مطبوخة 200جم',110]},
+ {g:'fruit',p:1,al:[],a:['تفاح 2 حبة',190],b:['برتقال 3 حبات',190]},
+ {g:'fruit',p:1,al:[],a:['موزة كبيرة',120],b:['بلح 5 حبات',120]},
+ {g:'fruit',p:1,al:[],a:['جوافة 2 حبة',140],b:['كمثرى 2 حبة',140]},
+ {g:'fruit',p:1,al:[],a:['بطيخ 300جم',110],b:['شمام 300جم',110]},
+ {g:'fruit',p:1,al:[],a:['فراولة 200جم',90],b:['خوخ 2 حبة',90]},
+ {g:'fruit',p:2,al:['milk'],a:['زبادي بالفاكهة لايت 200جم',150],b:['مهلبية لايت 200جم',150]},
+ {g:'fat',p:6,al:['nuts'],a:['مكسرات 30جم',180],b:['فول سوداني 30جم',180]},
+ {g:'fat',p:5,al:[],a:['سمسم 25جم',150],b:['لب سوري 30جم',150]},
+ {g:'fat',p:2,al:[],a:['زيت زيتون معلقة',120],b:['طحينة معلقة كبيرة',120]},
+ {g:'fat',p:1,al:[],a:['أفوكادو نص حبة',120],b:['زيتون 10 حبات',120]},
+ {g:'carb',p:0,al:[],a:['عسل أبيض معلقة كبيرة',60],b:['مربى لايت معلقة كبيرة',60]},
+ {g:'carb',p:0,al:[],a:['تمر 3 حبات',90],b:['تين مجفف 2 حبة',90]},
+ {g:'free',p:12,al:[],a:['شوربة عدس + عيش سن',280],b:['فول + بيضة + عيش بلدي نص',280]},
+ {g:'free',p:30,al:['egg'],a:['أومليت 3 بيض + جبنة لايت',300],b:['فول بالبيض + عيش سن',300]},
+ {g:'free',p:8,al:['oat','milk'],a:['شوفان باللبن والموز',280],b:['كورن فليكس باللبن + تفاحة',280]}
 ];
 const MEALS=[['الفطار',.25],['الغدا',.35],['سناك',.10],['العشا',.30]];
 function calcBMR(){const p=db.profile,W=num(p.weight),H=num(p.height),A=num(p.age);if(!W||!H||!A)return 0;return Math.round(10*W+6.25*H-5*A+(p.gender==='f'?-161:5));}
@@ -591,9 +625,11 @@ function calcTDEE(){
   return Math.round(t/10)*10;
 }
 function seededRand(seed){let s=seed;return function(){s=(s*9301+49297)%233280;return s/233280;};}
+function foodOK(fi){const f=FOODS[fi];if(!f||!f.al)return true;for(let i=0;i<f.al.length;i++)if(view.noFood&&view.noFood.indexOf(f.al[i])>-1)return false;return true;}
+function toggleNoFood(k){if(!view.noFood)view.noFood=[];const i=view.noFood.indexOf(k);if(i>-1)view.noFood.splice(i,1);else view.noFood.push(k);view.nmeals=null;save();render();}
 function buildMeals(tpl){
   const rnd=seededRand(tpl*7+3);
-  const pool=FOODS.map(function(f,i){return{i:i,k:f.a[1]};});
+  const pool=FOODS.map(function(f,i){return{i:i,k:f.a[1]};}).filter(function(x){return foodOK(x.i);});
   const meals=MEALS.map(function(m){return{name:m[0],target:Math.round(tpl*m[1]),items:[]};});
   const msum=function(m){let s=0;m.items.forEach(function(it){s+=FOODS[it.fi].a[1];});return s;};
   const total=function(){let s=0;meals.forEach(function(m){s+=msum(m);});return s;};
@@ -644,11 +680,14 @@ function buildMeals(tpl){
   view.nmeals=meals;
 }
 function mealTotal(m){let s=0;m.items.forEach(function(it){const f=FOODS[it.fi];s+=it.side==='a'?f.a[1]:f.b[1];});return s;}
-function swapFood(mi,ii){const it=view.nmeals[mi].items[ii];it.side=it.side==='a'?'b':'a';save();render();}
-function suggestTpl(){const t=calcTDEE();if(!t)return alert('كمّل وزنك وطولك وعمرك الأول');let best=1500;for(let v=1500;v<=3000;v+=50){if(Math.abs(v-t)<=Math.abs(best-t))best=v;}view.ntpl=best;db.profile.tpl=best;buildMeals(best);save();render();}
+function swapFood(mi,ii){const m=view.nmeals[mi];if(!m)return;const it=m.items[ii];const f=FOODS[it.fi];const cur=it.side==='a'?f.a[1]:f.b[1];view.swapList={mi:mi,ii:ii,cur:cur,opts:FOODS.map(function(x,i){return{fi:i,g:x.g,p:x.p};}).filter(function(x){const xf=FOODS[x.fi];const k=xf.a[1]===cur?'a':(xf.b[1]===cur?'b':null);if(!foodOK(x.fi))return false;return k&&!(x.fi===it.fi&&((k==='a')===(it.side==='a')));}).map(function(x){const xf=FOODS[x.fi];const side=xf.a[1]===cur?'a':'b';return{fi:x.fi,side:side,nm:side==='a'?xf.a[0]:xf.b[0],g:xf.g,p:xf.p};})};render();}
+function closeSwap(){view.swapList=null;render();}
+function pickSwap(fi,side){const sl=view.swapList;if(!sl)return;view.nmeals[sl.mi].items[sl.ii]={fi:fi,side:side};view.swapList=null;save();render();}
+function suggestTpl(){const t=calcTDEE();if(!t)return alert('كمّل وزنك وطولك وعمرك الأول');let best=1500;for(let v=1200;v<=3500;v+=50){if(Math.abs(v-t)<=Math.abs(best-t))best=v;}view.ntpl=best;db.profile.tpl=best;buildMeals(best);save();render();}
 function setTpl(v){view.ntpl=+v;db.profile.tpl=+v;buildMeals(+v);save();render();}
 /* ============ جسمي + صور ============ */
-function renderCalBox(){const box=document.getElementById('calBox');if(!box)return;const b=calcBMR();if(!b){box.innerHTML='';return;}const act=num(db.profile.act)||1.55;const t=Math.round(b*act/10)*10;box.innerHTML='<div class="card glow" style="margin-top:10px"><h3>سعراتك على حسب هدفك</h3><div class="kv"><span>عشان تخس (عجز 400 — متوازن وآمن)</span><b>'+(t-400)+' سعرة</b></div><div class="kv"><span>عشان يثبت وزنك</span><b>'+t+' سعرة</b></div><div class="kv"><span>عشان تزيد (فائض 300)</span><b>'+(t+300)+' سعرة</b></div><p class="sub" style="font-size:11px">محسوبة بمعادلة Mifflin-St Jeor × نشاطك — أرقام استرشادية.</p><div class="row"><button class="btn btn-sm" style="flex:1" onclick="db.profile.goal=\'lose\';save();render()">تخسيس</button><button class="btn btn-sm" style="flex:1" onclick="db.profile.goal=\'same\';save();render()">ثبات</button><button class="btn btn-sm" style="flex:1" onclick="db.profile.goal=\'gain\';save();render()">زيادة</button></div></div>';}
+function renderCalBox(){const box=document.getElementById('calBox');if(!box)return;const b=calcBMR();if(!b){box.innerHTML='';return;}const act=num(db.profile.act)||1.55;const t=Math.round(b*act/10)*10;const g=db.profile.goal;let btns='<div class="subtabs">';btns+='<button class="'+(g==='lose'?'on':'')+'" onclick="setGoalX(\'lose\')">تخسيس</button>';btns+='<button class="'+(g==='same'?'on':'')+'" onclick="setGoalX(\'same\')">ثبات</button>';btns+='<button class="'+(g==='gain'?'on':'')+'" onclick="setGoalX(\'gain\')">زيادة</button>';btns+='</div>';let cur='';if(g==='lose')cur='<p class="sub">هدفك الحالي: <b style="color:#fff">التخسيس</b> — سعراتك اليومية: <b style="color:#fff">'+(t-400)+'</b></p>';else if(g==='gain')cur='<p class="sub">هدفك الحالي: <b style="color:#fff">الزيادة</b> — سعراتك اليومية: <b style="color:#fff">'+(t+300)+'</b></p>';else cur='<p class="sub">هدفك الحالي: <b style="color:#fff">الثبات</b> — سعراتك اليومية: <b style="color:#fff">'+t+'</b></p>';box.innerHTML='<div class="card glow" style="margin-top:10px"><h3>سعراتك على حسب هدفك</h3><div class="kv"><span>عشان تخس (عجز 400 — متوازن وآمن)</span><b>'+(t-400)+' سعرة</b></div><div class="kv"><span>عشان يثبت وزنك</span><b>'+t+' سعرة</b></div><div class="kv"><span>عشان تزيد (فائض 300)</span><b>'+(t+300)+' سعرة</b></div><p class="sub" style="font-size:11px">محسوبة بمعادلة Mifflin-St Jeor × نشاطك — أرقام استرشادية.</p>'+btns+cur+'</div>';}
+function setGoalX(g){db.profile.goal=g;save();render();}
 function saveProfile(){
   const g=function(id){const e=document.getElementById(id);return e?e.value.trim():'';};
   const p=db.profile;
@@ -853,9 +892,13 @@ function render(){
     const t=calcTDEE();
     if(view.ntpl==null)view.ntpl=db.profile.tpl||nearestTpl(t||2000);
     if(!view.nmeals)buildMeals(view.ntpl);
-    let opts='';for(let vv=1500;vv<=3000;vv+=50)opts+='<option value="'+vv+'" '+(view.ntpl===vv?'selected':'')+'>'+vv+' سعرة</option>';
+    let opts='';for(let vv=1200;vv<=3500;vv+=50)opts+='<option value="'+vv+'" '+(view.ntpl===vv?'selected':'')+'>'+vv+' سعرة</option>';
     let h='<div class="section-head"><h2>التغذية</h2></div>';
-    h+='<div class="card glow"><h3>سعراتك اليومية</h3>'+(t?'<p class="sub">حسب بياناتك وهدفك (<b>'+GOALS[db.profile.goal]+'</b>): تحتاج تقريبًا <b style="color:#fff">'+t+' سعرة</b> في اليوم.</p><div class="row"><button class="btn btn-neon btn-sm" style="flex:1" onclick="suggestTpl()">'+icon('bolt')+' اقترح قالب مناسب</button></div>':'<p class="sub">كمّل وزنك وطولك وعمرك من «جسمي» عشان نحسب سعراتك.</p>')+'<p class="sub" style="font-size:11px">الأرقام استرشادية (Mifflin-St Jeor).</p></div>';
+    h+='<div class="card glow"><h3>سعراتك اليومية</h3>'+(t?'<p class="sub">حسب بياناتك وهدفك (<b>'+GOALS[db.profile.goal]+'</b>): تحتاج تقريبًا <b style="color:#fff">'+t+' سعرة</b> في اليوم.</p><div class="row"><button class="btn btn-neon btn-sm" style="flex:1" onclick="suggestTpl()">'+icon('bolt')+' اقترح قالب مناسب</button></div>':'<p class="sub">كمّل وزنك وطولك وعمرك من «جسمي» عشان نحسب سعراتك.</p>')+'<p class="sub" style="font-size:11px">الأرقام استرشادية (Mifflin-St Jeor). الحد الأدنى الآمن: 1500 للرجال و1200 للسيدات — تحت كده لازم متابعة دكتور.</p></div>';
+    h+='<div class="card"><h3>قواعد الأكل الحديثة</h3><p class="sub">بروتين <b>1.6–2.2 جم لكل كجم</b> من وزنك يوميًا (موزعة 20–40 جم في الوجبة) — ألياف <b>25–30 جم</b> يوميًا — دهون <b>25–35%</b> من سعراتك (زيت زيتون/مكسرات/سمك) — قلل المقلي والحلويات والمسكرات والمصنّع — اشرب ميه ونام 7–8 ساعات</p></div>';
+    if(!view.noFood)view.noFood=[];
+    const FALLN={oat:'شوفان/جلوتين',milk:'ألبان',egg:'بيض',fish:'سمك',nuts:'مكسرات',wheat:'قمح',soy:'صويا'};
+    h+='<div class="card"><h3>عندك حساسية من حاجة؟</h3><p class="sub">علّم عليها وهنشيل أي صنف فيه المشكلة دي من وجباتك وبدائلها.</p><div class="chips">'+Object.keys(FALLN).map(function(k){return '<button class="chip '+(view.noFood.indexOf(k)>-1?'on':'')+'" onclick="toggleNoFood(\''+k+'\')">'+FALLN[k]+'</button>';}).join('')+'</div></div>';
     h+='<div class="card"><h3>قالب اليوم: '+view.ntpl+' سعرة</h3><select class="full" onchange="setTpl(this.value)">'+opts+'</select>';
     let total=0;
     view.nmeals.forEach(function(m,mi){
@@ -863,11 +906,14 @@ function render(){
       h+='<p class="sub" style="margin:8px 0 2px"><b style="color:#fff">'+esc(m.name)+'</b> — المستهدف ~'+m.target+' • الفعلي '+mt+'</p>';
       m.items.forEach(function(it,ii){
         const f=FOODS[it.fi],nm=it.side==='a'?f.a[0]:f.b[0],kc=it.side==='a'?f.a[1]:f.b[1];
-        h+='<div class="meal"><span class="grow"><span class="nm">'+esc(nm)+'</span><br><span class="kcal">'+kc+' سعرة</span></span><button class="btn btn-sm" onclick="swapFood('+mi+','+ii+')">'+icon('swap')+' بديل</button></div>';
+        h+='<div class="meal"><span class="grow"><span class="nm">'+esc(nm)+'</span><br><span class="kcal">'+kc+' سعرة • '+esc(FGROUPS[f.g]||'')+' • بروتين ~'+f.p+'جم</span></span><button class="btn btn-sm" onclick="swapFood('+mi+','+ii+')">'+icon('swap')+' بديل</button></div>';
       });
     });
     h+='<p class="sub">إجمالي اليوم: <b style="color:#fff">'+total+' سعرة</b> (الفرق عن القالب: '+(total-view.ntpl)+')</p>';
     h+='<div class="row"><button class="btn btn-sm" style="flex:1" onclick="db.profile.nutrition=!db.profile.nutrition;save();render()">'+(db.profile.nutrition?'إخفاء من الرئيسية':'إظهار في الرئيسية')+'</button></div></div>';
+    if(view.swapList){const sl=view.swapList;
+      h+='<div id="swapSheet" style="position:fixed;inset:0;z-index:60;background:rgba(0,0,0,.7);display:flex;align-items:flex-end;justify-content:center" onclick="if(event.target===this)closeSwap()"><div class="sheet" style="max-height:80vh"><div class="top"><b>بدائل بنفس السعرات ('+sl.cur+' سعرة)'+(view.noFood&&view.noFood.length?' — مفلترة من حساسيتك':'')+'</b><button class="ibtn" onclick="closeSwap()">'+icon('x')+'</button></div><div id="pkList">'+(sl.opts.length?sl.opts.map(function(o){return '<button class="pk" onclick="pickSwap('+o.fi+',\''+o.side+'\')">'+icon('swap')+' '+esc(o.nm)+'<small>'+esc(FGROUPS[o.g]||'')+' • بروتين ~'+o.p+'جم</small></button>';}).join(''):'<p class="muted" style="text-align:center">مفيش بديل بنفس السعرات بالظبط</p>')+'</div></div></div>';
+    }
     h+='<button class="btn" onclick="go(\'more\')">'+icon('back')+' رجوع</button>';
     a.innerHTML=h;
   }
@@ -897,7 +943,7 @@ function render(){
   }
     else{go('home');}
 }
-function nearestTpl(t){let best=1500;for(let v=1500;v<=3000;v+=50){if(Math.abs(v-t)<=Math.abs(best-t))best=v;}return best;}
+function nearestTpl(t){let best=1500;for(let v=1200;v<=3500;v+=50){if(Math.abs(v-t)<=Math.abs(best-t))best=v;}return best;}
 function saveDaysGoal(){
   const d=document.getElementById('eDays'),g=document.getElementById('eGoal');
   if(d&&+d.value>=1&&+d.value<=7)db.profile.days=parseInt(d.value);
