@@ -123,6 +123,21 @@ table.wt td{text-align:center;padding:7px 4px;border-bottom:1px solid rgba(255,2
 .stat2 .k{font-size:11px;color:var(--muted);font-weight:700}
 .stat2.hl{border-color:var(--line2);box-shadow:0 0 20px rgba(0,230,118,.22)}
 .stat2.clickable{cursor:pointer}
+.workout-cta{position:relative;overflow:hidden;border-radius:22px;padding:20px 18px;margin-bottom:14px;border:1px solid var(--line2);background:linear-gradient(135deg,#03130b,#0a4a26 60%,#0d6b34);box-shadow:0 0 30px rgba(0,230,118,.25);display:flex;align-items:center;gap:12px;cursor:pointer}
+.workout-cta .big{font-size:20px;font-weight:900;flex:1;line-height:1.5}
+.workout-cta .big small{display:block;font-size:12.5px;font-weight:500;color:#c9e8d4}
+.workout-cta .go{width:58px;height:58px;flex:none;border-radius:50%;background:linear-gradient(135deg,var(--neon),var(--neon2));display:flex;align-items:center;justify-content:center;box-shadow:0 0 24px rgba(0,230,118,.6)}
+.workout-cta .go svg{width:26px;height:26px;color:#04120a}
+#restbar{display:none;background:rgba(10,14,15,.95);border:1px solid var(--line2);border-radius:16px;padding:10px 14px;margin-bottom:10px;align-items:center;gap:10px;box-shadow:0 0 24px rgba(0,230,118,.3)}
+#restbar .t{font-size:24px;font-weight:900;color:var(--neon2);min-width:70px;text-align:center}
+#restbar .bar{flex:1;height:8px;background:rgba(255,255,255,.08);border-radius:99px;overflow:hidden}
+#restbar .bar>div{height:100%;background:linear-gradient(90deg,var(--neon),var(--neon2));width:0%}
+.prbanner{background:linear-gradient(135deg,#3a2a05,#6b4d08);border:1px solid #f5a623;border-radius:16px;padding:12px;margin:8px 0;text-align:center;box-shadow:0 0 24px rgba(245,166,35,.35);animation:rise .4s ease}
+.prbanner b{font-size:17px;color:#ffd98a}
+.noteinput{width:100%;background:transparent;border:0;border-bottom:1px dashed var(--line2);color:var(--muted);font-size:12px;padding:4px 2px;margin-top:4px;font-family:inherit;outline:none}
+.noteinput:focus{border-color:var(--neon);color:#fff}
+.prchip{display:inline-flex;align-items:center;gap:5px;background:rgba(245,166,35,.12);border:1px solid rgba(245,166,35,.5);color:#ffd98a;border-radius:999px;padding:5px 12px;font-size:12px;font-weight:800;margin:3px}
+.warmnote{background:rgba(59,130,246,.08);border:1px solid rgba(59,130,246,.4);border-radius:12px;padding:8px 12px;font-size:12.5px;color:#bcd3f5;margin:6px 0;line-height:1.8}
 .steps{list-style:none;margin:8px 0 0;padding:0}
 .steps li{display:flex;gap:10px;align-items:flex-start;margin:11px 0;font-size:14px;line-height:1.9;color:#e6f2ea}
 .steps li b{flex:none;width:26px;height:26px;border-radius:9px;background:rgba(0,230,118,.14);border:1px solid var(--line2);color:var(--neon2);display:flex;align-items:center;justify-content:center;font-size:13px}
@@ -180,7 +195,7 @@ window.addEventListener('error',function(e){var d=document.getElementById('errbo
 <script>
 'use strict';
 /* ============ HM Fit v4 — النسخة النيون ============ */
-const VER='4.10.0';
+const VER='4.11.0';
 const GOALS={lose:'تخسيس',same:'ثبات',gain:'زيادة'};
 const ICONS={
 home:'<path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V21h5v-6h4v6h5V9.5"/>',
@@ -213,7 +228,7 @@ swap:'<path d="M4 8h13l-3.5-3.5M20 16H7l3.5 3.5"/>'
 };
 function icon(n,cls){return '<svg class="'+(cls||'ic')+'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">'+(ICONS[n]||'')+'</svg>';}
 /* ============ البيانات ============ */
-function blankProfile(){return {onboarded:false,days:3,weight:'',height:'',age:'',gender:'m',goal:'lose',nutrition:false,notif:{on:false,time:'20:00',days:[0,1,2,3,4,5,6]},tpl:2000};}
+function blankProfile(){return {onboarded:false,days:3,weight:'',height:'',age:'',gender:'m',goal:'lose',nutrition:false,notif:{on:false,time:'20:00',days:[0,1,2,3,4,5,6]},rest:120,tpl:2000};}
 function blankDB(){return {v:4,uid:uid(),profile:blankProfile(),program:null,weights:{},body:[]};}
 function cleanSet(s){s=s||{};return{w:(s.w==null?'':String(s.w)),r:(s.r==null?'':String(s.r))};}
 function cleanEx(e){e=e||{};const arr=(e.sets&&e.sets.length)?e.sets:[{w:'',r:''}];return{name:String(e.name||'تمرين'),muscle:String(e.muscle||'عام'),desc:String(e.desc||''),sets:arr.map(cleanSet)};}
@@ -543,22 +558,58 @@ function renameDay(id){const p=db.program;if(!p)return;const d=p.days.find(funct
 function addDayHome(){if(!db.program)return;const n=prompt('اسم اليوم الجديد (مثال: صدر + تراي):');if(!n)return;db.program.days.push({id:uid(),name:n.trim(),exercises:[]});save();render();}
 function resetProgram(){if(!db.program)return go('workout');if(confirm('هتمسح البرنامج الحالي وتبدأ من جديد؟')){db.program=null;save();go('workout');}}
 /* ============ أوزاني — آخر 3 جلسات ============ */
+function prOf(n){let b=0;const a=db.weights[n]||[];a.forEach(function(x){const w=num(x.w);if(w>b)b=w;});return b;}
+function epley1RM(w,r){w=num(w);r=parseInt(r)||0;if(!w||!r)return 0;return Math.round(w*(1+r/30));}
+function best1RM(n){let b=0;const a=db.weights[n]||[];a.forEach(function(x){const v=epley1RM(x.w,x.r);if(v>b)b=v;});return b;}
+let restTimer=null,restTotal=0,restLeft=0;
+function startRest(sec){restTotal=sec;restLeft=sec;clearInterval(restTimer);drawRest();restTimer=setInterval(function(){restLeft--;drawRest();if(restLeft<=0){clearInterval(restTimer);try{if(navigator.vibrate)navigator.vibrate([200,100,200]);}catch(e){}const el=document.getElementById('restbar');if(el)el.style.borderColor='#f5a623';}},1000);}
+function drawRest(){const el=document.getElementById('restbar');if(!el)return;el.style.display='flex';el.style.borderColor='';const t=el.querySelector('.t'),b=el.querySelector('.bar>div');const m=Math.floor(restLeft/60),ss=restLeft%60;if(t)t.textContent=m+':'+String(ss).padStart(2,'0');if(b)b.style.width=(restTotal?Math.round((restTotal-restLeft)/restTotal*100):0)+'%';}
+function stopRest(){clearInterval(restTimer);const el=document.getElementById('restbar');if(el)el.style.display='none';}
 function wGet(n){return db.weights[n]||[];}
-function wAdd(n,w,r){
+function wAdd(n,w,r,note){
   if(!n||(!w&&!r))return;
   const a=db.weights[n]||[];
-  a.unshift({w:String(w),r:String(r),d:new Date().toLocaleString('ar-EG')});
+  a.unshift({w:String(w),r:String(r),note:(typeof note!=='undefined'?note:''),d:new Date().toLocaleString('ar-EG')});
   db.weights[n]=a.slice(0,3);
   save();
 }
 function wDel(n,idx){const a=db.weights[n]||[];a.splice(idx,1);if(!a.length)delete db.weights[n];save();render();}
 function wSaveForm(n){
-  const w=document.getElementById('wW'),r=document.getElementById('wR');
+  const w=document.getElementById('wW'),r=document.getElementById('wR'),nt=document.getElementById('wN');
   const wv=w?w.value.trim():'',rv=r?r.value.trim():'';
   if(!wv&&!rv)return alert('دخل الوزن أو العدات الأول');
-  wAdd(n,wv,rv);render();
+  const prevPR=prOf(n);
+  wAdd(n,wv,rv,(nt&&nt.value.trim())||'');
+  view.lastPR=(num(wv)>prevPR)?{n:n,w:wv,first:!(prevPR>0)}:null;
+  startRest(num(db.profile.rest)||120);render();
 }
 function wQuickAdd(n){view.wex=n;go('weights');}
+function logSet(n){
+  const w=document.getElementById('tw_'+n),r=document.getElementById('tr_'+n),nt=document.getElementById('tn_'+n);
+  const wv=w?w.value.trim():'',rv=r?r.value.trim():'';
+  if(!wv&&!rv)return alert('دخل الوزن أو العدات الأول');
+  const prevPR=prOf(n);
+  wAdd(n,wv,rv,(nt&&nt.value.trim())||'');
+  view.lastPR=(num(wv)>prevPR)?{n:n,w:wv,first:!(prevPR>0)}:null;
+  startRest(num(db.profile.rest)||120);render();
+}
+function shareDay(did){
+  const p=db.program;if(!p)return;const d=p.days.find(function(x){return x.id===did;});if(!d)return;
+  let lines=d.exercises.map(function(e){const a=(db.weights[e.name]||[])[0];return a?('• '+e.name+': '+a.w+'كجم × '+a.r):('• '+e.name);});
+  const prs=d.exercises.map(function(e){return prOf(e.name)>0?(e.name+' '+prOf(e.name)+'كجم'):null;}).filter(function(x){return x;});
+  const txt='تمرينتي اليوم من HM Fit ('+d.name+'):\n'+lines.join('\n')+(prs.length?('\nأحسن أوزاني: '+prs.join(' | ')):'')+'\n#HM_Fit';
+  try{
+    const cv=document.createElement('canvas');cv.width=900;cv.height=300+lines.length*44;
+    const x=cv.getContext('2d');x.fillStyle='#0A0E0F';x.fillRect(0,0,900,300+lines.length*44);
+    x.fillStyle='#00E676';x.font='bold 44px Tahoma';x.textAlign='right';x.fillText('HM Fit — '+d.name,850,70);
+    x.fillStyle='#fff';x.font='30px Tahoma';
+    lines.forEach(function(l,i){x.fillText(l,850,140+i*44);});
+    x.fillStyle='#00E676';x.font='bold 28px Tahoma';x.fillText('سجل • تتبع • تطور',850,240+lines.length*44);
+    const url=cv.toDataURL('image/png');
+    const a2=document.createElement('a');a2.href=url;a2.download='hmfit-'+Date.now()+'.png';document.body.appendChild(a2);a2.click();setTimeout(function(){a2.remove();},2000);
+  }catch(e){window.open('https://wa.me/?text='+encodeURIComponent(txt),'_blank');return;}
+  if(confirm('اتحفظت صورة التمرينة — تحب تشاركها واتساب كمان؟'))window.open('https://wa.me/?text='+encodeURIComponent(txt),'_blank');
+}
 
 /* ============ التغذية ============ */
 const FGROUPS={prot:'بروتين',carb:'نشويات',fat:'دهون صحية',dairy:'ألبان',fruit:'فاكهة',veg:'خضار',free:'بدائل خاصة'};
@@ -782,7 +833,7 @@ function render(){
     let h='';
     if(db.program&&ti>=0){
       const d=db.program.days[ti];
-      h+='<div class="heroart"><h2>جاهز تتمرن <i>النهارده؟</i></h2><p>سجّل كل دور، تابع تقدمك، واكسر أرقامك القياسية.</p><button class="btn btn-neon" onclick="go(\'daydetail\',{did:\''+d.id+'\'})>ابدأ تمرين اليوم '+icon('play')+'</button></div>';
+      h+='<div class="workout-cta" onclick="go(\'trainday\',{did:\''+d.id+'\'})"><div class="big">جاهز تتمرن النهارده؟<small>'+esc(d.name)+' • '+d.exercises.length+' تمرين — دوس وابدأ التسجيل</small></div><div class="go">'+icon('play')+'</div></div>';
     }else{
       h+='<div class="heroart"><h2>جاهز تبدأ <i>رحلتك؟</i></h2><p>اعمل برنامجك الأول واختار أيامك وتمارينك.</p><button class="btn btn-neon" onclick="go(\'workout\')">اعمل برنامجي '+icon('play')+'</button></div>';
     }
@@ -845,6 +896,31 @@ function render(){
     });
     if(!d.exercises.length)h+='<div class="card"><div class="empty">'+icon('gym')+'<br>اليوم فاضي.<br>ضيف تمارين من المكتبة.</div></div>';
     h+='<button class="btn btn-neon btn-block" onclick="addEx()">'+icon('plus')+' تمرين جديد من المكتبة</button><button class="btn" onclick="go(\'workout\')">'+icon('back')+' رجوع للبرنامج</button>';
+    a.innerHTML=h;
+  }
+  else if(v==='trainday'){
+    navOn('nav-home');
+    const d=day();if(!d)return go('home');
+    const rs=num(db.profile.rest)||120;
+    let h='<div id="restbar"><span class="t">2:00</span><div class="bar"><div></div></div><button class="btn btn-sm" onclick="stopRest()">تخطي</button></div>';
+    h+='<div class="section-head"><h2>'+esc(d.name)+'</h2><span class="badge">'+d.exercises.length+' تمرين</span></div>';
+    if(view.lastPR){h+='<div class="prbanner">رقم جديد! <b>'+esc(view.lastPR.n)+' — '+esc(String(view.lastPR.w))+' كجم</b>'+(view.lastPR.first?' (أول رقم ليك — عاش!)':' (كسرت رقمك القديم)')+'</div>';view.lastPR=null;}
+    h+='<div class="card"><h3>وقت الراحة بين المجاميع</h3><div class="subtabs"><button class="'+(rs===90?'on':'')+'" onclick="db.profile.rest=90;save();render()">90 ث</button><button class="'+(rs===120?'on':'')+'" onclick="db.profile.rest=120;save();render()">120 ث</button><button class="'+(rs===180?'on':'')+'" onclick="db.profile.rest=180;save();render()">3 دقايق</button><button class="'+(rs===240?'on':'')+'" onclick="db.profile.rest=240;save();render()">4 دقايق</button></div></div>';
+    d.exercises.forEach(function(e){
+      const pr=prOf(e.name),rm=best1RM(e.name),last=(db.weights[e.name]||[])[0];
+      h+='<div class="card"><div class="row">'+exThumb(e.name)+'<span class="exname">'+esc(e.name)+'</span></div>';
+      if(pr>0)h+='<div><span class="prchip">'+icon('bolt')+' أحسن وزن: '+pr+' كجم</span>'+(rm>0?'<span class="prchip">الأقصى المتوقع: ~'+rm+' كجم</span>':'')+'</div>';
+      h+='<div class="warmnote">سخّن الأول: دور واحد بنص الوزن اللي بتلعب بيه ('+(last&&num(last.w)?('~'+Math.round(num(last.w)/2)+' كجم'):'وزن خفيف')+') — مش محسوب.</div>';
+      h+='<div class="row"><input class="w" style="flex:1" type="number" inputmode="decimal" id="tw_'+esc(e.name)+'" placeholder="الوزن" value="'+esc(last?last.w:'')+'"> <input class="w" style="flex:1" type="number" inputmode="numeric" id="tr_'+esc(e.name)+'" placeholder="العدات" value="'+esc(last?last.r:'')+'"></div>';
+      h+='<input class="noteinput" id="tn_'+esc(e.name)+'" placeholder="ملاحظة (اختياري) — مثلا: كتف وجعني / كانت سهلة">';
+      h+='<div class="row"><button class="btn btn-neon btn-sm" style="flex:1" onclick="logSet(\''+e.name.replace(/'/g,"\\'")+'\')">حفظ المجموعة + تشغيل التايمر</button></div>';
+      const hist=(db.weights[e.name]||[]).slice(0,3);
+      if(hist.length)h+='<p class="sub">آخر جلسات: '+hist.map(function(x){return esc(x.w)+'×'+esc(x.r)+(x.note?' ('+esc(x.note)+')':'');}).join(' | ')+'</p>';
+      h+='</div>';
+    });
+    h+='<button class="btn btn-neon btn-block" onclick="shareDay(\''+d.id+'\')">'+icon('share' in ICONS?'share':'bolt')+' مشاركة تمرينة اليوم</button>';
+    h+='<button class="btn btn-ghost" onclick="go(\'daydetail\',{did:\''+d.id+'\'})">تعديل التمارين والمجاميع</button>';
+    h+='<button class="btn btn-ghost" onclick="go(\'home\')">'+icon('back')+' الرئيسية</button>';
     a.innerHTML=h;
   }
   else if(v==='weights'){
