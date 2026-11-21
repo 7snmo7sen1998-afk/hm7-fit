@@ -1,5 +1,5 @@
 /* HM Fit service worker — offline cache */
-const CACHE = 'hmfit-v5';
+const CACHE = 'hmfit-v6';
 const ASSETS = ['./', './index.html', './manifest.json', './logo-192.png', './logo-512.png'];
 self.addEventListener('install', function (e) {
   e.waitUntil(caches.open(CACHE).then(function (c) { return c.addAll(ASSETS); }).then(function () { return self.skipWaiting(); }));

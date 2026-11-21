@@ -13,8 +13,8 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
 <style>
-:root{--bg:#0A0E0F;--card:rgba(255,255,255,.045);--card2:rgba(255,255,255,.07);--line:rgba(0,230,118,.16);--line2:rgba(0,230,118,.35);
---text:#F2F7F4;--muted:#9FB3A9;--neon:#00E676;--neon2:#00FF88;--r:20px}
+:root{--bg:#0A0E0F;--card:rgba(255,255,255,.07);--card2:rgba(255,255,255,.1);--line:rgba(0,230,118,.3);--line2:rgba(0,230,118,.55);
+--text:#FFFFFF;--muted:#C3D6CC;--neon:#00E676;--neon2:#4DFF9D;--r:20px}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 body{margin:0;font-family:"Tajawal","Cairo","Segoe UI",Tahoma,Arial,sans-serif;color:var(--text);min-height:100vh;
 background:radial-gradient(900px 420px at 85% -5%,rgba(0,230,118,.10),transparent 60%),radial-gradient(800px 420px at 10% -5%,rgba(0,255,136,.07),transparent 60%),var(--bg) fixed,var(--bg)}
@@ -62,7 +62,7 @@ select.full{width:100%;text-align:right;margin:6px 0}
 .snum{min-width:30px;height:30px;border-radius:10px;background:rgba(0,230,118,.12);border:1px solid var(--line2);display:inline-flex;align-items:center;justify-content:center;font-weight:900;font-size:14px;color:var(--neon2)}
 .mini{font-size:12px;font-weight:700;color:var(--muted);background:transparent;border:1px dashed var(--line2);border-radius:10px;padding:7px 10px;font-family:inherit;cursor:pointer}
 nav{position:fixed;bottom:12px;right:12px;left:12px;background:rgba(12,18,19,.92);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border:1px solid var(--line2);border-radius:24px;display:flex;max-width:616px;margin:auto;z-index:20;overflow:hidden;padding:5px;box-shadow:0 14px 40px rgba(0,0,0,.6)}
-nav button{flex:1;background:transparent;border:0;color:#7d8f86;border-radius:18px;padding:9px 2px 7px;margin:2px;font-family:inherit;cursor:pointer}
+nav button{flex:1;background:transparent;border:0;color:#a9bcb1;border-radius:18px;padding:9px 2px 7px;margin:2px;font-family:inherit;cursor:pointer}
 nav button .ni{display:flex;justify-content:center}
 nav button .ni svg{width:23px;height:23px}
 nav button .nl{display:block;font-size:10px;font-weight:800;margin-top:2px}
@@ -73,7 +73,7 @@ summary{cursor:pointer;font-weight:800;color:#b9f5d3;font-size:14px}
 .section-head{display:flex;align-items:center;justify-content:space-between;margin:14px 2px 8px}
 .section-head h2{margin:0;font-size:17px;font-weight:900}
 .empty{text-align:center;padding:26px 12px;color:var(--muted)}
-.empty svg{width:64px;height:64px;color:#2c4238;margin-bottom:8px}
+.empty svg{width:64px;height:64px;color:#47655a;margin-bottom:8px}
 .ic{width:20px;height:20px;flex:none}
 .kv{display:flex;justify-content:space-between;font-size:13px;color:var(--muted);padding:3px 0}
 .kv b{color:var(--text)}
@@ -82,7 +82,7 @@ summary{cursor:pointer;font-weight:800;color:#b9f5d3;font-size:14px}
 .sheet .top{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}
 .sheet .top b{font-size:17px;font-weight:900}
 .chips{display:flex;gap:7px;overflow-x:auto;padding:8px 0}
-.chip{flex:none;padding:7px 14px;border-radius:999px;background:rgba(255,255,255,.06);border:1px solid var(--line2);color:#b9cdc2;font-weight:800;font-size:13px;font-family:inherit}
+.chip{flex:none;padding:7px 14px;border-radius:999px;background:rgba(255,255,255,.08);border:1px solid var(--line2);color:#d8e8de;font-weight:800;font-size:13px;font-family:inherit}
 .chip.on{background:linear-gradient(135deg,var(--neon),var(--neon2));border:0;color:#04120a}
 #pkList{overflow-y:auto;flex:1;padding-bottom:10px}
 .pk{display:flex;align-items:center;gap:10px;width:100%;text-align:right;background:rgba(0,0,0,.35);border:1px solid var(--line);border-radius:14px;padding:11px;margin:6px 0;color:var(--text);font-family:inherit;font-size:15px;font-weight:800}
@@ -93,7 +93,7 @@ summary{cursor:pointer;font-weight:800;color:#b9f5d3;font-size:14px}
 .obbox h1{font-size:26px;font-weight:900;margin:0 0 6px}
 .obbox h1 i{font-style:normal;color:var(--neon)}
 .dchips{display:flex;gap:8px;flex-wrap:wrap;margin:14px 0}
-.dchip{width:52px;height:52px;border-radius:16px;background:rgba(255,255,255,.05);border:1px solid var(--line2);color:#cfe0d6;font-size:18px;font-weight:900;font-family:inherit}
+.dchip{width:52px;height:52px;border-radius:16px;background:rgba(255,255,255,.08);border:1px solid var(--line2);color:#fff;font-size:18px;font-weight:900;font-family:inherit}
 .dchip.on{background:linear-gradient(135deg,var(--neon),var(--neon2));color:#04120a;border:0;box-shadow:0 0 20px rgba(0,230,118,.45)}
 .goalopt{display:flex;align-items:center;gap:10px;width:100%;text-align:right;background:var(--card);border:1px solid var(--line);border-radius:16px;padding:14px;margin:8px 0;color:var(--text);font-family:inherit;font-size:16px;font-weight:800}
 .goalopt.on{border-color:var(--neon);box-shadow:0 0 18px rgba(0,230,118,.25)}
@@ -116,7 +116,7 @@ table.wt td{text-align:center;padding:7px 4px;border-bottom:1px solid rgba(255,2
 .heroart::after{content:"";position:absolute;right:-30px;bottom:-60px;width:170px;height:170px;border-radius:50%;background:radial-gradient(circle,rgba(0,230,118,.28),transparent 70%)}
 .heroart h2{margin:0 0 4px;font-size:24px;font-weight:900;position:relative}
 .heroart h2 i{font-style:normal;color:var(--neon2)}
-.heroart p{margin:0 0 14px;font-size:13.5px;color:#c9e8d4;position:relative;line-height:1.9}
+.heroart p{margin:0 0 14px;font-size:14px;color:#eaf6ee;position:relative;line-height:1.9;font-weight:500}
 .heroart .hm{position:absolute;left:12px;bottom:6px;width:104px;opacity:.95;filter:drop-shadow(0 0 18px rgba(0,230,118,.55))}
 .statgrid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:14px}
 .stat2{display:flex;align-items:center;gap:9px;background:var(--card);border:1px solid var(--line);border-radius:18px;padding:11px 9px}
@@ -124,7 +124,7 @@ table.wt td{text-align:center;padding:7px 4px;border-bottom:1px solid rgba(255,2
 .stat2 .k{font-size:11px;color:var(--muted);font-weight:700}
 .stat2.hl{border-color:var(--line2);box-shadow:0 0 20px rgba(0,230,118,.22)}
 .steps{list-style:none;margin:8px 0 0;padding:0}
-.steps li{display:flex;gap:10px;align-items:flex-start;margin:11px 0;font-size:13.5px;line-height:1.9;color:#d7e5db}
+.steps li{display:flex;gap:10px;align-items:flex-start;margin:11px 0;font-size:14px;line-height:1.9;color:#e6f2ea}
 .steps li b{flex:none;width:26px;height:26px;border-radius:9px;background:rgba(0,230,118,.14);border:1px solid var(--line2);color:var(--neon2);display:flex;align-items:center;justify-content:center;font-size:13px}
 .field{position:relative;flex:1;display:flex;min-width:0}
 .field svg{position:absolute;right:12px;top:50%;transform:translateY(-50%);width:20px;height:20px;color:var(--neon);pointer-events:none}
@@ -138,6 +138,8 @@ table.wt td{text-align:center;padding:7px 4px;border-bottom:1px solid rgba(255,2
 .side2 .card{flex:1;margin-bottom:14px;text-align:center;cursor:pointer}
 .side2 .thumb{margin:0 auto 6px}
 .side2 b{font-size:14px}
+input::placeholder{color:#93aca0;opacity:1}
+select{color:#fff}
 </style>
 </head>
 <body>
@@ -516,18 +518,20 @@ function render(){
     else if(v==='workout'){
     navOn('nav-workout');
     if(!db.program){
+      if(!view.wtpl)view.wtpl='';
       if(!view.wdays)view.wdays=db.profile.days||3;
-      if(!view.wtab)view.wtab='ready';
-      let h='<div class="section-head"><h2>برنامجك التدريبي</h2></div><div class="card glow"><h3>هتتمرن كام يوم؟</h3><div class="dchips">';
-      for(let i=1;i<=7;i++)h+='<button class="dchip '+(view.wdays===i?'on':'')+'" onclick="view.wdays='+i+';save();render()">'+i+'</button>';
-      h+='</div><p class="sub">أيامك: <b>'+view.wdays+'</b> — تقدر تغيرها بعدين من المزيد.</p></div>';
-      h+='<div class="subtabs"><button class="'+(view.wtab==='ready'?'on':'')+'" onclick="view.wtab=\'ready\';render()">البرامج الجاهزة</button><button class="'+(view.wtab==='custom'?'on':'')+'" onclick="view.wtab=\'custom\';render()">بناء تمرين بنفسك</button></div>';
-      if(view.wtab==='ready'){
-        TPLS.forEach(function(t){h+='<div class="item mainbtn" onclick="makeProgram(\''+t.key+'\','+view.wdays+')"><span class="thumb">'+icon('box')+'</span><span class="grow"><span class="nm">'+esc(t.name)+'</span><br><span class="meta">هيتقسم على '+view.wdays+' أيام — التمارين من اختيارك</span></span><span class="ibtn" style="pointer-events:none">'+icon('play')+'</span></div>';});
+      if(!view.wtpl){
+        let h='<div class="section-head"><h2>اختار نظامك</h2></div><p class="muted">اختار واحد من البرامج الجاهزة، أو ابنِ تمرينك بنفسك.</p>';
+        TPLS.forEach(function(t){h+='<div class="item mainbtn" onclick="view.wtpl=\''+t.key+'\';render()"><span class="thumb">'+icon('box')+'</span><span class="grow"><span class="nm">'+esc(t.name)+'</span><br><span class="meta">اضغط عشان تختاره</span></span><span class="ibtn" style="pointer-events:none">'+icon('play')+'</span></div>';});
+        h+='<div class="item mainbtn" onclick="view.wtpl=\'custom\';render()"><span class="thumb">'+icon('plus')+'</span><span class="grow"><span class="nm">بناء تمرين بنفسك</span><br><span class="meta">أيام فاضية تملاها من المكتبة براحتك</span></span><span class="ibtn" style="pointer-events:none">'+icon('play')+'</span></div>';
+        a.innerHTML=h;
       }else{
-        h+='<div class="card"><h3>ابنِ تمرينك بنفسك</h3><p class="sub">'+view.wdays+' أيام فاضية — تملاها من مكتبة التمارين براحتك.</p><button class="btn btn-neon btn-block" onclick="makeProgram(\'custom\','+view.wdays+')">'+icon('plus')+' ابدأ البناء</button></div>';
+        const tn=view.wtpl==='custom'?'برنامجك الخاص':tplName(view.wtpl);
+        let h='<div class="section-head"><h2>'+esc(tn)+'</h2></div><div class="card glow"><h3>هتتمرن كام يوم؟</h3><div class="dchips">';
+        for(let i=1;i<=7;i++)h+='<button class="dchip '+(view.wdays===i?'on':'')+'" onclick="view.wdays='+i+';save();render()">'+i+'</button>';
+        h+='</div><p class="sub">هيتقسم على <b>'+view.wdays+'</b> '+(view.wtpl==='custom'?'أيام فاضية من اختيارك':'أيام بنظام '+esc(tn))+' — وتقدر تغيرها بعدين من المزيد.</p><button class="btn btn-neon btn-block" onclick="makeProgram(\''+view.wtpl+'\','+view.wdays+')">'+icon('check')+' اعمل البرنامج</button><button class="btn btn-sm" style="margin-top:8px" onclick="view.wtpl=\'\';render()">'+icon('back')+' غيّر النظام</button></div>';
+        a.innerHTML=h;
       }
-      a.innerHTML=h;
     }else{
       let h='<div class="section-head"><h2>'+esc(db.program.name)+'</h2><span class="badge">'+esc(tplName(db.program.tpl))+'</span></div>';
       db.program.days.forEach(function(d,di){
@@ -683,5 +687,5 @@ function renderLib(){
   }
 })();
 </script>
-<script>window.__CF$cv$params={r:'a5dd1e56e8cf98d2',t:'MTc5NTIzNzA5OA==',u:'01a1fc7833a470bf9c8d797f79e4b09b',ut:'aEvohL8U0cTd.Nzc3wB_6tGsFv5kTeOZq3dgz9uY3m4-1795237098-1.2.1.1-dF_L066wakfnHXifY1QyFbGtm9I4Crgf22kC2qC0uFwSh7gO8uThSR5uqef53Q.sRR9.2TITp413fdgWsEwhgpLkyE4fBHVccKio5cEVYAM',i:60};(function(){if(!document.body)return;var l=window.location,o;try{o=new URL(l.origin).origin}catch(e){try{o=new URL(new URL(l.href).origin).origin}catch(e){o=''}}var u='/cdn-cgi/challenge-platform/scripts/precursor/main.js?ray=a5dd1e56e8cf98d2',s=document.createElement('script');s.src=o?new URL(u,o).href:u;document.head.appendChild(s);})();</script></body>
+<script>window.__CF$cv$params={r:'a5dd30d969c4e1fd',t:'MTc5NTIzNzg1Ng==',u:'01a1fc83c564738696f2490a733758ff',ut:'B2bphoFnupSmmX6jllugq5GkwVcu57k4HgbC8ct4xvU-1795237856-1.2.1.1-vGtFk2AAwq3WN3kS46LAjPiIeOvlCEV1J53uC8HG_O2NlGaubC5NqLnLQDH0qj2DzJ6U1VtjQ4rZESwS1nauCiJvc45rxUEdYLHffklKtGg',i:60};(function(){if(!document.body)return;var l=window.location,o;try{o=new URL(l.origin).origin}catch(e){try{o=new URL(new URL(l.href).origin).origin}catch(e){o=''}}var u='/cdn-cgi/challenge-platform/scripts/precursor/main.js?ray=a5dd30d969c4e1fd',s=document.createElement('script');s.src=o?new URL(u,o).href:u;document.head.appendChild(s);})();</script></body>
 </html>
