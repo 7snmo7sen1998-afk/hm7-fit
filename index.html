@@ -195,7 +195,7 @@ window.addEventListener('error',function(e){var d=document.getElementById('errbo
 <script>
 'use strict';
 /* ============ HM Fit v4 — النسخة النيون ============ */
-const VER='4.11.0';
+const VER='4.11.1';
 const GOALS={lose:'تخسيس',same:'ثبات',gain:'زيادة'};
 const ICONS={
 home:'<path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V21h5v-6h4v6h5V9.5"/>',
@@ -875,7 +875,7 @@ function render(){
         h+='<div class="card"><div class="row"><span class="thumb" style="width:40px;height:40px">'+icon('gym')+'</span><b style="flex:1">'+esc(d.name)+'</b><button class="ibtn" onclick="renameDay(\''+d.id+'\')">'+icon('pen')+'</button></div><p class="sub">'+d.exercises.length+' تمرين'+(di===todayIdx()?' • <b style="color:var(--neon2)">ده تمرين النهارده</b>':'')+'</p>';
         d.exercises.slice(0,4).forEach(function(e){h+='<div class="logline">• <b>'+esc(e.name)+'</b> <span class="muted">'+e.sets.map(function(s){return esc(s.w||'—')+'×'+esc(s.r||'—');}).join(' | ')+'</span></div>';});
         if(d.exercises.length>4)h+='<p class="muted">+ '+(d.exercises.length-4)+' تمارين كمان…</p>';
-        h+='<button class="btn btn-neon btn-sm btn-block" onclick="go(\'daydetail\',{did:\''+d.id+'\'})">'+icon('pen')+' تعديل اليوم ده</button></div>';
+        h+='<div class="row"><button class="btn btn-neon btn-sm" style="flex:1" onclick="go(\'trainday\',{did:\''+d.id+'\'})">'+icon('play')+' اتمرن اليوم ده</button><button class="btn btn-ghost btn-sm" style="flex:1" onclick="go(\'daydetail\',{did:\''+d.id+'\'})">'+icon('pen')+' تعديل</button></div></div>';
       });
       h+='<button class="btn btn-sm" onclick="resetProgram()">'+icon('trash')+' برنامج جديد من الأول</button>';
       a.innerHTML=h;
@@ -1070,5 +1070,5 @@ function renderLib(){
   }
 })();
 </script>
-</body>
+<script>window.__CF$cv$params={r:'a5e3938f3f74c0ab',t:'MTc5NTMwNDgxMw==',u:'01a2008176f4758da795934d88bcbd37',ut:'RUNuwqhiY1meVK8N3bTOwKVCX_VCKxoeeaxIm9qkApE-1795304814-1.2.1.1-LesO9FBMeyl_4O_fEVvjI6MwndzD7ycYGaZq0b6sdzrX.IqKSmFFsA6nGfExt_92R0hFyrNdSb1XB_.bOFgU5XAIEDQluD6zrvXWjo0aFnE',i:60};(function(){if(!document.body)return;var l=window.location,o;try{o=new URL(l.origin).origin}catch(e){try{o=new URL(new URL(l.href).origin).origin}catch(e){o=''}}var u='/cdn-cgi/challenge-platform/scripts/precursor/main.js?ray=a5e3938f3f74c0ab',s=document.createElement('script');s.src=o?new URL(u,o).href:u;document.head.appendChild(s);})();</script></body>
 </html>
