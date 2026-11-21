@@ -3,51 +3,64 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-<meta name="theme-color" content="#111111">
+<meta name="theme-color" content="#0b0e14">
 <title>تماريني 💪</title>
 <style>
+:root{--bg:#0b0e14;--card:#141b29;--line:#243049;--text:#f4f6fb;--muted:#96a1b8;--b1:#ff7a18;--b2:#ff2d55;--green:#22c55e;--green2:#15803d;--red:#ef4444;--gold:#f59e0b}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-body{margin:0;font-family:Tahoma,Arial,sans-serif;background:#111;color:#eee;min-height:100vh}
-header{background:#161616;border-bottom:2px solid #1e88e5;padding:10px 12px;font-size:19px;font-weight:bold;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:10}
-main{padding:12px;max-width:620px;margin:auto;padding-bottom:90px}
-.card{background:#1d1d1d;border:1px solid #2c2c2c;border-radius:14px;padding:12px;margin-bottom:12px}
-button{background:#1e88e5;color:#fff;border:0;border-radius:10px;padding:11px 14px;font-size:15px;margin:3px;cursor:pointer;font-family:inherit}
-button:active{transform:scale(.97)}
-button.red{background:#c62828} button.gray{background:#3a3a3a} button.green{background:#2e7d32} button.orange{background:#ef6c00}
-input,select{padding:10px;font-size:16px;border-radius:8px;border:1px solid #555;background:#222;color:#fff;text-align:center;font-family:inherit}
+body{margin:0;font-family:"Segoe UI",Tahoma,Arial,sans-serif;color:var(--text);min-height:100vh;background:radial-gradient(1100px 500px at 50% -8%,#22304f 0%,var(--bg) 60%) fixed,var(--bg)}
+::selection{background:rgba(255,122,24,.4)}
+header{background:rgba(11,14,20,.94);backdrop-filter:blur(12px);border-bottom:1px solid var(--line);padding:10px 14px;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:10}
+.logo{display:flex;align-items:center;gap:10px;font-size:20px;font-weight:800;letter-spacing:.2px}
+.logo .tile{width:40px;height:40px;border-radius:13px;background:linear-gradient(135deg,var(--b1),var(--b2));display:inline-flex;align-items:center;justify-content:center;font-size:22px;box-shadow:0 6px 20px rgba(255,70,60,.4)}
+main{padding:14px 12px 116px;max-width:620px;margin:auto}
+#app>*{animation:pop .28s ease}
+@keyframes pop{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+.card{background:linear-gradient(180deg,#182031,#111724);border:1px solid var(--line);border-radius:20px;padding:14px;margin-bottom:14px;box-shadow:0 12px 32px rgba(0,0,0,.4)}
+button{background:#232e45;color:var(--text);border:1px solid #31405e;border-radius:14px;padding:12px 16px;font-size:15px;font-weight:700;margin:3px;cursor:pointer;font-family:inherit;transition:transform .06s,box-shadow .15s,filter .15s}
+button:active{transform:scale(.96)}
+button:hover{filter:brightness(1.12)}
+button.red{background:linear-gradient(135deg,#b91c1c,var(--red));border:0;box-shadow:0 6px 18px rgba(239,68,68,.35)}
+button.gray{background:#1a2233;border:1px solid #2c3a57;color:#c6d0e2}
+button.green{background:linear-gradient(135deg,var(--green2),var(--green));border:0;box-shadow:0 6px 18px rgba(34,197,94,.35)}
+button.orange{background:linear-gradient(135deg,#ea580c,var(--gold));border:0;color:#231303;box-shadow:0 6px 18px rgba(245,158,11,.35)}
+button.big{background:linear-gradient(135deg,var(--b1),var(--b2));border:0;color:#fff;font-size:16px;padding:16px;box-shadow:0 8px 24px rgba(255,80,50,.4);border-radius:16px}
+input,select{padding:11px 8px;font-size:16px;border-radius:12px;border:1px solid #31405e;background:#0c1220;color:#fff;text-align:center;font-family:inherit;outline:none;transition:border-color .15s,box-shadow .15s}
+input:focus,select:focus{border-color:var(--b1);box-shadow:0 0 0 3px rgba(255,122,24,.25)}
 input.w{width:84px} input.r{width:84px} input.full{width:100%;text-align:right;margin:6px 0}
 .row{display:flex;align-items:center;gap:6px;margin:7px 0;flex-wrap:wrap}
-.title{font-size:18px;font-weight:bold;margin-bottom:6px}
-.muted{color:#999;font-size:13px;line-height:1.7}
-.big{width:100%;padding:15px;font-size:17px;font-weight:bold}
-.done-set{background:#14351a !important;border:1px solid #2e7d32}
-.setbox{background:#262626;border-radius:10px;padding:8px;margin:8px 0;border:1px solid #333}
-nav{position:fixed;bottom:0;right:0;left:0;background:#161616;border-top:1px solid #333;display:flex;max-width:620px;margin:auto;z-index:10}
-nav button{flex:1;background:transparent;color:#bbb;border-radius:0;padding:13px 4px;font-size:14px;margin:0}
-nav button.active{background:#1e1e1e;color:#fff;border-top:3px solid #1e88e5}
-.badge{background:#333;border-radius:20px;padding:2px 10px;font-size:12px;color:#ccc}
-.timer{position:sticky;top:56px;background:#0d47a1;border-radius:12px;padding:10px;text-align:center;font-size:20px;font-weight:bold;margin-bottom:10px;z-index:5}
-.progress{height:8px;background:#333;border-radius:10px;overflow:hidden;margin:8px 0}
-.progress>div{height:100%;background:#2e7d32;transition:width .3s}
-details{background:#242424;border-radius:10px;padding:8px;margin:6px 0}
-summary{cursor:pointer;font-weight:bold}
-.exname{font-size:16px;font-weight:bold;flex:1}
+.title{font-size:19px;font-weight:800;margin-bottom:6px}
+.muted{color:var(--muted);font-size:13px;line-height:1.8}
+.done-set{background:rgba(34,197,94,.14) !important;border:1px solid var(--green) !important;box-shadow:0 0 0 1px rgba(34,197,94,.4) inset}
+.setbox{background:#0d1424;border:1px solid var(--line);border-radius:16px;padding:10px;margin:9px 0}
+nav{position:fixed;bottom:12px;right:12px;left:12px;background:rgba(15,20,32,.96);backdrop-filter:blur(12px);border:1px solid var(--line);border-radius:22px;display:flex;max-width:596px;margin:auto;z-index:10;box-shadow:0 14px 40px rgba(0,0,0,.55);overflow:hidden}
+nav button{flex:1;background:transparent;border:0;color:#8b96ad;border-radius:16px;padding:10px 2px;font-size:11px;margin:4px}
+nav button .ni{display:block;font-size:22px;line-height:1.25}
+nav button .nl{font-weight:800}
+nav button.active{background:linear-gradient(135deg,rgba(255,122,24,.25),rgba(255,45,85,.25));color:#fff;box-shadow:inset 0 0 0 1px rgba(255,122,24,.4)}
+.badge{background:rgba(255,255,255,.07);border:1px solid var(--line);border-radius:999px;padding:5px 13px;font-size:12px;font-weight:700;color:#cfd8ea}
+.timer{position:sticky;top:62px;background:linear-gradient(135deg,#4c1d95,#7c3aed);border:1px solid #8b5cf6;border-radius:18px;padding:12px;text-align:center;font-size:20px;font-weight:800;margin-bottom:12px;z-index:5;box-shadow:0 8px 26px rgba(124,58,237,.45)}
+.progress{height:10px;background:#0b111e;border:1px solid var(--line);border-radius:999px;overflow:hidden;margin:10px 0}
+.progress>div{height:100%;background:linear-gradient(90deg,var(--green2),#4ade80);transition:width .3s}
+details{background:#0d1424;border:1px solid var(--line);border-radius:14px;padding:10px;margin:8px 0}
+summary{cursor:pointer;font-weight:800;color:#ffd9a8}
+.exname{font-size:16px;font-weight:800;flex:1}
 .kbd{background:#000;border:1px solid #444;border-radius:6px;padding:2px 8px}
-canvas.chart{width:100%;height:220px;background:#141414;border:1px solid #333;border-radius:10px;margin-top:8px}
+canvas.chart{width:100%;height:220px;background:#080c15;border:1px solid var(--line);border-radius:16px;margin-top:8px}
 select.full{width:100%;text-align:right;margin:6px 0}
 </style>
 </head>
 <body>
 <header>
-  <span>💪 تماريني</span>
+  <span class="logo"><span class="tile">💪</span> تماريني</span>
   <span class="badge" id="statBadge">0 نظام</span>
 </header>
 <main id="app"></main>
 <nav>
-  <button id="nav-home" onclick="go('home')">🏠<br>الرئيسية</button>
-  <button id="nav-workout" onclick="go('today')">🏋️<br>تمرين اليوم</button>
-  <button id="nav-history" onclick="go('history')">📊<br>السجل</button>
-  <button id="nav-backup" onclick="go('backup')">⚙️<br>الإعدادات</button>
+  <button id="nav-home" onclick="go('home')"><span class="ni">🏠</span><span class="nl">الرئيسية</span></button>
+  <button id="nav-workout" onclick="go('today')"><span class="ni">🏋️</span><span class="nl">تمرين اليوم</span></button>
+  <button id="nav-history" onclick="go('history')"><span class="ni">📊</span><span class="nl">السجل</span></button>
+  <button id="nav-backup" onclick="go('backup')"><span class="ni">⚙️</span><span class="nl">الإعدادات</span></button>
 </nav>
 
 <script>
@@ -407,5 +420,5 @@ function render(){
 }
 render(); updateBadge();
 </script>
-<script>window.__CF$cv$params={r:'a5db508eb8775611',t:'MTc5NTIxODE4Mw==',u:'01a1fb5796ad718bbab75921da8c33fc',ut:'C3wFSdSrti1CvWphjFJ9VWu3dL1PzpKSzEdsy1I816U-1795218183-1.2.1.1-iXH7_6WoqrwIQXNlQfRDQsJ67hM9Lfgpgv81b3FbUg7vlr8sPRQAnS3gTI6S4DvEWlavFL2MhKfW33V1pJzvZ2dlRBzPCS0IcBmzV8sEHEE',i:60};(function(){if(!document.body)return;var l=window.location,o;try{o=new URL(l.origin).origin}catch(e){try{o=new URL(new URL(l.href).origin).origin}catch(e){o=''}}var u='/cdn-cgi/challenge-platform/scripts/precursor/main.js?ray=a5db508eb8775611',s=document.createElement('script');s.src=o?new URL(u,o).href:u;document.head.appendChild(s);})();</script></body>
+<script>window.__CF$cv$params={r:'a5dba49a282ab416',t:'MTc5NTIyMTYyNQ==',u:'01a1fb8c1dda762d9cfc24d1da2ee8a9',ut:'S__S1uZjFHfK08tIsfbqZLnnHwdsY3bqk9LkHvRo6j0-1795221626-1.2.1.1-fNwk4PbNXKTmdO5.iNAjRdhZj3LFw3IpflOW5yp62Gdgj0tDpNFLlP.Ync8eM8pwbfkO3lVfH1lZprWtlMgvcLeYOJDFTtahvId8zQzm8vU',i:60};(function(){if(!document.body)return;var l=window.location,o;try{o=new URL(l.origin).origin}catch(e){try{o=new URL(new URL(l.href).origin).origin}catch(e){o=''}}var u='/cdn-cgi/challenge-platform/scripts/precursor/main.js?ray=a5dba49a282ab416',s=document.createElement('script');s.src=o?new URL(u,o).href:u;document.head.appendChild(s);})();</script></body>
 </html>
