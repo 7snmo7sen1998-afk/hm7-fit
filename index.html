@@ -3,74 +3,196 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-<meta name="theme-color" content="#0b0e14">
-<title>تماريني 💪</title>
+<meta name="theme-color" content="#0a0d13">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>تماريني | سجّل تطوّر أوزانك</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
 <style>
-:root{--bg:#0b0e14;--card:#141b29;--line:#243049;--text:#f4f6fb;--muted:#96a1b8;--b1:#ff7a18;--b2:#ff2d55;--green:#22c55e;--green2:#15803d;--red:#ef4444;--gold:#f59e0b}
+:root{
+  --bg:#0a0d13; --card:#131926; --card2:#0e1420; --line:#233052; --line2:#2e3d63;
+  --text:#f5f7fc; --muted:#9aa6bd; --faint:#67738c;
+  --b1:#ff7a18; --b2:#ff2d55; --green:#22c55e; --green-d:#15803d;
+  --red:#ef4444; --blue:#3b82f6; --gold:#f5a623;
+  --r:20px;
+}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-body{margin:0;font-family:"Segoe UI",Tahoma,Arial,sans-serif;color:var(--text);min-height:100vh;background:radial-gradient(1100px 500px at 50% -8%,#22304f 0%,var(--bg) 60%) fixed,var(--bg)}
-::selection{background:rgba(255,122,24,.4)}
-header{background:rgba(11,14,20,.94);backdrop-filter:blur(12px);border-bottom:1px solid var(--line);padding:10px 14px;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:10}
-.logo{display:flex;align-items:center;gap:10px;font-size:20px;font-weight:800;letter-spacing:.2px}
-.logo .tile{width:40px;height:40px;border-radius:13px;background:linear-gradient(135deg,var(--b1),var(--b2));display:inline-flex;align-items:center;justify-content:center;font-size:22px;box-shadow:0 6px 20px rgba(255,70,60,.4)}
-main{padding:14px 12px 116px;max-width:620px;margin:auto}
-#app>*{animation:pop .28s ease}
-@keyframes pop{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
-.card{background:linear-gradient(180deg,#182031,#111724);border:1px solid var(--line);border-radius:20px;padding:14px;margin-bottom:14px;box-shadow:0 12px 32px rgba(0,0,0,.4)}
-button{background:#232e45;color:var(--text);border:1px solid #31405e;border-radius:14px;padding:12px 16px;font-size:15px;font-weight:700;margin:3px;cursor:pointer;font-family:inherit;transition:transform .06s,box-shadow .15s,filter .15s}
+html{scroll-behavior:smooth}
+body{margin:0;font-family:"Cairo","Segoe UI",Tahoma,Arial,sans-serif;color:var(--text);min-height:100vh;
+  background:radial-gradient(1000px 480px at 85% -5%,rgba(255,45,85,.12),transparent 60%),
+  radial-gradient(900px 480px at 10% -5%,rgba(255,122,24,.12),transparent 60%),
+  radial-gradient(1200px 700px at 50% 110%,#141d33 0%,var(--bg) 60%) fixed,var(--bg)}
+::selection{background:rgba(255,122,24,.45)}
+/* ===== header ===== */
+header{position:sticky;top:0;z-index:20;background:rgba(10,13,19,.88);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-bottom:1px solid var(--line)}
+.hwrap{max-width:640px;margin:auto;padding:10px 14px;display:flex;align-items:center;justify-content:space-between}
+.brand{display:flex;align-items:center;gap:10px}
+.brand .tile{width:42px;height:42px;border-radius:14px;background:linear-gradient(135deg,var(--b1),var(--b2));display:inline-flex;align-items:center;justify-content:center;box-shadow:0 8px 22px rgba(255,70,60,.42)}
+.brand .tile svg{width:24px;height:24px;color:#fff}
+.brand b{font-size:20px;font-weight:900;letter-spacing:.2px;display:block;line-height:1.1}
+.brand small{font-size:11px;color:var(--muted);font-weight:600}
+/* ===== layout ===== */
+main{padding:16px 14px 120px;max-width:640px;margin:auto}
+#app>*{animation:rise .3s ease}
+@keyframes rise{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+.card{background:linear-gradient(180deg,#161e30,#101624);border:1px solid var(--line);border-radius:var(--r);padding:16px;margin-bottom:14px;box-shadow:0 14px 34px rgba(0,0,0,.42)}
+.card h3{margin:0 0 4px;font-size:17px;font-weight:800}
+.card .sub{margin:0 0 10px;font-size:13px;color:var(--muted);line-height:1.8}
+/* ===== hero ===== */
+.hero{position:relative;overflow:hidden;border-radius:24px;padding:20px 18px;margin-bottom:14px;border:1px solid #3a2b4d;
+  background:linear-gradient(135deg,#2a1440 0%,#3d1530 45%,#57200f 100%);box-shadow:0 16px 40px rgba(255,45,85,.22)}
+.hero::after{content:"";position:absolute;left:-40px;top:-40px;width:190px;height:190px;border-radius:50%;background:radial-gradient(circle,rgba(255,122,24,.35),transparent 70%)}
+.hero h2{margin:0 0 4px;font-size:22px;font-weight:900}
+.hero p{margin:0 0 14px;font-size:13.5px;color:#e8c9d4;line-height:1.8}
+.hero .art{position:absolute;left:12px;bottom:-14px;opacity:.28}
+.hero .art svg{width:120px;height:120px;color:#fff}
+/* ===== stats ===== */
+.stats{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:14px}
+.stat{background:linear-gradient(180deg,#172033,#101624);border:1px solid var(--line);border-radius:18px;padding:12px 8px;text-align:center}
+.stat .v{font-size:21px;font-weight:900;line-height:1.2}
+.stat .v em{font-style:normal;font-size:12px;color:var(--muted);font-weight:700}
+.stat .k{font-size:11.5px;color:var(--muted);font-weight:700;margin-top:2px}
+.stat.hl{border-color:rgba(255,122,24,.5);box-shadow:0 0 0 1px rgba(255,122,24,.25),0 10px 26px rgba(255,90,40,.18)}
+/* ===== buttons ===== */
+button{font-family:inherit;cursor:pointer;transition:transform .07s,filter .15s,box-shadow .15s}
 button:active{transform:scale(.96)}
-button:hover{filter:brightness(1.12)}
-button.red{background:linear-gradient(135deg,#b91c1c,var(--red));border:0;box-shadow:0 6px 18px rgba(239,68,68,.35)}
-button.gray{background:#1a2233;border:1px solid #2c3a57;color:#c6d0e2}
-button.green{background:linear-gradient(135deg,var(--green2),var(--green));border:0;box-shadow:0 6px 18px rgba(34,197,94,.35)}
-button.orange{background:linear-gradient(135deg,#ea580c,var(--gold));border:0;color:#231303;box-shadow:0 6px 18px rgba(245,158,11,.35)}
-button.big{background:linear-gradient(135deg,var(--b1),var(--b2));border:0;color:#fff;font-size:16px;padding:16px;box-shadow:0 8px 24px rgba(255,80,50,.4);border-radius:16px}
-input,select{padding:11px 8px;font-size:16px;border-radius:12px;border:1px solid #31405e;background:#0c1220;color:#fff;text-align:center;font-family:inherit;outline:none;transition:border-color .15s,box-shadow .15s}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;background:#222c44;color:var(--text);border:1px solid var(--line2);border-radius:14px;padding:12px 18px;font-size:15px;font-weight:800}
+.btn:hover{filter:brightness(1.12)}
+.btn .ic{width:19px;height:19px}
+.btn-primary{background:linear-gradient(135deg,var(--b1),var(--b2));border:0;color:#fff;box-shadow:0 10px 26px rgba(255,80,50,.42)}
+.btn-green{background:linear-gradient(135deg,var(--green-d),var(--green));border:0;color:#fff;box-shadow:0 10px 26px rgba(34,197,94,.35)}
+.btn-red{background:linear-gradient(135deg,#b91c1c,var(--red));border:0;color:#fff;box-shadow:0 8px 22px rgba(239,68,68,.32)}
+.btn-gold{background:linear-gradient(135deg,#b45309,var(--gold));border:0;color:#241100}
+.btn-ghost{background:rgba(255,255,255,.05);border:1px solid var(--line);color:#cfd8ea}
+.btn-block{width:100%;padding:16px;font-size:16px;border-radius:16px}
+.btn-sm{padding:8px 12px;font-size:13px;border-radius:11px}
+.btn-sm .ic{width:16px;height:16px}
+.ibtn{width:38px;height:38px;flex:none;display:inline-flex;align-items:center;justify-content:center;border-radius:12px;background:#1b2440;border:1px solid var(--line2);color:#c6d0e2;padding:0;margin:2px}
+.ibtn .ic{width:18px;height:18px}
+.ibtn.danger{color:#ff8f8f;background:rgba(239,68,68,.12);border-color:rgba(239,68,68,.4)}
+.ibtn.go{color:#7dffa9;background:rgba(34,197,94,.14);border-color:rgba(34,197,94,.45)}
+/* compat with old class names */
+button.green{composes:btn-green}
+.green{background:linear-gradient(135deg,var(--green-d),var(--green));border:0;color:#fff;box-shadow:0 10px 26px rgba(34,197,94,.35);display:inline-flex;align-items:center;justify-content:center;gap:8px;border-radius:14px;padding:12px 18px;font-size:15px;font-weight:800;font-family:inherit;cursor:pointer}
+.red{background:linear-gradient(135deg,#b91c1c,var(--red));border:0;color:#fff;box-shadow:0 8px 22px rgba(239,68,68,.32);border-radius:14px;padding:12px 18px;font-size:15px;font-weight:800;font-family:inherit;cursor:pointer}
+.gray{background:#1a2233;border:1px solid #2c3a57;color:#c6d0e2;border-radius:14px;padding:12px 18px;font-size:15px;font-weight:800;font-family:inherit;cursor:pointer}
+.orange{background:linear-gradient(135deg,#ea580c,var(--gold));border:0;color:#241100;border-radius:14px;padding:12px 18px;font-size:15px;font-weight:800;font-family:inherit;cursor:pointer}
+.big{width:100%;padding:16px;font-size:16px;border-radius:16px;background:linear-gradient(135deg,var(--b1),var(--b2));border:0;color:#fff;font-weight:800;box-shadow:0 10px 26px rgba(255,80,50,.42);display:inline-flex;align-items:center;justify-content:center;gap:8px;font-family:inherit;cursor:pointer}
+/* ===== forms ===== */
+input,select{padding:11px 8px;font-size:16px;font-weight:700;border-radius:12px;border:1px solid #31405e;background:#0b1120;color:#fff;text-align:center;font-family:inherit;outline:none;transition:border-color .15s,box-shadow .15s}
 input:focus,select:focus{border-color:var(--b1);box-shadow:0 0 0 3px rgba(255,122,24,.25)}
 input.w{width:84px} input.r{width:84px} input.full{width:100%;text-align:right;margin:6px 0}
+select.full{width:100%;text-align:right;margin:6px 0;background:#0b1120}
 .row{display:flex;align-items:center;gap:6px;margin:7px 0;flex-wrap:wrap}
-.title{font-size:19px;font-weight:800;margin-bottom:6px}
+.title{font-size:18px;font-weight:800;margin-bottom:4px}
 .muted{color:var(--muted);font-size:13px;line-height:1.8}
-.done-set{background:rgba(34,197,94,.14) !important;border:1px solid var(--green) !important;box-shadow:0 0 0 1px rgba(34,197,94,.4) inset}
-.setbox{background:#0d1424;border:1px solid var(--line);border-radius:16px;padding:10px;margin:9px 0}
-nav{position:fixed;bottom:12px;right:12px;left:12px;background:rgba(15,20,32,.96);backdrop-filter:blur(12px);border:1px solid var(--line);border-radius:22px;display:flex;max-width:596px;margin:auto;z-index:10;box-shadow:0 14px 40px rgba(0,0,0,.55);overflow:hidden}
-nav button{flex:1;background:transparent;border:0;color:#8b96ad;border-radius:16px;padding:10px 2px;font-size:11px;margin:4px}
-nav button .ni{display:block;font-size:22px;line-height:1.25}
-nav button .nl{font-weight:800}
-nav button.active{background:linear-gradient(135deg,rgba(255,122,24,.25),rgba(255,45,85,.25));color:#fff;box-shadow:inset 0 0 0 1px rgba(255,122,24,.4)}
-.badge{background:rgba(255,255,255,.07);border:1px solid var(--line);border-radius:999px;padding:5px 13px;font-size:12px;font-weight:700;color:#cfd8ea}
-.timer{position:sticky;top:62px;background:linear-gradient(135deg,#4c1d95,#7c3aed);border:1px solid #8b5cf6;border-radius:18px;padding:12px;text-align:center;font-size:20px;font-weight:800;margin-bottom:12px;z-index:5;box-shadow:0 8px 26px rgba(124,58,237,.45)}
-.progress{height:10px;background:#0b111e;border:1px solid var(--line);border-radius:999px;overflow:hidden;margin:10px 0}
-.progress>div{height:100%;background:linear-gradient(90deg,var(--green2),#4ade80);transition:width .3s}
-details{background:#0d1424;border:1px solid var(--line);border-radius:14px;padding:10px;margin:8px 0}
-summary{cursor:pointer;font-weight:800;color:#ffd9a8}
-.exname{font-size:16px;font-weight:800;flex:1}
-.kbd{background:#000;border:1px solid #444;border-radius:6px;padding:2px 8px}
+.badge{display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,.06);border:1px solid var(--line);border-radius:999px;padding:6px 13px;font-size:12px;font-weight:800;color:#d5ddee}
+.badge .ic{width:15px;height:15px;color:var(--b1)}
+.badge.hot{border-color:rgba(255,122,24,.5);color:#ffd9ad}
+/* ===== list items ===== */
+.item{display:flex;align-items:center;gap:8px;background:#0d1424;border:1px solid var(--line);border-radius:16px;padding:10px;margin:9px 0}
+.item .grow{flex:1;min-width:0}
+.item .nm{font-weight:800;font-size:15.5px}
+.item .meta{font-size:12px;color:var(--muted);font-weight:600}
+.item.mainbtn{cursor:pointer;border-color:#33436b;background:linear-gradient(180deg,#17223a,#10182b)}
+.item.mainbtn:hover{border-color:var(--b1)}
+.thumb{width:46px;height:46px;flex:none;border-radius:14px;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#233052,#10182b);border:1px solid var(--line2)}
+.thumb svg{width:24px;height:24px;color:var(--b1)}
+.thumb.g svg{color:var(--green)} .thumb.r svg{color:var(--red)} .thumb.b svg{color:var(--blue)}
+/* ===== sets ===== */
+.setbox{background:#0b1120;border:1px solid var(--line);border-radius:16px;padding:10px;margin:9px 0}
+.setbox .shead{display:flex;align-items:center;gap:8px;margin-bottom:6px}
+.snum{min-width:30px;height:30px;border-radius:10px;background:linear-gradient(135deg,#2b3a5e,#16203a);border:1px solid var(--line2);display:inline-flex;align-items:center;justify-content:center;font-weight:900;font-size:14px}
+.done-set{background:rgba(34,197,94,.1) !important;border-color:rgba(34,197,94,.55) !important;box-shadow:0 0 0 1px rgba(34,197,94,.35) inset}
+.checkbtn{flex:1;display:inline-flex;align-items:center;justify-content:center;gap:8px;border-radius:13px;padding:11px;font-weight:800;font-size:14px;border:1px solid var(--line2);background:#1a2233;color:#aeb9cf;font-family:inherit;cursor:pointer}
+.checkbtn.on{background:linear-gradient(135deg,var(--green-d),var(--green));border:0;color:#fff;box-shadow:0 6px 18px rgba(34,197,94,.4)}
+.mini{font-size:12px;font-weight:800;color:var(--muted);background:transparent;border:1px dashed #33436b;border-radius:10px;padding:7px 10px;font-family:inherit;cursor:pointer}
+/* ===== timer / progress ===== */
+.timer{position:sticky;top:66px;z-index:5;background:linear-gradient(135deg,#4c1d95,#7c3aed);border:1px solid #8b5cf6;border-radius:18px;padding:12px;text-align:center;font-size:19px;font-weight:800;margin-bottom:12px;box-shadow:0 10px 28px rgba(124,58,237,.45)}
+.progress{height:10px;background:#0a0f1c;border:1px solid var(--line);border-radius:999px;overflow:hidden;margin:10px 0}
+.progress>div{height:100%;background:linear-gradient(90deg,var(--green-d),#4ade80);transition:width .3s}
+.rest-row{display:flex;gap:6px}
+/* ===== nav ===== */
+nav{position:fixed;bottom:12px;right:12px;left:12px;background:rgba(14,19,31,.96);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border:1px solid var(--line2);border-radius:24px;display:flex;max-width:616px;margin:auto;z-index:20;box-shadow:0 16px 44px rgba(0,0,0,.6);overflow:hidden;padding:5px}
+nav button{flex:1;background:transparent;border:0;color:#7d89a1;border-radius:18px;padding:9px 2px 7px;margin:2px;font-family:inherit;cursor:pointer}
+nav button .ni{display:flex;justify-content:center}
+nav button .ni svg{width:23px;height:23px}
+nav button .nl{display:block;font-size:10.5px;font-weight:800;margin-top:2px}
+nav button.active{background:linear-gradient(135deg,rgba(255,122,24,.28),rgba(255,45,85,.28));color:#fff;box-shadow:inset 0 0 0 1px rgba(255,122,24,.45)}
+/* ===== misc ===== */
 canvas.chart{width:100%;height:220px;background:#080c15;border:1px solid var(--line);border-radius:16px;margin-top:8px}
-select.full{width:100%;text-align:right;margin:6px 0}
+details{background:#0b1120;border:1px solid var(--line);border-radius:14px;padding:10px;margin:8px 0}
+summary{cursor:pointer;font-weight:800;color:#ffd9a8;font-size:14px}
+.exname{font-size:16px;font-weight:800;flex:1}
+.section-head{display:flex;align-items:center;justify-content:space-between;margin:14px 2px 8px}
+.section-head h2{margin:0;font-size:17px;font-weight:900}
+.logline{font-size:13.5px;margin:5px 0;line-height:1.9;color:#dbe2ef}
+.logline b{color:#fff}
+.empty{text-align:center;padding:26px 12px;color:var(--muted)}
+.empty svg{width:64px;height:64px;color:#3b4a6e;margin-bottom:8px}
+.ic{width:20px;height:20px;flex:none}
+.danger-zone{border-color:rgba(239,68,68,.45) !important}
+.danger-zone h3{color:#ff9c9c}
+.kv{display:flex;justify-content:space-between;font-size:13px;color:var(--muted);padding:3px 0}
+.kv b{color:var(--text)}
 </style>
 </head>
 <body>
 <header>
-  <span class="logo"><span class="tile">💪</span> تماريني</span>
-  <span class="badge" id="statBadge">0 نظام</span>
+  <div class="hwrap">
+    <span class="brand"><span class="tile" id="logoTile"></span><span><b>تماريني</b><small>سجّل • تتبّع • تطوّر</small></small></span></span>
+    <span class="badge" id="statBadge">…</span>
+  </div>
 </header>
 <main id="app"></main>
 <nav>
-  <button id="nav-home" onclick="go('home')"><span class="ni">🏠</span><span class="nl">الرئيسية</span></button>
-  <button id="nav-workout" onclick="go('today')"><span class="ni">🏋️</span><span class="nl">تمرين اليوم</span></button>
-  <button id="nav-history" onclick="go('history')"><span class="ni">📊</span><span class="nl">السجل</span></button>
-  <button id="nav-backup" onclick="go('backup')"><span class="ni">⚙️</span><span class="nl">الإعدادات</span></button>
+  <button id="nav-home" onclick="go('home')"></button>
+  <button id="nav-workout" onclick="go('today')"></button>
+  <button id="nav-backup" onclick="go('backup')"></button>
+  <button id="nav-history" onclick="go('history')"></button>
 </nav>
 
 <script>
-// ===== قاعدة البيانات =====
+/* ================= أيقونات SVG ================= */
+const ICONS = {
+home:'<path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V21h5v-6h4v6h5V9.5"/>',
+gym:'<path d="M6.5 6.5v11M17.5 6.5v11M3.5 9.5v5M20.5 9.5v5M6.5 12h11"/>',
+chart:'<path d="M4 20h16"/><path d="M7 20v-6M12 20V6M17 20v-9"/>',
+gear:'<circle cx="12" cy="12" r="3.2"/><path d="M12 2.8v3M12 18.2v3M2.8 12h3M18.2 12h3M5.5 5.5l2.1 2.1M16.4 16.4l2.1 2.1M18.5 5.5l-2.1 2.1M7.6 16.4l-2.1 2.1"/>',
+play:'<path d="M8 5v14l11-7z" fill="currentColor" stroke="none"/>',
+plus:'<path d="M12 5v14M5 12h14"/>',
+trash:'<path d="M4 7h16M9 7V5h6v2M6.5 7l1 13h9l1-13"/><path d="M10 11v6M14 11v6"/>',
+pen:'<path d="M4 20l1-4L16.6 4.4a2.1 2.1 0 0 1 3 3L8 19l-4 1z"/><path d="M14.5 6.5l3 3"/>',
+check:'<path d="M4.5 12.5l5 5L19.5 7"/>',
+clock:'<circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/>',
+bolt:'<path d="M13 2 4.5 13.5H11L10 22l8.5-11.5H12L13 2z"/>',
+trophy:'<path d="M8 4h8v5a4 4 0 0 1-8 0V4z"/><path d="M8 5H4.5v1.5A4.5 4.5 0 0 0 9 11M16 5h3.5v1.5A4.5 4.5 0 0 1 15 11M12 13v3M8.5 20.5h7M9.5 16.5h5"/>',
+up:'<path d="M12 19V5M5.5 11.5 12 5l6.5 6.5"/>',
+down:'<path d="M12 5v14M5.5 12.5 12 19l6.5-6.5"/>',
+x:'<path d="M6 6l12 12M18 6 6 18"/>',
+dl:'<path d="M12 4v11M7 11l5 5 5-5M4.5 20h15"/>',
+ul:'<path d="M12 15V4M7 8.5 12 3.5l5 5M4.5 20h15"/>',
+share:'<circle cx="6.5" cy="12" r="2.5"/><circle cx="17.5" cy="5.5" r="2.5"/><circle cx="17.5" cy="18.5" r="2.5"/><path d="M8.8 10.8l6.4-4M8.8 13.2l6.4 4"/>',
+cal:'<rect x="4" y="5.5" width="16" height="15" rx="2.5"/><path d="M4 10h16M8.5 3.5v4M15.5 3.5v4"/>',
+fire:'<path d="M12 22c4.2 0 7-2.9 7-6.8 0-2.8-1.8-5.2-3.3-6.7-.4 1.2-1 2.3-2.2 3.1.2-2.4-.7-5-2.5-6.6C8.6 7.3 5 11 5 15.2 5 19.1 7.8 22 12 22z"/>',
+back:'<path d="M19 12H5M11 6l-6 6 6 6"/>',
+box:'<path d="M4 8l8-4 8 4v8l-8 4-8-4V8z"/><path d="M4 8l8 4 8-4M12 12v8"/>',
+redo:'<path d="M3.5 8a8.5 8.5 0 1 1-1 6"/><path d="M3.5 3.5V8H8"/>'
+};
+const icon = (n, cls) => `<svg class="${cls||'ic'}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${ICONS[n]||''}</svg>`;
+document.getElementById('logoTile').innerHTML = icon('gym');
+const NAV = { home:['home','الرئيسية'], today:['gym','تمرين اليوم'], history:['chart','السجل'], backup:['gear','الإعدادات'] };
+Object.keys(NAV).forEach(k => { document.getElementById('nav-'+k).innerHTML = `<span class="ni">${icon(NAV[k][0])}</span><span class="nl">${NAV[k][1]}</span>`; });
+
+/* ================= البيانات ================= */
 let db = null;
 try { db = JSON.parse(localStorage.getItem('gymdb_v2') || localStorage.getItem('gymdb') || '{"programs":[],"logs":[]}'); }
 catch(e){ db = {programs:[], logs:[]}; }
 if(!db.programs) db.programs = [];
 if(!db.logs) db.logs = [];
-// ترحيل للنسخة الجديدة
 if(!localStorage.getItem('gymdb_v2')){ localStorage.setItem('gymdb_v2', JSON.stringify(db)); }
 
 let view = {name:'home'};
@@ -80,7 +202,12 @@ let restSec = 0, restInt = null;
 const save = () => { localStorage.setItem('gymdb_v2', JSON.stringify(db)); updateBadge(); };
 const uid = () => Date.now().toString(36) + Math.random().toString(36).slice(2,6);
 const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-function updateBadge(){ document.getElementById('statBadge').textContent = db.programs.length + ' نظام • ' + db.logs.length + ' تمرينة'; }
+const num = v => { const n = parseFloat(v); return isNaN(n) ? 0 : n; };
+function updateBadge(){
+  const w = weekCount();
+  document.getElementById('statBadge').innerHTML = w > 0 ? `${icon('bolt')} ${w} هذا الأسبوع` : `${icon('gym')} ابدأ التمرين`;
+  document.getElementById('statBadge').classList.toggle('hot', w > 0);
+}
 function go(name, extra={}){ view = {...view, name, ...extra}; stopRest(); render(); window.scrollTo(0,0); }
 const prog = () => db.programs.find(p => p.id === view.pid);
 const day = () => { const p = prog(); return p ? p.days.find(d => d.id === view.did) : null; };
@@ -92,12 +219,32 @@ function lastLog(exName){
   }
   return null;
 }
+function exerciseHistory(exName){
+  const out=[];
+  db.logs.forEach(l=>{
+    const e=l.exercises.find(x=>x.name===exName);
+    if(e){ let best=0; e.sets.forEach(s=>{ const w=num(s.w); if(w>best) best=w; }); out.push({date:l.date, best, sets:e.sets}); }
+  });
+  return out;
+}
 function allExerciseNames(){
   const s=new Set();
   db.programs.forEach(p=>p.days.forEach(d=>d.exercises.forEach(e=>s.add(e.name))));
   db.logs.forEach(l=>l.exercises.forEach(e=>s.add(e.name)));
   return [...s];
 }
+function weekCount(){
+  const week = Date.now() - 7*24*3600*1000;
+  return db.logs.filter(l => l.ts && l.ts >= week).length;
+}
+function totalVolume(){
+  let v = 0;
+  db.logs.forEach(l => l.exercises.forEach(e => e.sets.forEach(s => { v += num(s.w) * (parseInt(s.r)||0); })));
+  return Math.round(v);
+}
+function fmtVol(v){ return v >= 1000 ? (Math.round(v/100)/10) + ' طن' : v + ' كجم'; }
+
+/* ================= الرسم البياني ================= */
 function drawProgressChart(canvasId, exName){
   const c=document.getElementById(canvasId); if(!c) return;
   const h=exerciseHistory(exName); if(!h.length) return;
@@ -108,52 +255,38 @@ function drawProgressChart(canvasId, exName){
   x.clearRect(0,0,W,H);
   const vals=h.slice(-12).map(o=>o.best);
   const max=Math.max(...vals,10), min=Math.min(...vals,0);
-  const pad={t:16,r:12,b:28,l:38};
+  const pad={t:16,r:12,b:28,l:40};
   const iw=W-pad.l-pad.r, ih=H-pad.t-pad.b;
-  x.strokeStyle='#333'; x.fillStyle='#999'; x.font='11px Tahoma'; x.lineWidth=1;
+  x.strokeStyle='rgba(255,255,255,.08)'; x.fillStyle='#9aa6bd'; x.font='11px Cairo,Tahoma'; x.lineWidth=1;
   for(let g=0;g<=4;g++){ const v=min+(max-min)*g/4; const y=pad.t+ih-(ih*g/4);
     x.beginPath(); x.moveTo(pad.l,y); x.lineTo(W-pad.r,y); x.stroke();
-    x.fillText((Math.round(v*10)/10)+' كجم',2,y+4); }
+    x.fillText((Math.round(v*10)/10)+' ك',2,y+4); }
   const px=i=> vals.length===1 ? pad.l+iw/2 : pad.l+iw*i/(vals.length-1);
   const py=v=> pad.t+ih-((v-min)/((max-min)||1)*ih);
-  // area
+  const grd=x.createLinearGradient(0,pad.t,0,pad.t+ih); grd.addColorStop(0,'rgba(255,122,24,.35)'); grd.addColorStop(1,'rgba(255,122,24,0)');
   x.beginPath(); vals.forEach((v,i)=>{ const X=px(i),Y=py(v); i?x.lineTo(X,Y):x.moveTo(X,Y); });
-  x.strokeStyle='#1e88e5'; x.lineWidth=3; x.stroke();
-  x.lineTo(px(vals.length-1),pad.t+ih); x.lineTo(px(0),pad.t+ih); x.closePath();
-  x.fillStyle='rgba(30,136,229,.18)'; x.fill();
-  // dots + labels
+  x.strokeStyle='#ff7a18'; x.lineWidth=3; x.lineJoin='round'; x.stroke();
+  x.lineTo(px(vals.length-1),pad.t+ih); x.lineTo(px(0),pad.t+ih); x.closePath(); x.fillStyle=grd; x.fill();
   vals.forEach((v,i)=>{ const X=px(i),Y=py(v);
-    x.beginPath(); x.arc(X,Y,5,0,7); x.fillStyle='#2e7d32'; x.fill();
-    x.fillStyle='#fff'; x.fillText(v,X-10,Y-10); });
-  const n=h.slice(-12);
-  x.fillStyle='#777'; n.forEach((o,i)=>{ if(i%2===0) x.fillText(String(i+1),px(i)-3,H-8); });
+    x.beginPath(); x.arc(X,Y,5,0,7); x.fillStyle='#22c55e'; x.fill();
+    x.beginPath(); x.arc(X,Y,2.2,0,7); x.fillStyle='#fff'; x.fill();
+    x.fillStyle='#fff'; x.fillText(v,X-10,Y-11); });
 }
 function refreshChart(){
   const sel=document.getElementById('chartEx'); if(!sel) return;
   const h=exerciseHistory(sel.value);
   const info=document.getElementById('chartInfo');
-  if(!h.length){ if(info) info.innerHTML='<p class="muted">لسه ملعبتش التمرين ده ولا مرة.</p>'; const c=document.getElementById('pchart'); if(c) c.getContext('2d').clearRect(0,0,c.width,c.height); return; }
+  if(!h.length){ if(info) info.innerHTML='لسه ملعبتش التمرين ده ولا مرة.'; return; }
   const best=Math.max(...h.map(o=>o.best));
   const first=h[0].best, last=h[h.length-1].best;
   const diff=Math.round((last-first)*10)/10;
-  if(info) info.innerHTML=`لعبت <b>${h.length}</b> مرة • أول وزن: <b>${first} كجم</b> • آخر وزن: <b>${last} كجم</b> • أحسن وزن: <b>${best} كجم</b> • الفرق: <b style="color:${diff>=0?'#66bb6a':'#ef5350'}">${diff>=0?'+':''}${diff} كجم</b>`;
+  if(info) info.innerHTML=`لعبت <b>${h.length}</b> مرة • من <b>${first}</b> لـ <b>${last} كجم</b> • الأحسن <b>${best} كجم</b> • <b style="color:${diff>=0?'#4ade80':'#ff8f8f'}">${diff>=0?'▲ +':''}${diff} كجم</b>`;
   drawProgressChart('pchart', sel.value);
 }
-function exerciseHistory(exName){
-  const out=[];
-  db.logs.forEach(l=>{
-    const e=l.exercises.find(x=>x.name===exName);
-    if(e){
-      let best=0; e.sets.forEach(s=>{ const w=parseFloat(s.w)||0; if(w>best) best=w; });
-      out.push({date:l.date, best, sets:e.sets});
-    }
-  });
-  return out;
-}
 
-// ===== الأنظمة =====
+/* ================= الأنظمة ================= */
 function addProg(){
-  const n = prompt('اسم النظام (مثال: نظام تضخيم - مستوى متقدم):');
+  const n = prompt('اسم النظام (مثال: نظام تضخيم):');
   if(!n) return;
   db.programs.push({id:uid(), name:n.trim(), days:[]});
   save(); render();
@@ -166,18 +299,16 @@ function dupProg(id){
   c.days.forEach(d=>{ d.id=uid(); });
   db.programs.push(c); save(); render();
 }
-
-// ===== الأيام =====
+/* ================= الأيام ================= */
 function addDay(){
-  const n=prompt('اسم اليوم (مثال: صدر + تراي / Pull / رجل):');
+  const n=prompt('اسم اليوم (مثال: صدر + تراي):');
   if(!n) return;
   prog().days.push({id:uid(), name:n.trim(), exercises:[]});
   save(); render();
 }
 function renameDay(id){ const d=prog().days.find(x=>x.id===id); const n=prompt('الاسم الجديد:',d.name); if(n){d.name=n.trim();save();render();} }
 function delDay(id){ if(confirm('حذف اليوم ده بكل تمارينه؟')){ prog().days=prog().days.filter(d=>d.id!==id); save(); render(); } }
-
-// ===== التمارين =====
+/* ================= التمارين ================= */
 function addEx(){
   const n=prompt('اسم التمرين (مثال: بنش مستوي بار):');
   if(!n) return;
@@ -191,16 +322,12 @@ function addSet(i){ const s=day().exercises[i].sets; const last=s[s.length-1]||{
 function delSet(i,j){ if(day().exercises[i].sets.length<=1) return alert('لازم يفضل دور واحد على الأقل'); day().exercises[i].sets.splice(j,1); save(); render(); }
 function setT(i,j,k,v){ day().exercises[i].sets[j][k]=v; save(); }
 function fillDown(i,j,k){
-  // انسخ قيمة الدور ده لكل الأدوار اللي بعده
   const sets=day().exercises[i].sets; const v=sets[j][k];
   for(let x=j+1;x<sets.length;x++) sets[x][k]=v;
   save(); render();
 }
-
-// ===== شاشة تمرين اليوم (اختيار سريع) =====
+/* ================= جلسة التمرين ================= */
 function quickStart(pid,did){ view.pid=pid; view.did=did; startWorkout(); }
-
-// ===== جلسة التمرين =====
 function startWorkout(){
   const d=day();
   if(!d) return alert('اختار يوم الأول');
@@ -215,11 +342,11 @@ function addSSet(i){ const s=session.exercises[i].sets; const l=s[s.length-1]||{
 function delSSet(i,j){ session.exercises[i].sets.splice(j,1); render(); }
 function cancelWorkout(){ if(confirm('إلغاء التمرين بدون حفظ؟')){ session=null; stopRest(); go('day',{pid:view.pid,did:view.did}); } }
 function finishWorkout(){
-  const log={id:uid(), date:new Date().toLocaleString('ar-EG'), pname:session.pname, dname:session.dname,
+  const log={id:uid(), ts:Date.now(), date:new Date().toLocaleString('ar-EG'), pname:session.pname, dname:session.dname, pid:session.pid, did:session.did,
     exercises:session.exercises.map(e=>({name:e.name, sets:e.sets.filter(s=>s.w!==''||s.r!=='').map(s=>({w:s.w,r:s.r}))}))};
   if(!log.exercises.length || log.exercises.every(e=>!e.sets.length)) return alert('سجّل وزن وعدات الأول');
   db.logs.push(log);
-  const upd = confirm('تم حفظ التمرين ✅\n\nتحب تحدّث الجدول الأساسي بأرقام النهارده؟\n(يعني لو شلت وزن 30 وزوّدت 45، الجدول يتعدل تلقائي)');
+  const upd = confirm('تم حفظ التمرين\n\nتحب تحدّث الجدول الأساسي بأرقام النهارده؟');
   if(upd){
     const p=db.programs.find(x=>x.id===session.pid);
     if(p){ const d=p.days.find(x=>x.id===session.did);
@@ -228,20 +355,17 @@ function finishWorkout(){
   save(); session=null; stopRest();
   go('history');
 }
-function doneCount(){ if(!session) return 0; let t=0,d=0; session.exercises.forEach(e=>e.sets.forEach(s=>{t++; if(s.done)d++;})); return {d,t}; }
+function doneCount(){ if(!session) return {d:0,t:0}; let t=0,d=0; session.exercises.forEach(e=>e.sets.forEach(s=>{t++; if(s.done)d++;})); return {d,t}; }
 function updateProgress(){ const el=document.getElementById('pbar'); if(!el||!session) return; const {d,t}=doneCount(); el.style.width=(t?Math.round(d/t*100):0)+'%'; const tx=document.getElementById('ptxt'); if(tx) tx.textContent=d+' / '+t+' دور'; }
-
-// تايمر الراحة
+/* ================= تايمر الراحة ================= */
 function startRest(sec){ restSec=sec; clearInterval(restInt); tickRest(); restInt=setInterval(()=>{ restSec--; if(restSec<=0){clearInterval(restInt); try{navigator.vibrate&&navigator.vibrate(300);}catch(e){} } tickRest(); },1000); }
-function tickRest(){ const el=document.getElementById('restTimer'); if(!el) return; if(restSec<=0){el.style.display='none';return;} el.style.display='block'; const m=Math.floor(restSec/60), s=restSec%60; el.textContent='⏱ راحة: '+m+':'+String(s).padStart(2,'0')+' — دوس ✔ لما تخلص الدور'; }
+function tickRest(){ const el=document.getElementById('restTimer'); if(!el) return; if(restSec<=0){el.style.display='none';return;} el.style.display='flex'; const m=Math.floor(restSec/60), s=restSec%60; el.innerHTML=`${icon('clock')} راحة ${m}:${String(s).padStart(2,'0')}`; }
 function stopRest(){ clearInterval(restInt); restSec=0; }
-function customRest(){ const v=prompt('مدة الراحة بالثواني (مثال: 90):','90'); if(v&&+v>0) startRest(+v); }
-
-// ===== السجل =====
+function customRest(){ const v=prompt('مدةة الراحة بالثواني (مثال: 90):','90'); if(v&&+v>0) startRest(+v); }
+/* ================= السجل ================= */
 function delLog(id){ if(confirm('حذف التمرينة دي من السجل؟')){ db.logs=db.logs.filter(l=>l.id!==id); save(); render(); } }
 function clearAll(){ if(confirm('تحذير: هيمسح كل الأنظمة والسجل! اعمل تصدير الأول. متأكد؟') && confirm('تأكيد أخير: امسح كل حاجة؟')){ db={programs:[],logs:[]}; session=null; save(); go('home'); } }
-
-// ===== نسخ احتياطي =====
+/* ================= نسخ احتياطي ومشاركة ================= */
 function exportData(){
   const blob=new Blob([JSON.stringify(db,null,2)],{type:'application/json'});
   const a=document.createElement('a'); a.href=URL.createObjectURL(blob);
@@ -251,19 +375,18 @@ function exportData(){
 function importData(){
   const inp=document.createElement('input'); inp.type='file'; inp.accept='.json,application/json';
   inp.onchange=()=>{ const f=inp.files[0]; if(!f) return; const r=new FileReader();
-    r.onload=()=>{ try{ const d=JSON.parse(r.result); if(!d.programs||!d.logs) throw 0; db=d; save(); go('home'); alert('تم الاستيراد ✅'); }catch(e){ alert('الملف غير صالح ❌'); } };
+    r.onload=()=>{ try{ const d=JSON.parse(r.result); if(!d.programs||!d.logs) throw 0; db=d; save(); go('home'); alert('تم الاستيراد بنجاح'); }catch(e){ alert('الملف غير صالح'); } };
     r.readAsText(f); };
   inp.click();
 }
 function shareWhatsApp(){
   if(!db.logs.length) return alert('العب تمرينة الأول عشان تشاركها');
   const l=db.logs[db.logs.length-1];
-  let txt='🏋️ تمرينتي النهارده: '+l.pname+' - '+l.dname+'%0A';
-  l.exercises.forEach(e=>{ txt+='• '+e.name+': '+e.sets.map(s=>s.w+'كجم×'+s.r).join(' | ')+'%0A'; });
-  window.open('https://wa.me/?text='+encodeURIComponent(decodeURIComponent(txt.replaceAll('%0A','\n'))),'_blank');
+  let txt='تمرينتي النهارده: '+l.pname+' - '+l.dname+'\n';
+  l.exercises.forEach(e=>{ txt+='• '+e.name+': '+e.sets.map(s=>s.w+'كجم×'+s.r).join(' | ')+'\n'; });
+  window.open('https://wa.me/?text='+encodeURIComponent(txt),'_blank');
 }
-
-// ===== مثال جاهز =====
+/* ================= مثال جاهز ================= */
 function loadSample(){
   if(db.programs.length && !confirm('عندك أنظمة موجودة. تحب تضيف مثال جاهز جنبهم؟')) return;
   db.programs.push({id:uid(), name:'نظام تضخيم (مثال)', days:[
@@ -283,142 +406,190 @@ function loadSample(){
   save(); render();
 }
 
-// ===== العرض =====
+/* ================= العرض ================= */
+function progHead(sub){
+  return `<div class="item mainbtn" onclick="go('prog',{pid:'${prog().id}'})">
+    <span class="thumb">${icon('box')}</span>
+    <span class="grow"><span class="nm">${esc(prog().name)}</span><br><span class="meta">${sub}</span></span>
+    <span class="ibtn" style="pointer-events:none">${icon('back')}</span></div>`;
+}
 function render(){
   updateBadge();
   document.querySelectorAll('nav button').forEach(b=>b.classList.remove('active'));
   const a=document.getElementById('app');
   const v=view.name;
 
+  /* ---------- الرئيسية ---------- */
   if(v==='home'){
     document.getElementById('nav-home').classList.add('active');
+    const vol = totalVolume(), wk = weekCount();
+    const last = db.logs[db.logs.length-1];
     a.innerHTML = `
-    <div class="card"><div class="title">📋 الأنظمة التدريبية</div>
-      <p class="muted">كل نظام = جدول كامل (مثال: تضخيم / تنشيف). جواه أيام، وكل يوم تمارين وأدوار.</p>
-      ${db.programs.map(p=>`<div class="row">
-        <button class="big" style="flex:1;text-align:right" onclick="go('prog',{pid:'${p.id}'})">📦 ${esc(p.name)}<br><span class="badge">${p.days.length} يوم • ${p.days.reduce((n,d)=>n+d.exercises.length,0)} تمرين</span></button></div>
-        <div class="row"><button class="gray" onclick="renameProg('${p.id}')">✏️ تعديل الاسم</button>
-        <button class="gray" onclick="dupProg('${p.id}')">📋 نسخ</button>
-        <button class="red" onclick="delProg('${p.id}')">🗑 حذف</button></div>`).join('') || '<p class="muted">لسه مفيش أنظمة. ابدأ بنظام جديد أو جرّب المثال الجاهز 👇</p>'}
-      <div class="row"><button class="green big" onclick="addProg()">+ نظام جديد</button></div>
-      ${!db.programs.length?`<button class="orange big" onclick="loadSample()">⚡ حمّل مثال جاهز أجرّب عليه</button>`:''}
+    <div class="hero">
+      <h2>جاهز تتمرن النهارده؟</h2>
+      <p>سجّل كل دور بالوزن والعدات، وشوف تطوّرك بالأرقام والرسم البياني.</p>
+      <button class="btn btn-primary" onclick="go('today')">${icon('play')} ابدأ تمرين اليوم</button>
+      <span class="art">${icon('gym')}</span>
     </div>
-    <div class="card"><div class="title">💡 إزاي تستخدمه؟</div>
-      <p class="muted">1️⃣ اعمل نظام → ضيف أيام (صدر / ضهر / رجل)<br>2️⃣ ضيف تمارين كل يوم بالأوزان والعدات<br>3️⃣ يوم التمرين دوس <b>«ابدأ التمرين»</b> وسجّل اللي لعبته فعلاً<br>4️⃣ في الآخر حدّث الجدول عشان يتطور معاك</p>
-    </div>`;
+    <div class="stats">
+      <div class="stat"><div class="v">${db.programs.length}</div><div class="k">نظام تدريبي</div></div>
+      <div class="stat hl"><div class="v">${wk}</div><div class="k">تمارين هذا الأسبوع</div></div>
+      <div class="stat"><div class="v">${fmtVol(vol).split(' ')[0]} <em>${fmtVol(vol).split(' ')[1]||''}</em></div><div class="k">الحجم الكلي</div></div>
+    </div>
+    ${last ? `<div class="card"><h3>آخر تمرينة ليك</h3><p class="sub">${esc(last.pname)} — ${esc(last.dname)} • ${esc(last.date)}</p>
+      ${last.exercises.slice(0,3).map(e=>`<div class="logline">• <b>${esc(e.name)}</b>: ${e.sets.map(s=>esc(s.w)+'كجم×'+esc(s.r)).join(' | ')}</div>`).join('')}
+      <div class="row" style="margin-top:10px">${(last.pid&&last.did)?`<button class="btn btn-green btn-sm" onclick="quickStart('${last.pid}','${last.did}')">${icon('redo')} العب نفس التمرين</button>`:''}<button class="btn btn-ghost btn-sm" onclick="go('history')">${icon('chart')} السجل الكامل</button></div></div>` : ''}
+    <div class="card"><h3>الأنظمة التدريبية</h3><p class="sub">كل نظام = جدول كامل (تضخيم / تنشيف). جواه أيام، وكل يوم تمارين وأدوار.</p>
+      ${db.programs.map(p=>`
+      <div class="item mainbtn" onclick="go('prog',{pid:'${p.id}'})">
+        <span class="thumb">${icon('box')}</span>
+        <span class="grow"><span class="nm">${esc(p.name)}</span><br><span class="meta">${p.days.length} يوم • ${p.days.reduce((n,d)=>n+d.exercises.length,0)} تمرين</span></span>
+        <button class="ibtn" title="تعديل الاسم" onclick="event.stopPropagation();renameProg('${p.id}')">${icon('pen')}</button>
+        <button class="ibtn" title="نسخ" onclick="event.stopPropagation();dupProg('${p.id}')">${icon('plus')}</button>
+        <button class="ibtn danger" title="حذف" onclick="event.stopPropagation();delProg('${p.id}')">${icon('trash')}</button>
+      </div>`).join('') || `<div class="empty">${icon('gym')}<br>لسه مفيش أنظمة.<br>ابدأ بنظام جديد أو جرّب المثال الجاهز.</div>`}
+      <div class="row"><button class="btn btn-green" style="flex:1" onclick="addProg()">${icon('plus')} نظام جديد</button></div>
+      ${!db.programs.length?`<button class="btn btn-gold btn-block" onclick="loadSample()">${icon('bolt')} حمّل مثال جاهز أجرّب عليه</button>`:''}
+    </div>
+    <div class="card"><h3>إزاي تستخدمه؟</h3>
+      <p class="sub">1. اعمل نظام ← ضيف أيام (صدر / ضهر / رجل)<br>2. ضيف تمارين كل يوم بالأوزان والعدات<br>3. يوم التمرين دوس «ابدأ التمرين» وسجّل اللي لعبته فعلًا<br>4. في الآخر حدّث الجدول عشان يتطور معاك تلقائيًا</p></div>`;
   }
 
+  /* ---------- نظام ---------- */
   else if(v==='prog'){
     document.getElementById('nav-home').classList.add('active');
     const p=prog(); if(!p) return go('home');
-    a.innerHTML=`<div class="card"><div class="title">📦 ${esc(p.name)}</div>
-      ${p.days.map(d=>`<div class="row">
-        <button class="big" style="flex:1;text-align:right" onclick="go('day',{did:'${d.id}'})">${esc(d.name)}<br><span class="badge">${d.exercises.length} تمرين</span></button></div>
-        <div class="row"><button class="gray" onclick="renameDay('${d.id}')">✏️</button><button class="red" onclick="delDay('${d.id}')">🗑</button></div>`).join('') || '<p class="muted">ضيف أول يوم في النظام ده</p>'}
-      <button class="green big" onclick="addDay()">+ يوم جديد</button></div>
-      <button class="gray" onclick="go('home')">→ رجوع للأنظمة</button>`;
+    a.innerHTML=`<div class="card"><h3>${esc(p.name)}</h3><p class="sub">${p.days.length} يوم في النظام ده — اختار يوم عشان تعدّل تمارينه أو تبدأ التمرين.</p>
+      ${p.days.map(d=>`
+      <div class="item mainbtn" onclick="go('day',{did:'${d.id}'})">
+        <span class="thumb g">${icon('gym')}</span>
+        <span class="grow"><span class="nm">${esc(d.name)}</span><br><span class="meta">${d.exercises.length} تمرين</span></span>
+        <button class="ibtn" title="تعديل" onclick="event.stopPropagation();renameDay('${d.id}')">${icon('pen')}</button>
+        <button class="ibtn danger" title="حذف" onclick="event.stopPropagation();delDay('${d.id}')">${icon('trash')}</button>
+      </div>`).join('') || `<div class="empty">${icon('plus')}<br>ضيف أول يوم في النظام ده.</div>`}
+      <button class="btn btn-green btn-block" onclick="addDay()">${icon('plus')} يوم جديد</button></div>
+      <button class="btn btn-ghost" onclick="go('home')">${icon('back')} رجوع للأنظمة</button>`;
   }
 
+  /* ---------- يوم (الجدول الأساسي) ---------- */
   else if(v==='day'){
     document.getElementById('nav-home').classList.add('active');
     const d=day(); if(!d) return go('home');
     a.innerHTML=`
-      <button class="green big" onclick="startWorkout()">▶️ ابدأ التمرين — ${esc(d.name)}</button>
-      <div class="title" style="margin:10px 0">📝 الجدول الأساسي (عدّل براحتك)</div>
+      <button class="btn btn-primary btn-block" onclick="startWorkout()">${icon('play')} ابدأ التمرين — ${esc(d.name)}</button>
+      <div class="section-head"><h2>الجدول الأساسي</h2><span class="badge">${d.exercises.length} تمرين</span></div>
       ${d.exercises.map((e,i)=>`<div class="card">
-        <div class="row"><span class="exname">${esc(e.name)}</span>
-          <button class="gray" onclick="moveEx(${i},-1)">⬆</button><button class="gray" onclick="moveEx(${i},1)">⬇</button>
-          <button class="gray" onclick="renameEx(${i})">✏️</button><button class="red" onclick="delEx(${i})">🗑</button></div>
-        ${e.sets.map((s,j)=>`<div class="setbox"><div class="row"><span>دور ${j+1}</span>
-          <input class="w" type="number" inputmode="decimal" placeholder="كجم" value="${esc(s.w)}" onchange="setT(${i},${j},'w',this.value)"> <span>كجم</span>
-          <input class="r" type="number" inputmode="numeric" placeholder="عدات" value="${esc(s.r)}" onchange="setT(${i},${j},'r',this.value)"> <span>عدة</span>
-          <button class="red" onclick="delSet(${i},${j})">✕</button></div>
-          <div class="row"><button class="gray" style="font-size:12px;padding:6px 10px" onclick="fillDown(${i},${j},'w')">انسخ الوزن لتحت ⬇</button>
-          <button class="gray" style="font-size:12px;padding:6px 10px" onclick="fillDown(${i},${j},'r')">انسخ العدات لتحت ⬇</button></div>
+        <div class="row"><span class="thumb g" style="width:40px;height:40px">${icon('gym')}</span><span class="exname">${esc(e.name)}</span>
+          <button class="ibtn" title="لفوق" onclick="moveEx(${i},-1)">${icon('up')}</button><button class="ibtn" title="لتحت" onclick="moveEx(${i},1)">${icon('down')}</button>
+          <button class="ibtn" title="تعديل الاسم" onclick="renameEx(${i})">${icon('pen')}</button><button class="ibtn danger" title="حذف" onclick="delEx(${i})">${icon('trash')}</button></div>
+        ${e.sets.map((s,j)=>`<div class="setbox"><div class="row"><span class="snum">${j+1}</span>
+          <input class="w" type="number" inputmode="decimal" placeholder="كجم" value="${esc(s.w)}" onchange="setT(${i},${j},'w',this.value)"> <span class="muted">كجم</span>
+          <input class="r" type="number" inputmode="numeric" placeholder="عدات" value="${esc(s.r)}" onchange="setT(${i},${j},'r',this.value)"> <span class="muted">عدة</span>
+          <button class="ibtn danger" onclick="delSet(${i},${j})">${icon('x')}</button></div>
+          <div class="row"><button class="mini" onclick="fillDown(${i},${j},'w')">انسخ الوزن لتحت</button>
+          <button class="mini" onclick="fillDown(${i},${j},'r')">انسخ العدات لتحت</button></div>
         </div>`).join('')}
-        <button onclick="addSet(${i})">+ زوّد دور</button>
-        ${(()=>{const l=lastLog(e.name); return l?`<p class="muted">آخر مرة (${l.date}): ${l.sets.map(s=>esc(s.w)+'كجم×'+esc(s.r)).join(' | ')}</p>`:'';})()}
-      </div>`).join('') || '<div class="card"><p class="muted">مفيش تمارين لسه. ضيف أول تمرين 👇</p></div>'}
-      <button class="green big" onclick="addEx()">+ تمرين جديد</button>
-      <button class="gray" onclick="go('prog')">→ رجوع</button>`;
+        <button class="btn btn-ghost btn-sm" onclick="addSet(${i})">${icon('plus')} زوّد دور</button>
+        ${(()=>{const l=lastLog(e.name); return l?`<div class="kv" style="margin-top:6px"><span>آخر مرة (${esc(l.date)})</span><b>${l.sets.map(s=>esc(s.w)+'×'+esc(s.r)).join(' | ')}</b></div>`:'';})()}
+      </div>`).join('') || '<div class="card"><div class="empty">'+icon('gym')+'<br>مفيش تمارين لسه.<br>ضيف أول تمرين.</div></div>'}
+      <button class="btn btn-green btn-block" onclick="addEx()">${icon('plus')} تمرين جديد</button>
+      <button class="btn btn-ghost" onclick="go('prog')">${icon('back')} رجوع</button>`;
   }
 
+  /* ---------- تمرين اليوم ---------- */
   else if(v==='today'){
     document.getElementById('nav-workout').classList.add('active');
-    if(!db.programs.length){ a.innerHTML=`<div class="card"><p class="muted">اعمل نظام تدريبي الأول</p><button class="green big" onclick="go('home')">يلا نبدأ</button></div>`; return; }
-    a.innerHTML=`<div class="title">🏋️ اختار تمرين النهارده</div>` + db.programs.map(p=>`<div class="card"><div class="title">📦 ${esc(p.name)}</div>
-      ${p.days.map(d=>`<div class="row"><button class="big" style="flex:1" onclick="quickStart('${p.id}','${d.id}')">▶️ ${esc(d.name)} <span class="badge">${d.exercises.length} تمارين</span></button></div>`).join('') || '<p class="muted">مفيش أيام</p>'}
+    if(!db.programs.length){ a.innerHTML=`<div class="card"><div class="empty">${icon('gym')}<br>اعمل نظام تدريبي الأول.</div><button class="btn btn-green btn-block" onclick="go('home')">يلا نبدأ</button></div>`; return; }
+    a.innerHTML=`<div class="section-head"><h2>اختار تمرين النهارده</h2></div>` + db.programs.map(p=>`<div class="card"><h3>${esc(p.name)}</h3>
+      ${p.days.map(d=>`
+      <div class="item mainbtn" onclick="quickStart('${p.id}','${d.id}')">
+        <span class="thumb">${icon('play')}</span>
+        <span class="grow"><span class="nm">${esc(d.name)}</span><br><span class="meta">${d.exercises.length} تمرين</span></span>
+        <span class="ibtn go" style="pointer-events:none">${icon('play')}</span>
+      </div>`).join('') || '<p class="muted">مفيش أيام</p>'}
     </div>`).join('');
   }
 
+  /* ---------- جلسة التمرين ---------- */
   else if(v==='workout'){
     document.getElementById('nav-workout').classList.add('active');
     if(!session) return go('today');
     const {d,t}=doneCount();
     a.innerHTML=`
       <div class="timer" id="restTimer" style="display:none"></div>
-      <div class="card"><div class="title">🏋️ ${esc(session.dname)}</div>
-        <p class="muted">بدأت: ${esc(session.startTime)}</p>
+      <div class="card"><h3>${esc(session.dname)}</h3>
+        <p class="sub">بدأت: ${esc(session.startTime)}</p>
         <div class="progress"><div id="pbar" style="width:${t?Math.round(d/t*100):0}%"></div></div>
-        <p class="muted" id="ptxt">${d} / ${t} دور</p>
-        <div class="row"><button class="gray" onclick="customRest()">⏱ تايمر راحة</button></div>
+        <p class="muted" id="ptxt" style="margin:0">${d} / ${t} دور</p>
+        <div class="row rest-row" style="margin-top:8px"><button class="btn btn-ghost btn-sm" onclick="startRest(60)">60 ث</button><button class="btn btn-ghost btn-sm" onclick="startRest(90)">90 ث</button><button class="btn btn-ghost btn-sm" onclick="startRest(120)">120 ث</button><button class="btn btn-ghost btn-sm" onclick="customRest()">${icon('clock')} مخصص</button></div>
       </div>
       ${session.exercises.map((e,i)=>{ const l=lastLog(e.name);
-        return `<div class="card"><div class="title">${esc(e.name)}</div>
-        ${l?`<p class="muted">آخر مرة: ${l.sets.map(s=>esc(s.w)+'×'+esc(s.r)).join(' | ')}</p>`:''}
-        ${e.sets.map((s,j)=>`<div class="setbox ${s.done?'done-set':''}"><div class="row"><span>دور ${j+1}</span>
-          <input class="w" type="number" inputmode="decimal" value="${esc(s.w)}" oninput="setS(${i},${j},'w',this.value)"> <span>كجم</span>
-          <input class="r" type="number" inputmode="numeric" value="${esc(s.r)}" oninput="setS(${i},${j},'r',this.value)"> <span>عدة</span></div>
-          <div class="row"><button class="${s.done?'green':'gray'}" style="flex:1" onclick="toggleDone(${i},${j})">${s.done?'✔ اتعمل':'✔ خلّصت الدور؟'}</button>
-          <button class="red" onclick="delSSet(${i},${j})">✕</button></div></div>`).join('')}
-        <button onclick="addSSet(${i})">+ دور زيادة (مثال: رفعت وزن)</button>
-        <details><summary>📈 تطوري في التمرين ده</summary>${(()=>{const h=exerciseHistory(e.name); if(!h.length) return '<p class="muted">أول مرة تلعبه — عاش! 💪</p>'; return h.slice(-5).reverse().map(x=>`<div>• ${esc(x.date)} — أحسن وزن: <b>${esc(String(x.best))} كجم</b> (${x.sets.map(s=>esc(s.w)+'×'+esc(s.r)).join(' | ')})</div>`).join('');})()}</details>
+        return `<div class="card"><div class="row"><span class="thumb g" style="width:40px;height:40px">${icon('gym')}</span><span class="exname">${esc(e.name)}</span></div>
+        ${l?`<p class="sub">آخر مرة: ${l.sets.map(s=>esc(s.w)+'×'+esc(s.r)).join(' | ')}</p>`:''}
+        ${e.sets.map((s,j)=>`<div class="setbox ${s.done?'done-set':''}"><div class="row"><span class="snum">${j+1}</span>
+          <input class="w" type="number" inputmode="decimal" placeholder="كجم" value="${esc(s.w)}" oninput="setS(${i},${j},'w',this.value)"> <span class="muted">كجم</span>
+          <input class="r" type="number" inputmode="numeric" placeholder="عدة" value="${esc(s.r)}" oninput="setS(${i},${j},'r',this.value)"> <span class="muted">عدة</span></div>
+          <div class="row"><button class="checkbtn ${s.done?'on':''}" onclick="toggleDone(${i},${j})">${icon('check')} ${s.done?'اتعمل':'خلّصت الدور؟'}</button>
+          <button class="ibtn danger" onclick="delSSet(${i},${j})">${icon('x')}</button></div></div>`).join('')}
+        <div class="row"><button class="btn btn-ghost btn-sm" onclick="addSSet(${i})">${icon('plus')} دور زيادة</button></div>
+        <details><summary>تطوري في التمرين ده</summary>${(()=>{const h=exerciseHistory(e.name); if(!h.length) return '<p class="muted">أول مرة تلعبه — عاش!</p>'; return h.slice(-5).reverse().map(x=>`<div class="logline">• ${esc(x.date)} — أحسن وزن <b>${esc(String(x.best))} كجم</b> <span class="muted">(${x.sets.map(s=>esc(s.w)+'×'+esc(s.r)).join(' | ')})</span></div>`).join('');})()}</details>
         </div>`; }).join('')}
-      <button class="green big" onclick="finishWorkout()">✅ إنهاء وحفظ التمرين</button>
-      <button class="red big" onclick="cancelWorkout()">إلغاء بدون حفظ</button>`;
+      <button class="btn btn-green btn-block" onclick="finishWorkout()">${icon('check')} إنهاء وحفظ التمرين</button>
+      <button class="btn btn-red btn-block" onclick="cancelWorkout()">إلغاء بدون حفظ</button>`;
     tickRest();
   }
 
+  /* ---------- السجل ---------- */
   else if(v==='history'){
     document.getElementById('nav-history').classList.add('active');
     const names=allExerciseNames();
     const def=view.chartEx && names.includes(view.chartEx) ? view.chartEx : (names[0]||'');
     view.chartEx=def;
-    a.innerHTML=`<div class="title">📊 سجل التمارين (${db.logs.length})</div>
-      <div class="card"><div class="title">📈 تطور الأوزان</div>
-      ${names.length?`<select class="full" id="chartEx" onchange="view.chartEx=this.value;refreshChart()">${names.map(n=>`<option value="${esc(n)}" ${n===def?'selected':''}>${esc(n)}</option>`).join('')}</select>
-      <div class="muted" id="chartInfo"></div><canvas class="chart" id="pchart"></canvas>`:'<p class="muted">ضيف تمارين الأول وهيظهر تطورك هنا.</p>'}
+    a.innerHTML=`<div class="section-head"><h2>السجل والتطور</h2><span class="badge">${db.logs.length} تمرينة</span></div>
+      <div class="stats">
+        <div class="stat"><div class="v">${db.logs.length}</div><div class="k">تمرينة</div></div>
+        <div class="stat hl"><div class="v">${weekCount()}</div><div class="k">آخر 7 أيام</div></div>
+        <div class="stat"><div class="v">${fmtVol(totalVolume()).split(' ')[0]} <em>${fmtVol(totalVolume()).split(' ')[1]||''}</em></div><div class="k">الحجم الكلي</div></div>
       </div>
-      ${db.logs.length?`<div class="row"><button class="gray" onclick="shareWhatsApp()">📤 شارك آخر تمرينة واتساب</button></div>`:''}
-      ${db.logs.slice().reverse().map(l=>`<div class="card">
-        <div class="row"><b style="flex:1">${esc(l.pname)} — ${esc(l.dname)}</b><button class="red" onclick="delLog('${l.id}')">🗑</button></div>
-        <p class="muted">${esc(l.date)}</p>
-        ${l.exercises.map(e=>`<div style="margin:4px 0">• <b>${esc(e.name)}</b>: ${e.sets.map(s=>esc(s.w)+'كجم×'+esc(s.r)).join(' | ')}</div>`).join('')}
-      </div>`).join('') || '<div class="card"><p class="muted">لسه مفيش تمارين متسجلة. العب أول تمرينة وهتظهر هنا 💪</p><button class="green big" onclick="go(\'today\')">🏋️ ابدأ تمرين</button></div>'}`;
+      <div class="card"><h3>تطور الأوزان</h3><p class="sub">اختار تمرين وشوف منحنى أحسن وزن عبر التمارين.</p>
+      ${names.length?`<select class="full" id="chartEx" onchange="view.chartEx=this.value;refreshChart()">${names.map(n=>`<option value="${esc(n)}" ${n===def?'selected':''}>${esc(n)}</option>`).join('')}</select>
+      <div class="muted" id="chartInfo" style="margin:4px 0"></div><canvas class="chart" id="pchart"></canvas>`:'<p class="muted">ضيف تمارين الأول وهيظهر تطورك هنا.</p>'}
+      </div>
+      ${db.logs.length?`<button class="btn btn-ghost btn-block" onclick="shareWhatsApp()">${icon('share')} شارك آخر تمرينة واتساب</button>`:''}
+      ${db.logs.slice().reverse().map(l=>{ let v=0; l.exercises.forEach(e=>e.sets.forEach(s=>{v+=num(s.w)*(parseInt(s.r)||0);})); return `<div class="card">
+        <div class="row"><span class="thumb b" style="width:40px;height:40px">${icon('cal')}</span><b style="flex:1">${esc(l.pname)} — ${esc(l.dname)}</b><button class="ibtn danger" onclick="delLog('${l.id}')">${icon('trash')}</button></div>
+        <p class="sub" style="margin:2px 0 6px">${esc(l.date)} • الحجم <b style="color:#fff">${fmtVol(v)}</b></p>
+        ${l.exercises.map(e=>`<div class="logline">• <b>${esc(e.name)}</b>: ${e.sets.map(s=>esc(s.w)+'كجم×'+esc(s.r)).join(' | ')}</div>`).join('')}
+      </div>`; }).join('') || '<div class="card"><div class="empty">'+icon('trophy')+'<br>لسه مفيش تمارين متسجلة.<br>العب أول تمرينة وهتظهر هنا.</div><button class="btn btn-green btn-block" onclick="go(\'today\')">ابدأ تمرين</button></div>'}`;
   }
 
+  /* ---------- الإعدادات ---------- */
   else if(v==='backup'){
     document.getElementById('nav-backup').classList.add('active');
     const totalSets = db.logs.reduce((n,l)=>n+l.exercises.reduce((m,e)=>m+e.sets.length,0),0);
     a.innerHTML=`
-    <div class="card"><div class="title">⚙️ بياناتك</div>
-      <p class="muted">• الأنظمة: <b>${db.programs.length}</b> • التمارين المسجلة: <b>${db.logs.length}</b> • مجموع الأدوار: <b>${totalSets}</b><br>البيانات محفوظة على موبايلك (المتصفح). اعمل تصدير كل أسبوع عشان متضيعش.</p>
-      <div class="row"><button class="gray" onclick="exportData()">⬇️ تصدير نسخة احتياطية</button>
-      <button class="gray" onclick="importData()">⬆️ استيراد نسخة</button></div>
+    <div class="card"><h3>بياناتك</h3>
+      <div class="kv"><span>الأنظمة</span><b>${db.programs.length}</b></div>
+      <div class="kv"><span>التمارين المسجلة</span><b>${db.logs.length}</b></div>
+      <div class="kv"><span>مجموع الأدوار</span><b>${totalSets}</b></div>
+      <div class="kv"><span>الحجم الكلي</span><b>${fmtVol(totalVolume())}</b></div>
+      <p class="sub">البيانات محفوظةة على موبايلك. اعمل تصدير كل أسبوع عشان متضيعش.</p>
+      <div class="row"><button class="btn btn-ghost btn-sm" onclick="exportData()">${icon('dl')} تصدير نسخة</button>
+      <button class="btn btn-ghost btn-sm" onclick="importData()">${icon('ul')} استيراد نسخة</button></div>
     </div>
-    <div class="card"><div class="title">⚡ تجربة سريعة</div>
-      <button class="orange" onclick="loadSample()">حمّل مثال جاهز</button>
+    <div class="card"><h3>تجربة سريعةة</h3><p class="sub">حمّل نظام مثال جاهز وجرّب كل حاجة عليه.</p>
+      <button class="btn btn-gold" onclick="loadSample()">${icon('bolt')} حمّل مثال جاهز</button>
     </div>
-    <div class="card"><div class="title" style="color:#ff6b6b">🗑 منطقة الخطر</div>
-      <button class="red" onclick="clearAll()">مسح كل البيانات</button>
+    <div class="card danger-zone"><h3>منطقة الخطر</h3><p class="sub">مسح كل البيانات نهائيًا. اعمل تصدير الأول.</p>
+      <button class="btn btn-red" onclick="clearAll()">مسح كل البيانات</button>
     </div>
-    <div class="card"><div class="title">💡 عن التطبيق</div>
-      <p class="muted">نسخة شخصية — المرحلة 1<br>المرحلة الجاية: حسابات لكل مستخدم + لوحة تحكم للمدرب + اشتراكات.<br>لو عجبتك النسخة دي قولّي نطوّرها.</p>
+    <div class="card"><h3>عن التطبيق</h3>
+      <p class="sub">نسخة شخصية — المرحلة 1<br>المرحلة الجاية: حسابات لكل مستخدم + لوحة تحكم للمدرب + اشتراكات.</p>
     </div>`;
   }
   if(view.name==='history') setTimeout(refreshChart,50);
 }
 render(); updateBadge();
 </script>
-<script>window.__CF$cv$params={r:'a5dba49a282ab416',t:'MTc5NTIyMTYyNQ==',u:'01a1fb8c1dda762d9cfc24d1da2ee8a9',ut:'S__S1uZjFHfK08tIsfbqZLnnHwdsY3bqk9LkHvRo6j0-1795221626-1.2.1.1-fNwk4PbNXKTmdO5.iNAjRdhZj3LFw3IpflOW5yp62Gdgj0tDpNFLlP.Ync8eM8pwbfkO3lVfH1lZprWtlMgvcLeYOJDFTtahvId8zQzm8vU',i:60};(function(){if(!document.body)return;var l=window.location,o;try{o=new URL(l.origin).origin}catch(e){try{o=new URL(new URL(l.href).origin).origin}catch(e){o=''}}var u='/cdn-cgi/challenge-platform/scripts/precursor/main.js?ray=a5dba49a282ab416',s=document.createElement('script');s.src=o?new URL(u,o).href:u;document.head.appendChild(s);})();</script></body>
+<script>window.__CF$cv$params={r:'a5dbadb7bc7cb416',t:'MTc5NTIyMTk5OQ==',u:'01a1fb91d092723d80d3de2951257ee8',ut:'vjmM4q4e9c53_fLt4FXiIHBZK5W87SfpC7vcDQiGFV0-1795221999-1.2.1.1-vCN2UMiZ3J8g8P2e9AN9Ev4WNQpeKlP_ZALBWehtU8PfZpBzHZMyYxQDFxXTO3R8qOZwA6Y8OAcPkEidrItz_tZ7j5ojPBjPPPmmE_1xU2o',i:60};(function(){if(!document.body)return;var l=window.location,o;try{o=new URL(l.origin).origin}catch(e){try{o=new URL(new URL(l.href).origin).origin}catch(e){o=''}}var u='/cdn-cgi/challenge-platform/scripts/precursor/main.js?ray=a5dbadb7bc7cb416',s=document.createElement('script');s.src=o?new URL(u,o).href:u;document.head.appendChild(s);})();</script></body>
 </html>
