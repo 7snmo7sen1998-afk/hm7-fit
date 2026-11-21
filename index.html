@@ -7,7 +7,7 @@
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<title>تماريني | سجّل تطوّر أوزانك</title>
+<title>HM Fit | سجّل تمرينك وتابع تطوّرك</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
@@ -31,7 +31,8 @@ header{position:sticky;top:0;z-index:20;background:rgba(10,13,19,.88);backdrop-f
 .hwrap{max-width:640px;margin:auto;padding:10px 14px;display:flex;align-items:center;justify-content:space-between}
 .brand{display:flex;align-items:center;gap:10px}
 .brand .tile{width:42px;height:42px;border-radius:14px;background:linear-gradient(135deg,var(--b1),var(--b2));display:inline-flex;align-items:center;justify-content:center;box-shadow:0 8px 22px rgba(255,70,60,.42)}
-.brand .tile svg{width:24px;height:24px;color:#fff}
+.brand .tile{color:#fff;font-weight:900;font-size:17px;letter-spacing:-.5px;font-family:Arial,sans-serif}
+.brand b i{font-style:normal;background:linear-gradient(135deg,var(--b1),var(--b2));-webkit-background-clip:text;background-clip:text;color:transparent}
 .brand b{font-size:20px;font-weight:900;letter-spacing:.2px;display:block;line-height:1.1}
 .brand small{font-size:11px;color:var(--muted);font-weight:600}
 /* ===== layout ===== */
@@ -138,16 +139,33 @@ summary{cursor:pointer;font-weight:800;color:#ffd9a8;font-size:14px}
 .danger-zone h3{color:#ff9c9c}
 .kv{display:flex;justify-content:space-between;font-size:13px;color:var(--muted);padding:3px 0}
 .kv b{color:var(--text)}
+#picker{display:none;position:fixed;inset:0;z-index:50;background:rgba(0,0,0,.7);align-items:flex-end;justify-content:center}
+.sheet{width:100%;max-width:640px;max-height:88vh;background:#0f1522;border:1px solid var(--line2);border-radius:26px 26px 0 0;display:flex;flex-direction:column;padding:14px;animation:rise .25s ease}
+.sheet .top{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}
+.sheet .top b{font-size:17px;font-weight:900}
+.chips{display:flex;gap:7px;overflow-x:auto;padding:8px 0;scrollbar-width:none}
+.chips::-webkit-scrollbar{display:none}
+.chip{flex:none;padding:7px 14px;border-radius:999px;background:#1a2233;border:1px solid var(--line2);color:#aeb9cf;font-weight:800;font-size:13px;font-family:inherit}
+.chip.on{background:linear-gradient(135deg,var(--b1),var(--b2));border:0;color:#fff}
+#pkList{overflow-y:auto;flex:1;padding-bottom:10px}
+.pk{display:flex;align-items:center;gap:10px;width:100%;text-align:right;background:#0d1424;border:1px solid var(--line);border-radius:14px;padding:11px;margin:6px 0;color:var(--text);font-family:inherit;font-size:15px;font-weight:800}
+.pk small{margin-right:auto;color:var(--muted);font-weight:700;font-size:11.5px}
 </style>
 </head>
 <body>
 <header>
   <div class="hwrap">
-    <span class="brand"><span class="tile" id="logoTile"></span><span><b>تماريني</b><small>سجّل • تتبّع • تطوّر</small></small></span></span>
+    <span class="brand"><span class="tile" id="logoTile">HM</span><span><b>HM <i>Fit</i></b><small>سجّل • تتبّع • تطوّر</small></span></span>
     <span class="badge" id="statBadge">…</span>
   </div>
 </header>
 <main id="app"></main>
+<div id="picker" onclick="if(event.target===this)closePicker()"><div class="sheet">
+  <div class="top"><b>اختار التمرين</b><button class="ibtn" onclick="closePicker()"></button></div>
+  <input class="full" id="pkQ" placeholder="ابحث عن تمرين… أو اكتب اسم جديد" oninput="pk.q=this.value;pkRender()">
+  <div class="chips" id="pkChips"></div>
+  <div id="pkList"></div>
+</div></div>
 <nav>
   <button id="nav-home" onclick="go('home')"></button>
   <button id="nav-workout" onclick="go('today')"></button>
@@ -183,7 +201,6 @@ box:'<path d="M4 8l8-4 8 4v8l-8 4-8-4V8z"/><path d="M4 8l8 4 8-4M12 12v8"/>',
 redo:'<path d="M3.5 8a8.5 8.5 0 1 1-1 6"/><path d="M3.5 3.5V8H8"/>'
 };
 const icon = (n, cls) => `<svg class="${cls||'ic'}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${ICONS[n]||''}</svg>`;
-document.getElementById('logoTile').innerHTML = icon('gym');
 const NAV = { home:['home','الرئيسية'], today:['gym','تمرين اليوم'], history:['chart','السجل'], backup:['gear','الإعدادات'] };
 Object.keys(NAV).forEach(k => { document.getElementById('nav-'+k).innerHTML = `<span class="ni">${icon(NAV[k][0])}</span><span class="nl">${NAV[k][1]}</span>`; });
 
@@ -309,11 +326,32 @@ function addDay(){
 function renameDay(id){ const d=prog().days.find(x=>x.id===id); const n=prompt('الاسم الجديد:',d.name); if(n){d.name=n.trim();save();render();} }
 function delDay(id){ if(confirm('حذف اليوم ده بكل تمارينه؟')){ prog().days=prog().days.filter(d=>d.id!==id); save(); render(); } }
 /* ================= التمارين ================= */
-function addEx(){
-  const n=prompt('اسم التمرين (مثال: بنش مستوي بار):');
-  if(!n) return;
-  day().exercises.push({name:n.trim(), sets:[{w:'',r:''}]});
-  save(); render();
+const LIB=[
+['صدر',['بنش مستوي بار','بنش مستوي دمبل','بنش عالي بار','بنش عالي دمبل','بنش منخفض','بنش جهاز','فلاي دمبل','فلاي كابل','فلاي جهاز (بيك دك)','كروس أوفر كابل','ضغط صدر جهاز','بوش أب','متوازي للصدر','بول أوفر دمبل']],
+['ضهر',['بول أب','سحب علوي واسع','سحب علوي ضيق','سحب أرضي كابل','رو بار','رو دمبل','رو جهاز','تي بار رو','سحب أمامي بذراع مفرودة','ديدلفت','هايبر اكستنشن']],
+['أكتاف',['ضغط أكتاف دمبل','ضغط أكتاف بار','ضغط أكتاف جهاز','رفرفة جانبي دمبل','رفرفة جانبي كابل','رفرفة أمامي','رفرفة خلفي','فيس بول','أرنولد برس','سحب بار للذقن']],
+['باي',['باي بار مستقيم','باي بار EZ','باي دمبل بالتبادل','باي هامر','باي بريتشر','باي كابل','باي تركيز','باي مقعد مائل']],
+['تراي',['تراي حبل','تراي بار كابل','تراي خلف الرأس دمبل','سكال كراشر','ضغط ضيق','ديبس مقعد','كيك باك','تراي جهاز']],
+['رجل',['سكوات بار','سكوات أمامي','هاك سكوات','ليج بريس','ليج اكستنشن','ليج كيرل نائم','ليج كيرل جلوس','رومانيان ديدلفت','لانجز دمبل','بلغاري سبليت سكوات','هيب ثرست','سمانة واقف','سمانة جلوس','أدكتور جهاز']],
+['بطن',['كرانش','رفع رجل معلق','بلانك','كرانش كابل','روسيان تويست','عجلة البطن','رفع رجل أرضي','سايد بلانك']],
+['ترابيس وساعد',['شراغز بار','شراغز دمبل','ساعد بار','ساعد عكسي']],
+['كارديو',['مشي على السير','جري','دراجة ثابتة','إليبتكال','حبل نط','تجديف']]
+];
+let pk={q:'',m:'الكل',items:[]};
+function addEx(){ pk={q:'',m:'الكل',items:[]}; document.getElementById('pkQ').value=''; document.querySelector('#picker .top .ibtn').innerHTML=icon('x'); document.getElementById('picker').style.display='flex'; pkRender(); }
+function closePicker(){ document.getElementById('picker').style.display='none'; }
+function pkRender(){
+  document.getElementById('pkChips').innerHTML=['الكل',...LIB.map(x=>x[0])].map(m=>`<button class="chip ${pk.m===m?'on':''}" onclick="pk.m='${m}';pkRender()">${m}</button>`).join('');
+  const q=pk.q.trim(); pk.items=[];
+  LIB.forEach(([m,a])=>{ if(pk.m!=='الكل'&&pk.m!==m) return; a.forEach(n=>{ if(!q||n.includes(q)) pk.items.push([m,n]); }); });
+  let h=pk.items.map((x,i)=>`<button class="pk" onclick="pickEx(${i})">${icon('gym')} ${esc(x[1])}<small>${x[0]}</small></button>`).join('');
+  if(q) h+=`<button class="pk" style="border-color:var(--b1)" onclick="pickEx(-1)">${icon('plus')} أضف «${esc(q)}» كتمرين جديد</button>`;
+  document.getElementById('pkList').innerHTML=h||'<p class="muted" style="text-align:center">مفيش نتائج</p>';
+}
+function pickEx(i){
+  const it=i<0?['',pk.q.trim()]:pk.items[i]; if(!it[1]) return;
+  day().exercises.push({name:it[1], muscle:it[0], sets:[{w:'',r:''}]});
+  save(); closePicker(); render();
 }
 function renameEx(i){ const e=day().exercises[i]; const n=prompt('اسم التمرين الجديد:',e.name); if(n){e.name=n.trim();save();render();} }
 function delEx(i){ if(confirm('حذف التمرين ده؟')){ day().exercises.splice(i,1); save(); render(); } }
@@ -361,7 +399,7 @@ function updateProgress(){ const el=document.getElementById('pbar'); if(!el||!se
 function startRest(sec){ restSec=sec; clearInterval(restInt); tickRest(); restInt=setInterval(()=>{ restSec--; if(restSec<=0){clearInterval(restInt); try{navigator.vibrate&&navigator.vibrate(300);}catch(e){} } tickRest(); },1000); }
 function tickRest(){ const el=document.getElementById('restTimer'); if(!el) return; if(restSec<=0){el.style.display='none';return;} el.style.display='flex'; const m=Math.floor(restSec/60), s=restSec%60; el.innerHTML=`${icon('clock')} راحة ${m}:${String(s).padStart(2,'0')}`; }
 function stopRest(){ clearInterval(restInt); restSec=0; }
-function customRest(){ const v=prompt('مدةة الراحة بالثواني (مثال: 90):','90'); if(v&&+v>0) startRest(+v); }
+function customRest(){ const v=prompt('مدة الراحة بالثواني (مثال: 90):','90'); if(v&&+v>0) startRest(+v); }
 /* ================= السجل ================= */
 function delLog(id){ if(confirm('حذف التمرينة دي من السجل؟')){ db.logs=db.logs.filter(l=>l.id!==id); save(); render(); } }
 function clearAll(){ if(confirm('تحذير: هيمسح كل الأنظمة والسجل! اعمل تصدير الأول. متأكد؟') && confirm('تأكيد أخير: امسح كل حاجة؟')){ db={programs:[],logs:[]}; session=null; save(); go('home'); } }
@@ -479,7 +517,7 @@ function render(){
       <button class="btn btn-primary btn-block" onclick="startWorkout()">${icon('play')} ابدأ التمرين — ${esc(d.name)}</button>
       <div class="section-head"><h2>الجدول الأساسي</h2><span class="badge">${d.exercises.length} تمرين</span></div>
       ${d.exercises.map((e,i)=>`<div class="card">
-        <div class="row"><span class="thumb g" style="width:40px;height:40px">${icon('gym')}</span><span class="exname">${esc(e.name)}</span>
+        <div class="row"><span class="thumb g" style="width:40px;height:40px">${icon('gym')}</span><span class="exname">${esc(e.name)}${e.muscle?`<br><span class="meta" style="font-size:11.5px;color:var(--muted)">${esc(e.muscle)}</span>`:''}</span>
           <button class="ibtn" title="لفوق" onclick="moveEx(${i},-1)">${icon('up')}</button><button class="ibtn" title="لتحت" onclick="moveEx(${i},1)">${icon('down')}</button>
           <button class="ibtn" title="تعديل الاسم" onclick="renameEx(${i})">${icon('pen')}</button><button class="ibtn danger" title="حذف" onclick="delEx(${i})">${icon('trash')}</button></div>
         ${e.sets.map((s,j)=>`<div class="setbox"><div class="row"><span class="snum">${j+1}</span>
@@ -573,23 +611,23 @@ function render(){
       <div class="kv"><span>التمارين المسجلة</span><b>${db.logs.length}</b></div>
       <div class="kv"><span>مجموع الأدوار</span><b>${totalSets}</b></div>
       <div class="kv"><span>الحجم الكلي</span><b>${fmtVol(totalVolume())}</b></div>
-      <p class="sub">البيانات محفوظةة على موبايلك. اعمل تصدير كل أسبوع عشان متضيعش.</p>
+      <p class="sub">البيانات محفوظة على موبايلك. اعمل تصدير كل أسبوع عشان متضيعش.</p>
       <div class="row"><button class="btn btn-ghost btn-sm" onclick="exportData()">${icon('dl')} تصدير نسخة</button>
       <button class="btn btn-ghost btn-sm" onclick="importData()">${icon('ul')} استيراد نسخة</button></div>
     </div>
-    <div class="card"><h3>تجربة سريعةة</h3><p class="sub">حمّل نظام مثال جاهز وجرّب كل حاجة عليه.</p>
+    <div class="card"><h3>تجربة سريعة</h3><p class="sub">حمّل نظام مثال جاهز وجرّب كل حاجة عليه.</p>
       <button class="btn btn-gold" onclick="loadSample()">${icon('bolt')} حمّل مثال جاهز</button>
     </div>
     <div class="card danger-zone"><h3>منطقة الخطر</h3><p class="sub">مسح كل البيانات نهائيًا. اعمل تصدير الأول.</p>
       <button class="btn btn-red" onclick="clearAll()">مسح كل البيانات</button>
     </div>
     <div class="card"><h3>عن التطبيق</h3>
-      <p class="sub">نسخة شخصية — المرحلة 1<br>المرحلة الجاية: حسابات لكل مستخدم + لوحة تحكم للمدرب + اشتراكات.</p>
+      <p class="sub">HM Fit — المرحلة 1<br>المرحلة الجاية: حسابات لكل مستخدم + لوحة تحكم للمدرب + اشتراكات.</p>
     </div>`;
   }
   if(view.name==='history') setTimeout(refreshChart,50);
 }
 render(); updateBadge();
 </script>
-<script>window.__CF$cv$params={r:'a5dbadb7bc7cb416',t:'MTc5NTIyMTk5OQ==',u:'01a1fb91d092723d80d3de2951257ee8',ut:'vjmM4q4e9c53_fLt4FXiIHBZK5W87SfpC7vcDQiGFV0-1795221999-1.2.1.1-vCN2UMiZ3J8g8P2e9AN9Ev4WNQpeKlP_ZALBWehtU8PfZpBzHZMyYxQDFxXTO3R8qOZwA6Y8OAcPkEidrItz_tZ7j5ojPBjPPPmmE_1xU2o',i:60};(function(){if(!document.body)return;var l=window.location,o;try{o=new URL(l.origin).origin}catch(e){try{o=new URL(new URL(l.href).origin).origin}catch(e){o=''}}var u='/cdn-cgi/challenge-platform/scripts/precursor/main.js?ray=a5dbadb7bc7cb416',s=document.createElement('script');s.src=o?new URL(u,o).href:u;document.head.appendChild(s);})();</script></body>
+<script>window.__CF$cv$params={r:'a5dc8db0bdfce1b2',t:'MTc5NTIzMTE3Mw==',u:'01a1fc1dcbdc77cb89316c3880fe51ee',ut:'IL6hoxej5gLGjAI7HQldvbe3E.xk51W2bFPdUsOs9lg-1795231173-1.2.1.1-kqZ25hQlqTQ3jplzi1rn0xo0h.2ZPeCIj8GqbfDaWTQ1B1z4LICjwBPG9_qAtEVgMsrDkkhGZuLTRsNrgYolrk6otaI1uXklU6_LngasT0s',i:60};(function(){if(!document.body)return;var l=window.location,o;try{o=new URL(l.origin).origin}catch(e){try{o=new URL(new URL(l.href).origin).origin}catch(e){o=''}}var u='/cdn-cgi/challenge-platform/scripts/precursor/main.js?ray=a5dc8db0bdfce1b2',s=document.createElement('script');s.src=o?new URL(u,o).href:u;document.head.appendChild(s);})();</script></body>
 </html>
