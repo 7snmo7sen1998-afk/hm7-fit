@@ -9,6 +9,10 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <title>HM Fit | لياقتك على مزاجك</title>
 <link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="hm-logo-192.png">
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
@@ -166,6 +170,11 @@ select{color:#fff}
 .exthumb.fallback{display:flex;align-items:center;justify-content:center}
 .exthumb.fallback svg{width:24px;height:24px;color:var(--neon)}
 .sessbox{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.08);border-radius:12px;padding:8px 10px;margin-top:8px;font-size:13px;line-height:1.7}.sessbox.today{border-color:rgba(0,230,118,.35)}
+.loginhero{text-align:center;padding:34px 18px}.loginhero img{width:110px;height:110px;border-radius:30px;box-shadow:0 0 40px rgba(0,230,118,.4)}
+.paybox{border:2px solid var(--neon);border-radius:18px;padding:14px;margin:10px 0;background:rgba(0,230,118,.06)}
+.paybox.hot{box-shadow:0 0 26px rgba(0,230,118,.3)}
+.admrow{display:flex;align-items:center;gap:8px;background:rgba(0,0,0,.3);border:1px solid var(--line);border-radius:14px;padding:10px;margin:8px 0;flex-wrap:wrap}
+.syncdot{display:inline-block;width:9px;height:9px;border-radius:50%;margin-inline-end:6px}
 </style>
 </head>
 <body>
@@ -197,7 +206,7 @@ window.addEventListener('error',function(e){var d=document.getElementById('errbo
 <script>
 'use strict';
 /* ============ HM Fit v4 — النسخة النيون ============ */
-const VER='4.12.0';
+const VER='5.2.1';
 const GOALS={lose:'تخسيس',same:'ثبات',gain:'زيادة'};
 const ICONS={
 home:'<path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V21h5v-6h4v6h5V9.5"/>',
@@ -267,7 +276,7 @@ function uid(){return Date.now().toString(36)+Math.random().toString(36).slice(2
 function esc(s){return String(s==null?'':String(s)).replace(/[&<>"']/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});}
 function num(v){const n=parseFloat(v);return isNaN(n)?0:n;}
 let _saveWarned=0;
-function save(){let ok=true;try{localStorage.setItem('hmfit_v4',JSON.stringify(db));}catch(e){ok=false;if(Date.now()-_saveWarned>15000){_saveWarned=Date.now();alert('مساحة التخزين على الجهاز اتملت ومش قادر أحفظ التعديل ده!\nامسح شوية صور تقدم قديمة من «جسمي»، واعمل نسخة احتياطية من «المزيد».');}}updateBadge();return ok;}
+function save(){let ok=true;try{localStorage.setItem('hmfit_v4',JSON.stringify(db));}catch(e){ok=false;if(Date.now()-_saveWarned>15000){_saveWarned=Date.now();alert('مساحة التخزين على الجهاز اتملت ومش قادر أحفظ التعديل ده!\nامسح شوية صور تقدم قديمة من «جسمي»، واعمل نسخة احتياطية من «المزيد».');}}updateBadge();queueCloud();return ok;}
 function storeKB(){try{return Math.round((localStorage.getItem('hmfit_v4')||'').length*2/1024);}catch(e){return 0;}}
 function go(name,extra){view.name=name;if(extra)for(const k in extra)view[k]=extra[k];render();setTimeout(lazyWatch,30);if(window.scrollTo)window.scrollTo(0,0);}
 function updateBadge(){const el=document.getElementById('goalBadge');if(!el)return;el.innerHTML=icon('bolt')+' '+(GOALS[db.profile.goal]||'');}
@@ -912,9 +921,11 @@ function navOn(id){document.querySelectorAll('nav button').forEach(function(b){b
 function render(){
   updateBadge();
   const a=document.getElementById('app');if(!a)return;
+  if(typeof fbGate==='function'){const g=fbGate();if(g){a.innerHTML=g;navOn('nav-home');return;}}
   renderOb();
   if(!db.profile.onboarded){a.innerHTML='';navOn('nav-home');return;}
   const v=view.name;
+  if(v==='admin'){a.innerHTML=renderAdmin();navOn('nav-more');return;}
   if(v==='home'){
     navOn('nav-home');
     const ti=todayIdx();
@@ -1110,9 +1121,10 @@ function render(){
     const DNAMES=['السبت','الأحد','الاثنين','الثلاثاء','الأربعاء','الخميس','الجمعة'];
     const ndays=(p.notif&&p.notif.days)||[0,1,2,3,4,5,6];
     h+='<div class="card"><h3>تذكير التمرين</h3><p class="sub">اختار أيامك والساعة، والتذكير هيتضاف لتقويم موبايلك (Google Calendar / iPhone) وهو اللي هيفكرك — حتى لو التطبيق مقفول.</p><div class="dchips">'+DNAMES.map(function(nm,i){return '<button class="dchip '+(ndays.indexOf(i)>-1?'on':'')+'" style="width:44px;height:44px;font-size:12px" onclick="toggleNday('+i+')">'+nm+'</button>';}).join('')+'</div><div class="row"><input type="time" id="nTime" value="'+esc(p.notif.time||'20:00')+'" style="flex:1"><button class="btn btn-neon btn-sm" style="flex:1" onclick="calReminder()">'+icon('check')+' أضف للتقويم</button></div>'+(p.notif.on?'<p class="sub">آخر مرة ضفت تذكير '+ndays.length+' أيام الساعة '+esc(p.notif.time)+'. لو غيرت المواعيد، امسح الحدث القديم من التقويم وضيف الجديد.</p>':'')+'</div>';
+    h+='<div class="card glow"><h3>حسابي والمزامنة</h3>'+fbAccountHTML()+'</div>';
     const kb=storeKB();
     h+='<div class="card glow"><h3>نسخة احتياطية</h3><p class="sub">بياناتك محفوظة على المتصفح ده بس. لو مسحت بيانات المتصفح أو غيرت موبايلك هتضيع — اعمل نسخة كل فترة وابعتها لنفسك على واتساب أو Drive.</p><p class="sub">آخر نسخة: <b>'+(p.lastBackup?esc(p.lastBackup):'لسه معملتش')+'</b> • المساحة المستخدمة: ~'+(kb>1024?(kb/1024).toFixed(1)+' ميجا':kb+' كيلو')+' من حوالي 5 ميجا'+(kb>3500?' <b style="color:#ffb74d">— قربت تتملي، امسح صور قديمة</b>':'')+'</p><div class="row"><button class="btn btn-neon btn-sm" style="flex:1" onclick="exportData()">'+icon('down')+' حفظ نسخة</button><label class="btn btn-sm" style="flex:1;text-align:center;cursor:pointer">'+icon('up')+' استرجاع نسخة<input type="file" accept=".json,application/json" style="display:none" onchange="importData(this)"></label></div></div>';
-    h+='<div class="card"><h3>عن التطبيق</h3><p class="sub">HM Fit — نسخة النيون. بياناتك على جهازك.</p></div>';
+    h+='<div class="card"><h3>عن التطبيق</h3><p class="sub">HM Fit — نسخة السحابة. بياناتك بتتزامن تلقائيًا لما النت يرجع.</p></div>';
     h+='<div class="verline">HM Fit v'+VER+' • لو شايف الرقم ده يبقى دي أحدث نسخة</div>';
     a.innerHTML=h;
   }
@@ -1155,6 +1167,272 @@ function renderLib(){
   });
   list.innerHTML=h||'<p class="muted" style="text-align:center">مفيش نتائج</p>';
 }
+
+/* ============ السحابة: دخول + اشتراكات + مزامنة (Firebase) ============ */
+const FB_CONFIG={apiKey:"AIzaSyCfQVpRyGBNpVXEqPqjO-zTNoshWplYAtg",authDomain:"hm-fit-63387.firebaseapp.com",projectId:"hm-fit-63387",storageBucket:"hm-fit-63387.firebasestorage.app",messagingSenderId:"198395939850",appId:"1:198395939850:web:b1f46bfb5b769147f663f3"};
+const ADMINS=["hmohsen282@gmail.com","7snmo7sen1998@gmail.com"];
+const TRIAL_DAYS=7, WAS_M=200, WAS_Y=2400;
+const P1_END=new Date(2026,11,25,23,59,59).getTime(), P2_END=new Date(2027,0,10,23,59,59).getTime();
+function curPrices(){const n=Date.now();
+ if(n<=P1_END)return{m:50,q:129,y:749,qw:600,tag:'\u23f3 عرض الافتتاح \u2014 ساري حتى 25 ديسمبر (الشهر بـ 50 بدل 200)'};
+ if(n<=P2_END)return{m:99,q:249,y:999,qw:600,tag:'\u23f3 عرض السنة الجديدةة \u2014 ساري حتى 10 يناير'};
+ return{m:200,q:600,y:2400,qw:600,tag:'الأسعار الأساسية'};}
+function PRICE_M(){return curPrices().m;} function PRICE_Y(){return curPrices().y;}
+function pp(plan){const p=curPrices(),base=plan==='m'?p.m:(plan==='q'?p.q:p.y);const c=view.coupon;
+ if(c&&(c.plan==='both'||c.plan===plan)){if(c.type==='pct')return{base:base,final:Math.max(1,Math.round(base*(1-c.value/100)))};if(c.type==='flat')return{base:base,final:Math.max(1,base-c.value)};}return{base:base,final:base};}
+function applyCoupon(){
+ const i=document.getElementById('cpnIn');const code=((i&&i.value)||'').trim().toUpperCase().replace(/\s+/g,'');
+ if(!code)return alert('اكتب الكود الأول');
+ firebase.firestore().collection('coupons').doc(code).get().then(function(d){
+  if(!d.exists)return alert('الكود ده مش موجود — اتأكد من الحروف');
+  const o=d.data()||{};
+  if(o.active===false)return alert('الكود ده موقوف حاليًا');
+  if(o.maxUses>0&&(o.used||0)>=o.maxUses)return alert('الكود ده خلص (وصل للحد الأقصى)');
+  view.coupon={code:code,type:o.type||'pct',value:+o.value||0,plan:o.plan||'both'};
+  view.couponInput=code;render();
+ }).catch(function(){alert('محتاج نت عشان أتحقق من الكود');});
+}
+function couponUse(){try{if(view.coupon&&fbOK&&fbUser)firebase.firestore().collection('coupons').doc(view.coupon.code).set({used:firebase.firestore.FieldValue.increment(1)},{merge:true});}catch(e){}}
+const PAY_VODA="01008709651", PAY_WA="201008709651";
+let fbUser=null,fbSub=null,fbReady=false,fbOK=false,_cloudT=null,_lastCloud=0;
+function fbEmail(){return (fbUser&&fbUser.email||'').toLowerCase();}
+function isAdmin(){return ADMINS.indexOf(fbEmail())>-1;}
+function fbInit(){
+  try{
+    if(typeof firebase==='undefined')throw 0;
+    if(!firebase.apps.length)firebase.initializeApp(FB_CONFIG);
+    fbOK=true;
+  }catch(e){fbOK=false;}
+  if(!fbOK){fbReady=true;render();return;}
+  try{
+    firebase.auth().onAuthStateChanged(function(u){onFbUser(u);});
+    if(navigator.onLine===false){fbReady=true;render();}
+    setTimeout(function(){if(!fbReady){fbReady=true;render();}},6000);
+  }catch(e){fbReady=true;render();}
+}
+function stashLocal(uid){try{if(uid)localStorage.setItem('hmfit_v5_'+uid,localStorage.getItem('hmfit_v4')||'');}catch(e){}}
+function onFbUser(u){
+  if(fbUser&&u&&fbUser.uid!==u.uid)stashLocal(fbUser.uid);
+  if(!u&&fbUser)stashLocal(fbUser.uid);
+  fbUser=u||null;fbSub=null;
+  if(!u){fbReady=true;view={name:'home'};render();return;}
+  try{
+    const prev=localStorage.getItem('hmfit_v5_'+u.uid);
+    if(prev){localStorage.setItem('hmfit_v4',prev);}
+  }catch(e){}
+  try{db=JSON.parse(localStorage.getItem('hmfit_v4')||'null')||db;}catch(e){}
+  if(!db.profile)db.profile=blankProfile();if(!db.weights)db.weights={};if(!db.body)db.body=[];
+  try{migrate();}catch(e){}
+  loadCloud(function(){fbReady=true;render();});
+}
+function googleLogin(){
+  if(!fbOK)return alert('مفيش إنترنت — الدخول بجوجل محتاج نت أول مرة');
+  try{
+    const p=new firebase.auth.GoogleAuthProvider();
+    firebase.auth().signInWithPopup(p).catch(function(e){alert('الدخول فشل: '+(e&&e.message));});
+  }catch(e){alert('الدخول فشل');}
+}
+function fbLogout(){if(!fbOK)return;if(!confirm('تسجيل خروج من حسابك على الجهاز ده؟ (بياناتك محفوظة في السحابة)'))return;try{stashLocal(fbUser.uid);}catch(e){}firebase.auth().signOut();}
+function subState(){
+  if(isAdmin())return {k:'admin',label:'أدمن — دخول كامل'};
+  const s=fbSub||{};
+  if(s.blocked)return {k:'blocked',label:'موقوف'};
+  const now=Date.now();
+  if(s.subUntil&&now<s.subUntil)return {k:'sub',label:'مشترك حتى '+new Date(s.subUntil).toLocaleDateString('ar-EG'),until:s.subUntil};
+  if(s.trialEnds&&now<s.trialEnds)return {k:'trial',label:'فترة تجربة — باقي '+Math.max(1,Math.ceil((s.trialEnds-now)/86400000))+' أيام',until:s.trialEnds};
+  if(!s.trialEnds)return {k:'trial',label:'فترة تجربة — باقي '+TRIAL_DAYS+' أيام'};
+  return {k:'expired',label:'الاشتراك خلص'};
+}
+function canUse(){const k=subState().k;return k==='admin'||k==='sub'||k==='trial';}
+function fbGate(){
+  if(!fbOK)return null;
+  if(!fbReady)return '<div class="card"><div class="empty">'+icon('gym')+'<br>جاري التحميل…</div></div>';
+  if(!fbUser){
+    return '<div class="card"><div class="loginhero"><img src="hm-logo-192.png" alt="HM Fit">'
+      +'<h2>أهلاً بيك في <i style="color:var(--neon);font-style:normal">HM Fit</i></h2>'
+      +'<p class="muted">سجّل دخول بجوجل عشان بياناتك تتحفظ في السحابة وتكمل من أي جهاز.<br>أول '+TRIAL_DAYS+' أيام تجربة مجانية.</p>'
+      +'<button class="btn btn-neon btn-block" onclick="googleLogin()">'+icon('play')+' دخول بجوجل</button>'
+      +'<p class="muted" style="font-size:11px">بالدخول انت موافق إن بيانات تمرينك تتخزن على حسابك.</p></div></div>';
+  }
+  const st=subState();
+  if(st.k==='blocked')return '<div class="card"><div class="empty">'+icon('x')+'<br>حسابك موقوف.<br>تواصل معنا واتساب.</div><a class="btn btn-neon btn-block" href="https://wa.me/'+PAY_WA+'">تواصل واتساب</a></div>';
+  if(st.k==='expired')return renderPaywall(true);
+  return null;
+}
+function renderPaywall(full){
+  const em=esc(fbUser?fbUser.email:'');
+  const pm=pp('m'),pq=pp('q'),py=pp('y');
+  if(!view.payPlan)view.payPlan='m';
+  const planName=view.payPlan==='y'?'سنوي':(view.payPlan==='q'?'3 شهور':'شهري');
+  const planPrice=view.payPlan==='y'?py.final:(view.payPlan==='q'?pq.final:pm.final);
+  const wa='https://wa.me/'+PAY_WA+'?text='+encodeURIComponent('اشتراك HM Fit — إيميلي: '+(fbUser?fbUser.email:'')+' — الباقة: '+planName+' '+planPrice+' جنيه'+(view.coupon?(' — كود الخصم: '+view.coupon.code):'')+' — وبعت سكرين التحويل');
+  let h='<div class="card glow"><div class="loginhero" style="padding:10px 6px"><img src="hm-logo-192.png" alt="HM Fit">'
+    +'<h2>التجربة خلصت 😅</h2><p class="muted">عشان تكمل تمرينك ومتخسرش تقدمك، فعّل اشتراكك في دقيقة:</p></div>'
+    +'<p class="sub" style="text-align:center"><b>'+curPrices().tag+'</b></p>'
+    +'<div class="paybox hot"><b>شهري — '+PRICE_M()+' جنيه</b> <s class="muted">بدل '+WAS_M+'</s></div>'
+    +'<div class="paybox"><b>سنوي — '+PRICE_Y()+' جنيه</b> <s class="muted">بدل '+WAS_Y+'</s> <span class="badge">الأوفر — أوفر من الشهري</span></div>'
+    +'<div class="paybox"><b>3 شهور — '+curPrices().q+' جنيه</b>'+(curPrices().q<curPrices().qw?' <s class="muted">بدل '+curPrices().qw+'</s>':'')+' <span class="badge">الوسط — وفّر وجرّب براحتك</span></div>'
+    +'<div class="card" style="margin:10px 0"><h3>عندك كود خصم؟</h3><div class="row"><input class="full" id="cpnIn" style="flex:1" placeholder="اكتب الكود هنا" value="'+esc(view.couponInput||view.coupon&&view.coupon.code||'')+'"><button class="btn btn-sm" onclick="applyCoupon()">تطبيق</button></div><div id="cpnMsg">'+(view.coupon?('<p class="sub">✅ كود <b>'+esc(view.coupon.code)+'</b> شغال — الشهري بقى <b style="color:#fff">'+pp('m').final+' بدل '+pp('m').base+'</b> • السنوي بقى <b style="color:#fff">'+pp('y').final+' بدل '+pp('y').base+'</b></p>'):'')+'</div></div>'
+    +'<div class="row"><button class="btn btn-sm '+(view.payPlan!=='q'&&view.payPlan!=='y'?'btn-neon':'')+'" style="flex:1" onclick="view.payPlan=\'m\';render()">شهري ('+pm.final+')</button><button class="btn btn-sm '+(view.payPlan==='q'?'btn-neon':'')+'" style="flex:1" onclick="view.payPlan=\'q\';render()">3 شهور ('+pq.final+')</button><button class="btn btn-sm '+(view.payPlan==='y'?'btn-neon':'')+'" style="flex:1" onclick="view.payPlan=\'y\';render()">سنوي ('+py.final+')</button></div>'
+    +'<p class="sub">1) حوّل <b style="color:#fff">'+planPrice+' جنيه</b> على فودافون كاش: <b style="color:#fff" dir="ltr">'+PAY_VODA+'</b></p>'
+    +'<p class="sub">2) ابعت سكرين التحويل على واتساب مع إيميلك:<br><b style="color:#fff" dir="ltr">'+em+'</b></p>'
+    +'<a class="btn btn-neon btn-block" href="'+wa+'" onclick="couponUse()">ابعت السكرين واتساب</a>'
+    +'<p class="sub" style="margin-top:8px">أول ما التحويل يوصل هنفعّلك الاشتراك (الشهر = 30 يوم من يوم التفعيل).</p>'
+    +'<div class="row"><button class="btn btn-sm" style="flex:1" onclick="loadCloud(function(){render()})">'+icon('check')+' اتفعلت؟ حدّث حالتي</button>'
+    +'<button class="btn btn-sm" style="flex:1" onclick="fbLogout()">خروج</button></div></div>';
+  return h;
+}
+function cloudDoc(){return firebase.firestore().collection('users').doc(fbUser.uid);}
+function stripPhotos(o){
+  try{
+    o.body=(o.body||[]).slice(0,30).map(function(x,i){const c={};for(const k in x)c[k]=x[k];if(i>=5)c.photo='';return c;});
+  }catch(e){}
+  return o;
+}
+function queueCloud(){
+  try{
+    db._u=Date.now();localStorage.setItem('hmfit_v4',JSON.stringify(db));
+  }catch(e){}
+  if(!fbOK||!fbUser)return;
+  clearTimeout(_cloudT);
+  _cloudT=setTimeout(pushCloud,2500);
+}
+function pushCloud(cb){
+  if(!fbOK||!fbUser){if(cb)cb(false);return;}
+  try{
+    const snap=stripPhotos(JSON.parse(JSON.stringify(db)));
+    cloudDoc().collection('data').doc('main').set({db:JSON.stringify(snap),updatedAt:Date.now()},{merge:true})
+      .then(function(){_lastCloud=Date.now();try{localStorage.setItem('hmfit_sync',''+_lastCloud);}catch(e){}if(cb)cb(true);})
+      .catch(function(){if(cb)cb(false);});
+  }catch(e){if(cb)cb(false);}
+}
+function loadCloud(done){
+  done=done||function(){};
+  if(!fbOK||!fbUser){done();return;}
+  const ref=firebase.firestore().collection('users').doc(fbUser.uid);
+  ref.get().then(function(ds){
+    let s=ds.exists?ds.data():null;
+    if(!s||!s.createdAt){
+      const now=Date.now();
+      s={email:fbUser.email,name:fbUser.displayName||'',createdAt:now,trialEnds:now+TRIAL_DAYS*86400000,subUntil:0,blocked:false};
+      ref.set(s,{merge:true}).catch(function(){});
+    }
+    fbSub=s;
+    return ref.collection('data').doc('main').get();
+  }).then(function(dd){
+    try{
+      if(dd&&dd.exists){
+        const c=JSON.parse(dd.data().db||'null');
+        const lu=db._u||0,cu=(c&&(c._u||0))||0;
+        if(c&&cu>lu){
+          const localPhotos={};
+          (db.body||[]).forEach(function(x){if(x&&x.photo)localPhotos[x.ts]=x.photo;});
+          (c.body||[]).forEach(function(x){if(x&&!x.photo&&localPhotos[x.ts])x.photo=localPhotos[x.ts];});
+          db=c;if(!db.profile)db.profile=blankProfile();
+          try{localStorage.setItem('hmfit_v4',JSON.stringify(db));}catch(e){}
+        }
+      }
+    }catch(e){}
+    try{pushCloud();}catch(e){}
+    done();
+  }).catch(function(){done();});
+}
+function fbAccountHTML(){
+  if(!fbOK)return '<p class="sub">وضع أوفلاين — المزامنة محتاجةة نت.</p>';
+  if(!fbUser)return '<p class="sub">مش مسجل دخول.</p>';
+  const st=subState();
+  const sync=(_lastCloud||+localStorage.getItem('hmfit_sync')||0);
+  let h='<div class="kv"><span>الإيميل</span><b style="font-size:12px">'+esc(fbUser.email)+'</b></div>'
+    +'<div class="kv"><span>الحالة</span><b>'+esc(st.label)+'</b></div>'
+    +'<div class="kv"><span>المزامنة</span><b><span class="syncdot" style="background:'+(sync?'var(--neon)':'#ffb74d')+'"></span>'+(sync?('آخر مزامنة: '+new Date(sync).toLocaleString('ar-EG')):'لسه متمتش — افتح النت')+'</b></div>'
+    +'<div class="row"><button class="btn btn-sm" style="flex:1" onclick="pushCloud(function(ok){alert(ok?\'اتزامنت ✓\':\'فشلت — افتح النت وحاول\');render();})">مزامنة دلوقتي</button>'
+    +(isAdmin()?'<button class="btn btn-neon btn-sm" style="flex:1" onclick="go(\'admin\')">لوحة الأدمن</button>':'')
+    +'<button class="btn btn-sm" style="flex:1" onclick="fbLogout()">خروج</button></div>';
+  return h;
+}
+/* ---- لوحة الأدمن ---- */
+function renderAdmin(){
+  if(!isAdmin())return '<div class="card"><div class="empty">ل للأدمن بس.</div></div>';
+  let h='<div class="section-head"><h2>لوحة الأدمن</h2><span class="badge">تحكم كامل</span></div>';
+  h+='<div class="card"><input class="full" id="admQ" placeholder="ابحث بإيميل المشترك…" value="'+esc(view.admQ||'')+'" oninput="view.admQ=this.value;adminFilter()">'
+    +'<div class="row"><button class="btn btn-neon btn-sm" style="flex:1" onclick="adminLoad()">تحديث القايمة</button></div><div id="admList"><p class="muted">جاري التحميل…</p></div></div>';
+  h+='<div class="card"><h3>أكواد الخصم</h3><p class="sub">اعمل كود ووزعه — المستخدم يكتبه في شاشة الاشتراك وياخد الخصم تلقائي، من غير ما تغير أي حاجة في الكود.</p>'
+    +'<div class="row"><input class="full" id="cpCode" style="flex:1" placeholder="الكود (مثال: RAMADAN20)"><select id="cpType"><option value="pct">% نسبة</option><option value="flat">جنيه ثابت</option></select></div>'
+    +'<div class="row"><input class="w" style="flex:1" type="number" id="cpVal" placeholder="القيمة (20 = 20% أو 20 جنيه)"><select id="cpPlan" style="flex:1"><option value="both">كل الباقات</option><option value="m">شهري بس</option><option value="q">3 شهور بس</option><option value="y">سنوي بس</option></select><input class="w" style="flex:1" type="number" id="cpMax" placeholder="عدد مرات (فاضي = بلا حد)"></div>'
+    +'<button class="btn btn-neon btn-sm btn-block" onclick="couponCreate()">إنشاء الكود</button><div id="cpnList"><p class="muted">جاري التحميل…</p></div></div>';
+  h+='<div class="card"><h3>الأسعار المعروضة</h3><p class="sub">الشغال دلوقتي: شهري '+PRICE_M()+' • 3 شهور '+pp('q').final+' • سنوي '+PRICE_Y()+' (بدل '+WAS_Y+') ('+curPrices().tag+') • الدفع: فودافون كاش '+PAY_VODA+'</p></div>';
+  h+='<button class="btn" onclick="go(\'more\')">'+icon('back')+' رجوع</button>';
+  setTimeout(adminLoad,50);
+  return h;
+}
+function admStatus(s){
+  if(!s||!s.createdAt)return 'جديد';
+  if(s.blocked)return '⛔ موقوف';
+  const now=Date.now();
+  if(s.subUntil&&now<s.subUntil)return '✅ مشترك حتى '+new Date(s.subUntil).toLocaleDateString('ar-EG');
+  if(s.trialEnds&&now<s.trialEnds)return '🆓 تجربة ('+Math.max(1,Math.ceil((s.trialEnds-now)/86400000))+' أيام)';
+  return '⌛ منتهي';
+}
+function adminLoad(){
+  const box=document.getElementById('admList');if(!box)return;
+  box.innerHTML='<p class="muted">جاري التحميل…</p>';
+  firebase.firestore().collection('users').orderBy('createdAt','desc').limit(200).get().then(function(q){
+    const arr=[];q.forEach(function(d){const o=d.data()||{};o._id=d.id;arr.push(o);});
+    view.admUsers=arr;adminFilter();
+    firebase.firestore().collection('coupons').orderBy('createdAt','desc').limit(100).get().then(function(q){const a=[];q.forEach(function(d){const o=d.data()||{};o._id=d.id;a.push(o);});renderCoupons(a);}).catch(function(){const b=document.getElementById('cpnList');if(b)b.innerHTML='<p class="muted">فشل تحميل الأكواد</p>';});
+  }).catch(function(e){box.innerHTML='<p class="muted">فشل التحميل: '+esc(e&&e.message)+'</p>';});
+}
+function adminFilter(){
+  const box=document.getElementById('admList');if(!box||!view.admUsers)return;
+  const q=(view.admQ||'').trim().toLowerCase();
+  const arr=view.admUsers.filter(function(o){return !q||(o.email||'').toLowerCase().indexOf(q)>-1;});
+  if(!arr.length){box.innerHTML='<p class="muted">مفيش نتائج</p>';return;}
+  box.innerHTML='<p class="sub">'+arr.length+' مشترك</p>'+arr.map(function(o){
+    const id=o._id;
+    return '<div class="admrow"><span class="grow" style="flex:1;min-width:150px"><b style="font-size:13px">'+esc(o.email||'؟')+'</b><br><span class="muted" style="font-size:11.5px">'+esc(o.name||'')+' • '+esc(admStatus(o))+'</span></span>'
+    +'<button class="btn btn-sm" onclick="adminAct(\''+id+'\',\'month\')">شهر</button>'
+    +'<button class="btn btn-sm" onclick="adminAct(\''+id+'\',\'quarter\')">3 شهور</button>'
+    +'<button class="btn btn-sm" onclick="adminAct(\''+id+'\',\'year\')">سنة</button>'
+    +'<button class="btn btn-sm" onclick="adminAct(\''+id+'\',\'block\')">'+(o.blocked?'فك':'وقف')+'</button></div>';
+  }).join('');
+}
+function couponCreate(){
+ const c=function(id){const e=document.getElementById(id);return e?e.value.trim():'';};
+ const code=c('cpCode').toUpperCase().replace(/\s+/g,'');
+ const val=parseFloat(c('cpVal')),typ=c('cpType')||'pct';
+ if(!code||!(val>0))return alert('اكتب الكود والقيمة الأول');
+ if(typ==='pct'&&val>=100)return alert('النسبة لازم أقل من 100');
+ const mx=parseInt(c('cpMax'))||0;
+ firebase.firestore().collection('coupons').doc(code).set({type:typ,value:val,plan:c('cpPlan')||'both',maxUses:mx,used:0,active:true,createdAt:Date.now()}).then(function(){alert('الكود '+code+' اتعمل ✅');adminLoad();}).catch(function(e){alert('فشل: '+(e&&e.message));});
+}
+function couponToggle(code,on){firebase.firestore().collection('coupons').doc(code).set({active:on},{merge:true}).then(function(){adminLoad();});}
+function couponDel(code){if(!confirm('مسح الكود '+code+' نهائي؟'))return;firebase.firestore().collection('coupons').doc(code).delete().then(function(){adminLoad();});}
+function renderCoupons(arr){
+ const box=document.getElementById('cpnList');if(!box)return;
+ if(!arr.length){box.innerHTML='<p class="muted">لسه مفيش أكواد — اعمل أول كود من فوق.</p>';return;}
+ box.innerHTML='<p class="sub">'+arr.length+' كود</p>'+arr.map(function(o){
+  const left=o.maxUses>0?(o.maxUses-(o.used||0))+' متبقي':'مفتوح';
+  return '<div class="admrow"><span style="flex:1;min-width:140px"><b dir="ltr">'+esc(o._id)+'</b><br><span class="muted" style="font-size:11.5px">'+(o.type==='pct'?o.value+'%':o.value+' جنيه')+' • '+(o.plan==='m'?'شهري':o.plan==='q'?'3 شهور':o.plan==='y'?'سنوي':'كل الباقات')+' • استُخدم '+(o.used||0)+' • '+left+' • '+(o.active?'🟢 شغال':'🔴 موقوف')+'</span></span>'
+  +'<button class="btn btn-sm" onclick="couponToggle(\''+esc(o._id)+'\','+(!o.active)+')">'+(o.active?'إيقاف':'تشغيل')+'</button>'
+  +'<button class="btn btn-sm" onclick="couponDel(\''+esc(o._id)+'\')">مسح</button></div>';
+ }).join('');
+}
+function adminAct(uid,act){
+  const ref=firebase.firestore().collection('users').doc(uid);
+  ref.get().then(function(ds){
+    const o=ds.exists?ds.data():{};
+    const now=Date.now(),D=86400000;
+    let u={};
+    if(act==='month')u={subUntil:Math.max(now,o.subUntil||0)+30*D,blocked:false};
+    if(act==='quarter')u={subUntil:Math.max(now,o.subUntil||0)+90*D,blocked:false};
+    if(act==='year')u={subUntil:Math.max(now,o.subUntil||0)+365*D,blocked:false};
+    if(act==='block')u={blocked:!o.blocked};
+    const label=act==='month'?'تفعيل شهر لـ ':act==='quarter'?'تفعيل 3 شهور لـ ':act==='year'?'تفعيل سنة لـ ':'تغيير حالة ';
+    if(!confirm(label+(o.email||uid)+'؟'))return;
+    return ref.set(u,{merge:true});
+  }).then(function(){adminLoad();}).catch(function(e){alert('فشل: '+(e&&e.message));});
+}
+
 /* ============ التشغيل ============ */
 (function boot(){
   try{
@@ -1163,11 +1441,12 @@ function renderLib(){
     const pkc=document.getElementById('pkClose');if(pkc){pkc.innerHTML=icon('x');pkc.onclick=closePicker;}
     const pkOv=document.getElementById('picker');if(pkOv)pkOv.onclick=function(e){if(e.target===pkOv)closePicker();};
     try{if('serviceWorker' in navigator&&window.location&&window.location.protocol==='https:'){navigator.serviceWorker.register('sw.js').catch(function(){});}}catch(e){}
+    try{if(typeof fbInit==='function')fbInit();}catch(e){}
     render();setTimeout(lazyWatch,30);
   }catch(err){
     const d=document.getElementById('errbox');if(d){d.style.display='block';d.textContent='عطل في التشغيل: '+(err&&err.message)+' — خد سكرين شوت وابعته';}
   }
 })();
 </script>
-<script>window.__CF$cv$params={r:'a5e3d40c599c4912',t:'MTc5NTMwNzQ1NQ==',u:'01a200a9c53b721392ade6e08f9c2a61',ut:'SaqNOUdYLKJk6ZcZjj9o7QEKUuDmw_wXE2U6CglytK8-1795307455-1.2.1.1-dGZb4qtyviWQAAZHNblyzAtaCPRA_sqFTeHA4d2AhnnH31hlIUAN4eXHWGdXnp6my3WnWgoVRX1CzS6hzRz3XI9VesDzvg5IMnY3cFFV75A',i:60};(function(){if(!document.body)return;var l=window.location,o;try{o=new URL(l.origin).origin}catch(e){try{o=new URL(new URL(l.href).origin).origin}catch(e){o=''}}var u='/cdn-cgi/challenge-platform/scripts/precursor/main.js?ray=a5e3d40c599c4912',s=document.createElement('script');s.src=o?new URL(u,o).href:u;document.head.appendChild(s);})();</script></body>
+<script>window.__CF$cv$params={r:'a5e9b1b78bc498d2',t:'MTc5NTM2ODk2Mw==',u:'01a204545036756aa8cd0f39a7e2c65e',ut:'eF205WBWYGJ4.rNV3zleq7olmhkRVl3mANdKeVTgwFM-1795368964-1.2.1.1-MyXbRnXXtQgAk8fGThI3_5Kb8coingTeHYQyGixlQoq.gNV3BrBtIwrrCsD0lw4Je4TTEvzBf9p55CAUyMyxQHyPfOAwrcFUHTw0.I92rys',i:60};(function(){if(!document.body)return;var l=window.location,o;try{o=new URL(l.origin).origin}catch(e){try{o=new URL(new URL(l.href).origin).origin}catch(e){o=''}}var u='/cdn-cgi/challenge-platform/scripts/precursor/main.js?ray=a5e9b1b78bc498d2',s=document.createElement('script');s.src=o?new URL(u,o).href:u;document.head.appendChild(s);})();</script></body>
 </html>
