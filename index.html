@@ -208,7 +208,7 @@ window.addEventListener('error',function(e){var d=document.getElementById('errbo
 <script>
 'use strict';
 /* ============ HM Fit v4 — النسخة النيون ============ */
-const VER='5.3.0';
+const VER='5.4.0';
 const GOALS={lose:'تخسيس',same:'ثبات',gain:'زيادة'};
 const ICONS={
 home:'<path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V21h5v-6h4v6h5V9.5"/>',
@@ -932,7 +932,7 @@ function render(){
   if(v==='home'){
     navOn('nav-home');
     const ti=todayIdx();
-    let h='';
+    let h=installCard();
     if(db.program&&ti>=0){
       const d=db.program.days[ti];
       h+='<div class="workout-cta" onclick="go(\'trainday\',{did:\''+d.id+'\'})"><div class="big">جاهز تتمرن النهارده؟<small>'+esc(d.name)+' • '+d.exercises.length+' تمرين — دوس وابدأ التسجيل</small></div><div class="go">'+icon('play')+'</div></div>';
@@ -1257,6 +1257,7 @@ function fbGate(){
       +'<h2>أهلاً بيك في <i style="color:var(--neon);font-style:normal">HM Fit</i></h2>'
       +'<p class="muted">سجّل دخول بجوجل عشان بياناتك تتحفظ في السحابة وتكمل من أي جهاز.<br>أول '+TRIAL_DAYS+' أيام تجربة مجانية.</p>'
       +'<button class="btn btn-neon btn-block" onclick="googleLogin()">'+icon('play')+' دخول بجوجل</button>'
+      +installCard()
       +'<p class="muted" style="font-size:11px">بالدخول انت موافق إن بيانات تمرينك تتخزن على حسابك.</p></div></div>';
   }
   const st=subState();
@@ -1360,6 +1361,17 @@ function fbAccountHTML(){
 /* ---- جهاز المستخدم (كشف التحايل) ---- */
 function getDevId(){try{let d=localStorage.getItem('hmfit_dev');if(!d){d=uid()+uid();localStorage.setItem('hmfit_dev',d);}return d;}catch(e){return 'web';}}
 function sharedDev(o){try{if(!view.devCount||!o.devices)return false;return o.devices.some(function(d){return (view.devCount[d]||0)>1;});}catch(e){return false;}}
+/* ---- كارت التثبيت (أندرويد / آيفون) ---- */
+function isIOS(){try{return /iPad|iPhone|iPod/.test(navigator.userAgent)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1);}catch(e){return false;}}
+function isStandalone(){try{return (window.matchMedia&&window.matchMedia('(display-mode: standalone)').matches)||window.navigator.standalone===true;}catch(e){return false;}}
+function installCard(){
+ if(isStandalone())return '';
+ try{if(db.profile.instHide)return '';}catch(e){}
+ let steps='';
+ if(isIOS())steps='<p class="sub">1) افتح اللينك في متصفح <b style="color:#fff">سفاري</b> (لو فاتحه من واتساب: دوس <b style="color:#fff">⋯</b> واختار «فتح في سفاري»)</p><p class="sub">2) دوس زرار <b style="color:#fff">المشاركة ⎙</b> تحت (المربع اللي طالع منه سهم)</p><p class="sub">3) انزل ودوس <b style="color:#fff">«إضافة إلى الشاشة الرئيسية»</b> ← إضافة — وهتلاقي أيقونة HM Fit على شاشتك وتفتح ملء الشاشة</p>';
+ else steps='<p class="sub">1) افتح اللينك في متصفح <b style="color:#fff">كروم</b> (مش من جوه واتساب)</p><p class="sub">2) دوس <b style="color:#fff">⋮</b> فوق ← <b style="color:#fff">«تثبيت التطبيق»</b> (أو «إضافة إلى الشاشة الرئيسية») ← تثبيت</p><p class="sub">3) افتح أيقونة <b style="color:#fff">HM Fit</b> من شاشتك — هتفتح ملء الشاشة وتشتغل أوفلاين</p>';
+ return '<div class="card glow"><div class="section-head" style="margin:0 0 4px"><h2>\uD83D\uDCF2 ثبّت التطبيق على شاشتك</h2></div>'+steps+'<button class="btn btn-sm" onclick="try{db.profile.instHide=1;save();}catch(e){}render()">تمام، ثبّته — اخفي الرسالة</button></div>';
+}
 /* ---- رسالة الترحيب + الباقات ---- */
 function offerTitle(){const n=Date.now();if(n<=P1_END)return'\uD83D\uDD25 أوفر حتى 25 ديسمبر';if(n<=P2_END)return'\uD83D\uDD25 أوفر حتى 10 يناير';return'باقات HM Fit';}
 function welcomeCard(){
@@ -1482,5 +1494,5 @@ function adminAct(uid,act){
   }
 })();
 </script>
-<script>window.__CF$cv$params={r:'a5e9d81f9ec4b618',t:'MTc5NTM3MDUzNg==',u:'01a2046c515c704fb18df441fde52173',ut:'0kAV9GhOqQuVeTzuNY1o7UOshhnpBDv2FR9ms_RvfZs-1795370537-1.2.1.1-jz_3L8liuRzYsnnQonC41G4wbTUlfRO2TKA2KP.1k0JQ5Q3UElHXsYvu7ZqW5yXn5ss0WhqBJ1lgq_nS43ySo.ncBcHORAwpdOiCcO4e1Zg',i:60};(function(){if(!document.body)return;var l=window.location,o;try{o=new URL(l.origin).origin}catch(e){try{o=new URL(new URL(l.href).origin).origin}catch(e){o=''}}var u='/cdn-cgi/challenge-platform/scripts/precursor/main.js?ray=a5e9d81f9ec4b618',s=document.createElement('script');s.src=o?new URL(u,o).href:u;document.head.appendChild(s);})();</script></body>
+<script>window.__CF$cv$params={r:'a5e9ee9cb947f519',t:'MTc5NTM3MTQ1OA==',u:'01a2047a602d706b9146dcac60e39382',ut:'zXC.AfVuJsMSER1jHl3kfaYcGlZz2bPqIhHEHmElLrk-1795371458-1.2.1.1-4rEmmvVmkRoOfVCk1KxV7VS7ZMFi_6.y.zfrz7M.Q1ty5CsZgvU3X5JENM3jiwsskJ9PkCxyARan.5C_z3Mzn3Nfl17Y0vHK6WJdqGQhOT8',i:60};(function(){if(!document.body)return;var l=window.location,o;try{o=new URL(l.origin).origin}catch(e){try{o=new URL(new URL(l.href).origin).origin}catch(e){o=''}}var u='/cdn-cgi/challenge-platform/scripts/precursor/main.js?ray=a5e9ee9cb947f519',s=document.createElement('script');s.src=o?new URL(u,o).href:u;document.head.appendChild(s);})();</script></body>
 </html>
