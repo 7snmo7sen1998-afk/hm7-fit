@@ -182,8 +182,22 @@ select{color:#fff}
 .repchips{display:flex;gap:6px;margin:2px 0 6px}
 .btn-danger{background:linear-gradient(135deg,#ef4444,#f87171);border:0;color:#2a0a0a;box-shadow:0 0 24px rgba(239,68,68,.35)}
 #sheetIn{width:100%;text-align:right;margin:6px 0}
+.planchips{display:flex;gap:6px;margin:6px 0;flex-wrap:wrap}
+.planchip{flex:1;min-width:70px;text-align:center;font-size:12.5px;font-weight:800;padding:7px 4px;border-radius:10px;background:rgba(255,255,255,.05);border:1px solid var(--line2);color:var(--muted)}
+.planchip.on{background:rgba(0,230,118,.18);border-color:var(--neon);color:#c9f5da;box-shadow:0 0 12px rgba(0,230,118,.3)}
+.affhead{display:flex;align-items:center;gap:8px;background:rgba(0,230,118,.06);border:1px solid var(--line2);border-radius:14px;padding:10px;margin:8px 0;cursor:pointer}
+.statgrid3{display:flex;gap:6px;margin:6px 0}
+.statgrid3 div{flex:1;text-align:center;background:rgba(255,255,255,.04);border-radius:10px;padding:6px 2px;font-size:12px}
 .adot{position:absolute;top:8px;inset-inline-start:14px;width:10px;height:10px;border-radius:50%;background:#ff5252;box-shadow:0 0 8px #ff5252}
 nav button{position:relative}
+.cardio-banner{position:relative;border-radius:20px;overflow:hidden;margin-bottom:14px;cursor:pointer;border:1px solid var(--line2);box-shadow:0 12px 30px rgba(0,0,0,.35)}
+.cardio-banner img{width:100%;height:130px;object-fit:cover;display:block}
+.cardio-banner .ov{position:absolute;inset:0;background:linear-gradient(to top,rgba(4,8,7,.92) 10%,rgba(4,8,7,.15) 70%);display:flex;align-items:flex-end;gap:10px;padding:12px 14px}
+.cardio-banner .ov b{font-size:19px;font-weight:900;display:block}
+.cardio-banner .ov small{font-size:12px;color:var(--muted)}
+.cardio-banner .go{width:44px;height:44px;flex:none;border-radius:50%;background:linear-gradient(135deg,var(--neon),var(--neon2));display:flex;align-items:center;justify-content:center;color:#04120a}
+#cdone{font-size:15px;font-weight:800;color:var(--neon2)}
+select.w{min-height:44px}
 .repchips button{flex:1;background:rgba(0,230,118,.08);border:1px solid var(--line2);color:var(--neon2);border-radius:10px;padding:7px 0;font-size:14px;font-weight:800;font-family:inherit}
 .wmodal .sheet{background:#0d1512;border:2px solid var(--neon);border-radius:24px;max-width:420px;width:100%;padding:22px;text-align:center;box-shadow:0 0 40px rgba(0,230,118,.35);max-height:88vh;overflow:auto}
 </style>
@@ -217,7 +231,7 @@ window.addEventListener('error',function(e){var d=document.getElementById('errbo
 <script>
 'use strict';
 /* ============ HM Fit v4 — النسخة النيون ============ */
-const VER='5.7.0';
+const VER='6.2.0';
 const GOALS={lose:'تخسيس',same:'ثبات',gain:'زيادة'};
 const ICONS={
 home:'<path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V21h5v-6h4v6h5V9.5"/>',
@@ -304,9 +318,9 @@ const LIB=[
 ['باي',[['باي بار مستقيم','واقف والبار المستقيم في إيدك وراحة الإيد لقدام. كوعك لازق في جنبك واطلع بالبار لفوق وانزل للآخر.'],['باي بار متعرج','نفس المستقيم بس بالبار المتعرج (EZ) — القبضة مريحة أكتر للرسغ. اطلع وانزل للآخر.'],['باي دمبل بالتبادل','واقف ودمبل في كل إيد. اطلع بدراع واحدة ونزّل التانية بالتبادل، ولف رسغك وانت طالع.'],['باي هامر','واقف ودمبل في كل إيد بالقبضة المحايدة (راحة الإيد لجوه زي المطرقة). اطلع لفوق وكوعك ثابت في جنبك وانزل ببطء للآخر.'],['باي بريتشر','دراعك على مسند البريتشر وماسك البار أو الدمبل. اطلع وانزل للآخر بوزن معتدل من غير ما تحدف.'],['باي كابل','واقف قدام الكابل السفلي وماسك البار المستقيم أو الحبل. اسحب لفوق وكوعك لازق في جنبك، وانزل للآخر ببطء.'],['باي تركيز','قاعد وكوعك ساند على فخدك من جوه وماسك الدمبل. اطلع بتركيز وانزل ببطء للآخر.'],['باي مقعد مائل','قاعد على كرسي مائل 45 درجة والدمبل مدلدل لتحت. اطلع وانزل للآخر — الوضعية دي بتطوّل الرأس الطويلة.']]],
 ['تراي',[['تراي حبل','الكابل فوق وماسك الحبل (المقبض الحبلي) بإيديك الاتنين وكوعك لازق في جنبك. افرد دراعك لتحت وافتح الحبل في الآخر واعصر التراي.'],['تراي بار كابل','واقف قدام الكابل وماسك البار المستقيم بإيديك الاتنين وكوعك لازق في جنبك. اسحب البار لتحت لحد ما دراعك تتفرد تمامًا.'],['تراي خلف الرأس دمبل','الدمبل ورا راسك بإيد واحدة أو اتنين. افرد دراعك لفوق من غير ما يتحرك كوعك.'],['سكال كراشر','نام على ضهرك وماسك البار المتعرج (EZ) فوق وشك. نزّل البار لجبهتك بتحريك الساعد بس وافرد لفوق — بوزن معتدل، ولو كوعك بيوجعك استبدله بخلف الرأس دمبل.'],['ضغط ضيق','نام على البنش وامسك البار بقبضة بعرض الكتف (مش أضيق). انزل بصدرك وادفع لفوق — القبضة الأضيق من كده بتوجع الرسغ والكوع.'],['ديبس مقعد','إيدك على البنش وراك ورجلك قدامك. انزل لحد ما كوعك 90 درجة بس (متنزلش للآخر) واطلع — النزول العميق بيضغط على الكتف الأمامي.'],['كيك باك','ميّل جسمك لقدام وضهرك مفرود ودمبل في إيدك وكوعك متني لورا عند وسطك. افرد دراعك لورا بالكامل واعصر التراي فوق.'],['تراي جهاز','قاعد في جهاز التراي وماسك المقبض. ادفع المقبض لتحت لحد الفرد ورجّع ببطء.']]],
 ['رجل',[['سكوات بار','البار الحر على كتفك الخلفي ورجلك أوسع من الكتف بشوية. انزل لحد ما فخدك يوازي الأرض (أو لتحت لو تقدر) وضهرك مفرود، واطلع.'],['سكوات أمامي','البار قدام كتفك على الترقوة وكوعك لفوق. انزل بضهر مفرود تمامًا واطلع.'],['هاك سكوات','ضهرك لازق في مسند الجهاز ورجلك على البليت. انزل واطلع من غير ما ركبك تعدي مشط رجلك.'],['ليج بريس','قاعد ورجلك على البليت أوسع من الكتف. نزّل البليت لتحت وادفع لفوق من غير ما تفرد ركبك للآخر.'],['ليج اكستنشن','قاعد والرول على مشط رجلك. افرد رجلك لفوق وثبّت ثانية فوق وانزل ببطء.'],['ليج كيرل نائم','نايم على بطنك والرول ورا كعبك. اتني رجلك لفوق لورا وانزل ببطء.'],['ليج كيرل جلوس','قاعد في الجهاز ومتثبت. اتني رجلك لتحت بتحكم للآخر — أحسن من النائم للنمو.'],['رومانيان ديدلفت','واقف والبار أو الدمبل في إيدك ورجلك شبه مفرودة. ادفع وركك لورا وانزل بالوزن لحد نص الساق (البار قريب من رجلك) وضهرك مفرود، وارجع — الفرق عن الديدلفت إن الوزن مش بينزل الأرض.'],['لانجز دمبل','واقف ودمبل في كل إيد. خد خطوة لقدام وانزل بركبتك الخلفية لتحت (90 درجة) وارجع. بدّل الرجلين.'],['بلغاري سبليت سكوات','رجل ورا على البنش ورجل قدامك. انزل باللي قدام واطلع — من أقوى تمارين الرجل الأمامية.'],['هيب ثرست','كتفك على البنش ورجلك على الأرض والبار على وسطك. ادفع وسطك لفوق واعصر الجلوتس فوق.'],['سمانة واقف','واقف على مشط رجلك على درجة (كعبك في الهوا). اطلع لفوق على قد ما تقدر وانزل للآخر ببطء.'],['سمانة جلوس','قاعد في جهاز السمانة والوزن على فخادك. اطلع على مشط رجلك وانزل للآخر ببطء.'],['تقريب جهاز','اقعد في جهاز التقريب (رجلك بره المساند). سكّر رجلك لبعض ببطء واعصر الفخد الداخلي، وارجع بتحكم.']]],
-['بطن',[['كرانش','نامي على ضهرك ورجلك متنية وإيدك ورا راسك من غير شد. اطلعي بكتفك لفوق.'],['رفع رجل معلق','متعلقة على البار ورجلك مدلدلة. ارفعي رجلك لفوق لحد 90 درجة (أو ركبك لصدرك) وانزلي ببطء.'],['بلانك','على كوعك ومشط رجلك وجسمك خط واحد من الراس للكعب. ثبّتي بطنك مشدودة ومتنزليش وسطك.'],['كرانش كابل','راكعة قدام الكابل وماسكاه ورا راسك. انزلي بصدرك لتحت واعصري بطنك.'],['روسيان تويست','قاعدة ورجلك مرفوعة (أو على الأرض) وماسكة وزن. لفي وسطك يمين وشمال.'],['عجلة البطن','على ركبك وماسكة العجلة بإيديك الاتنين. افردي لقدام على قد ما تقدري وارجعي ببطنك مش بضهرك.'],['رفع رجل أرضي','نامي على ضهرك وارفعي رجلك المفرودة لفوق وانزلي ببطء من غير ما ضهرك يقوّس.'],['سايد بلانك','على جنبك على كوع واحد ورجلك فوق بعض. جسمك خط واحد وثبّتي الجنب مشدود.']]],
+['بطن',[['كرانش','نام على ضهرك ورجلك متنية وإيدك ورا راسك من غير شد. اطلع بكتفك لفوق.'],['رفع رجل معلق','متعلق على البار ورجلك مدلدلة. ارفع رجلك لفوق لحد 90 درجة (أو ركبك لصدرك) وانزل ببطء.'],['بلانك','على كوعك ومشط رجلك وجسمك خط واحد من الراس للكعب. ثبّت بطنك مشدودة ومتنزّلش وسطك.'],['كرانش كابل','راكع قدام الكابل وماسكه ورا راسك. انزل بصدرك لتحت واعصر بطنك.'],['روسيان تويست','قاعد ورجلك مرفوعة (أو على الأرض) وماسك وزن. لف وسطك يمين وشمال.'],['عجلة البطن','على ركبك وماسك العجلة بإيديك الاتنين. افرد لقدام على قد ما تقدر وارجع ببطنك مش بضهرك.'],['رفع رجل أرضي','نام على ضهرك وارفع رجلك المفرودة لفوق وانزل ببطء من غير ما ضهرك يقوّس.'],['سايد بلانك','على جنبك على كوع واحد ورجلك فوق بعض. جسمك خط واحد وثبّت الجنب مشدود.']]],
 ['ترابيس وساعد',[['شراغز بار','واقف وماسك البار بإيديك الاتنين جنبك. ارفع كتفك لفوق ناحية ودنك من غير ما تتني كوعك، وثبّت ثانية ونزّل ببطء.'],['شراغز دمبل','واقف ودمبل تقيل في كل إيد جنبك. ارفع كتفك لفوق على قد ما تقدر ونزّل ببطء — متحركش دراعك.'],['ساعد بار','قاعد وساعدك على فخدك أو بنش وماسك البار وراحة إيدك لفوق. اطلع بالبار لرسغك لفوق وانزل للآخر ببطء.'],['ساعد عكسي','نفس الساعد بس راحة الإيد لتحت وماسك البار أو الدمبل. اطلع وانزل بتحكم — بيقوّي الساعد الخارجي.']]],
-['كارديو',[['مشي على السير','مشي سريع 20-30 دقيقة.'],['جري','جري متوسط الشدة للإحماء أو التخسيس.'],['دراجة ثابتة','بدّل بمقاومة متوسطة 20 دقيقة.'],['إليبتكال','حركة كاملة إيد ورجل 20 دقيقة.'],['حبل نط','3 جولات دقيقة مع راحة.'],['تجديف','اقعد في جهاز التجديف (أو الكابل) وامسك المقبض. ادفع برجلك واسحب المقبض لصدرك مع بعض، وارجع بتحكم.']]]
+['كارديو',[['مشي على السير','مشي سريع 20-30 دقيقة.'],['جري','جري متوسط الشدة للإحماء أو التخسيس.'],['دراجة ثابتة','بدّل بمقاومة متوسطة 20 دقيقة.'],['إليبتكال','حركة كاملة إيد ورجل 20 دقيقة.'],['حبل نط','3 جولات دقيقة مع راحة.'],['تجديف','اقعد في جهاز التجديف (أو الكابل) وامسك المقبض. ادفع برجلك واسحب المقبض لصدرك مع بعض، وارجع بتحكم.'],['جامبنج جاكس','نط مع فتح الرجلين ورفع الإيدين لفوق زي الرفرفة الجانبي، وانزل لجنب جسمك — وكرر بإيقاع ثابت.'],['هاي نيز','اجري في مكانك وارفع ركبتك لفوق لحد ما تقرب من إيدك، والإيد التانية بتتحرك زي الجري — وبدّل بسرعة.'],['قفز تبديلي','نط وبدّل: رجل قدام ورجل ورا، مع رفع الإيدين تبادلي لقدام — وانزل سوفت وكرر.']]]
 ];
 function libMuscles(){return LIB.map(function(x){return x[0];});}
 /* ============ نوافذ التطبيق (بدل رسائل المتصفح) ============ */
@@ -327,7 +341,6 @@ let pk={q:'',m:'الكل',items:[]};
 let pkMode='day';
 function addEx(){pkMode='day';openPicker();}
 function addWEx(){pkMode='weights';openPicker();}
-let renameTarget=null;
 function openPicker(){
   document.getElementById('pkTitle').textContent='اختار التمرين';
   const qq=document.getElementById('pkQ');qq.style.display='';qq.placeholder='ابحث عن تمرين… أو اكتب اسم جديد';
@@ -341,15 +354,19 @@ function openPicker(){
 const _lbCache={};
 function openLb(name){const t=document.getElementById('lbT'),im=document.getElementById('lbI'),dd=document.getElementById('lbD');if(t)t.textContent=name;if(im){im.alt=name;const full=exSrc(name,true);im.src=full;if(full&&!_lbCache[full]){const f=new Image();f.onload=function(){_lbCache[full]=1;};f.src=full;}}if(dd)dd.textContent=libDesc(name)||'';const x=document.getElementById('lbX');if(x){x.innerHTML=icon('x');x.onclick=closeLb;}document.getElementById('lb').style.display='flex';}
 function closeLb(){document.getElementById('lb').style.display='none';}
+const EXEN={"بنش مستوي بار":"Flat Barbell Bench Press","بنش مستوي دمبل":"Flat Dumbbell Bench Press","بنش منخفض":"Decline Bench Press","بنش جهاز":"Machine Chest Press","فلاي دمبل":"Dumbbell Fly","فلاي كابل":"Cable Fly","فلاي جهاز":"Machine Fly (Pec Deck)","كروس أوفر كابل":"Cable Crossover","ضغط صدر جهاز":"Seated Chest Press","متوازي للصدر":"Chest Dip","بول أوفر دمبل":"Dumbbell Pullover","العقلة":"Pull-Up","سحب علوي واسع":"Wide Lat Pulldown","سحب علوي ضيق":"Close-Grip Lat Pulldown","سحب أرضي كابل":"Seated Cable Row","رو بار منحني":"Bent-Over Barbell Row","رو دمبل":"One-Arm Dumbbell Row","تي بار رو":"T-Bar Row","سحب أمامي بذراع مفرودة":"Straight-Arm Pulldown","ديدلفت":"Deadlift","هايبر اكستنشن":"Hyperextension","ضغط أكتاف دمبل":"Seated Dumbbell Shoulder Press","ضغط أكتاف بار قاعد":"Seated Barbell Overhead Press","ضغط أكتاف جهاز":"Machine Shoulder Press","رفرفة جانبي دمبل":"Dumbbell Lateral Raise","رفرفة جانبي كابل":"Cable Lateral Raise","رفرفة أمامي":"Front Raise","رفرفة خلفي منحني":"Bent-Over Rear Delt Fly","فيس بول":"Face Pull","أرنولد برس":"Arnold Press","سحب بار للذقن":"Upright Row","باي بار مستقيم":"Straight Bar Curl","باي دمبل بالتبادل":"Alternating Dumbbell Curl","باي هامر":"Hammer Curl","باي بريتشر":"Preacher Curl","باي تركيز":"Concentration Curl","باي مقعد مائل":"Incline Dumbbell Curl","تراي حبل":"Rope Pushdown","تراي بار كابل":"Straight-Bar Pushdown","تراي خلف الرأس دمبل":"Overhead Dumbbell Extension","سكال كراشر":"Skull Crusher","ضغط ضيق":"Close-Grip Bench Press","ديبس مقعد":"Bench Dip","كيك باك":"Triceps Kickback","تراي جهاز":"Machine Triceps Extension","سكوات بار":"Barbell Back Squat","سكوات أمامي":"Front Squat","هاك سكوات":"Hack Squat","ليج بريس":"Leg Press","ليج اكستنشن":"Leg Extension","ليج كيرل نائم":"Lying Leg Curl","ليج كيرل جلوس":"Seated Leg Curl","رومانيان ديدلفت":"Romanian Deadlift","لانجز دمبل":"Dumbbell Lunge","هيب ثرست":"Hip Thrust","سمانة واقف":"Standing Calf Raise","سمانة جلوس":"Seated Calf Raise","كرانش":"Crunch","رفع رجل معلق":"Hanging Leg Raise","بلانك":"Plank","كرانش كابل":"Cable Crunch","روسيان تويست":"Russian Twist","عجلة البطن":"Ab Wheel Rollout","رفع رجل أرضي":"Lying Leg Raise","سايد بلانك":"Side Plank","بنش عالي بار":"Incline Barbell Bench Press","بنش عالي دمبل":"Incline Dumbbell Bench Press","بوش أب":"Push-Up","باي بار متعرج":"EZ-Bar Curl","باي كابل":"Cable Curl","بلغاري سبليت سكوات":"Bulgarian Split Squat","رو جهاز":"Machine Row","بنش عالي جهاز":"Incline Machine Press","رفرفة خلفي جهاز":"Machine Rear Delt Fly","شراغز بار":"Barbell Shrug","شراغز دمبل":"Dumbbell Shrug","ساعد بار":"Barbell Wrist Curl","ساعد عكسي":"Reverse Wrist Curl","مشي على السير":"Treadmill Walk","جري":"Running","دراجة ثابتة":"Stationary Bike","إليبتكال":"Elliptical","حبل نط":"Jump Rope","تجديف":"Rowing Machine","تقريب جهاز":"Hip Adduction Machine","جامبنج جاكس":"Jumping Jacks","هاي نيز":"High Knees","قفز تبديلي":"Split Jacks"};
+function exEN(n){return EXEN[n]||n;}
+function exShow(e){return '<span class="exname" dir="ltr" style="text-align:right">'+esc(exEN(e.name))+'<br><span class="meta" style="font-size:11.5px;color:var(--muted)" dir="rtl">'+esc(e.ar||e.name)+'</span></span>';}
+function exName(e){return (e.ar||e.name);}
 function exThumb(name){const u=exSrc(name,false);if(u)return '<img class="exthumb" loading="lazy" decoding="async" width="52" height="52" src="'+u+'" onerror="this.style.display=\'none\'" alt="" onclick="event.stopPropagation();openLb(\''+name.replace(/'/g,"\\'")+'\')">';return '<span class="thumb exthumb fallback">'+icon('gym')+'</span>';}
 function closePicker(){document.getElementById('picker').style.display='none';}
 function pkRender(){
   const chips=document.getElementById('pkChips');
   chips.innerHTML=['الكل'].concat(libMuscles()).map(function(m){return '<button class="chip '+(pk.m===m?'on':'')+'" onclick="pkSetM(\''+m+'\')">'+m+'</button>';}).join('');
   const q=pk.q.trim();pk.items=[];
-  LIB.forEach(function(g){if(pk.m!=='الكل'&&pk.m!==g[0])return;g[1].forEach(function(t){if(!q||t[0].indexOf(q)>-1)pk.items.push({m:g[0],n:t[0],d:t[1]});});});
+  LIB.forEach(function(g){if(pk.m!=='الكل'&&pk.m!==g[0])return;g[1].forEach(function(t){if(!q||t[0].indexOf(q)>-1||exEN(t[0]).toLowerCase().indexOf(q.toLowerCase())>-1)pk.items.push({m:g[0],n:t[0],d:t[1]});});});
   let h='';
-  pk.items.forEach(function(x,i){const _u=exImg(x.n);h+='<button class="pk" onclick="pickEx('+i+')">'+(_u?'<img class="exthumb" loading="lazy" decoding="async" style="width:44px;height:44px" src="'+_u+'">':icon('gym'))+' '+esc(x.n)+'<small>'+esc(x.m)+'</small></button>';});
+  pk.items.forEach(function(x,i){const _u=exImg(x.n);h+='<button class="pk" onclick="pickEx('+i+')">'+(_u?'<img class="exthumb" loading="lazy" decoding="async" style="width:44px;height:44px" src="'+_u+'">':icon('gym'))+'<span class="grow" style="text-align:right"><span dir="ltr">'+esc(exEN(x.n))+'</span><br><small>'+esc(x.n)+' • '+esc(x.m)+'</small></span></button>';});
   if(q)h+='<button class="pk" style="border-color:var(--neon)" onclick="pickEx(-1)">'+icon('plus')+' أضف &laquo;'+esc(q)+'&raquo; كتمرين جديد</button>';
   document.getElementById('pkList').innerHTML=h||'<p class="muted" style="text-align:center">مفيش نتائج</p>';
 }
@@ -358,7 +375,6 @@ function pickEx(i){
   const it=i<0?{m:'عام',n:pk.q.trim(),d:''}:pk.items[i];
   if(!it||!it.n)return;
   if(pkMode==='weights'){closePicker();wQuickAdd(it.n);return;}
-  if(pkMode==='rename'){closePicker();const t=renameTarget;renameTarget=null;if(!t)return;const ex=t.d.exercises[t.ei];if(!ex)return;if(i<0){const nm=pk.q.trim();if(nm){ex.name=nm;ex.desc=libDesc(nm);}}else{ex.name=it.n;ex.desc=it.d||'';}save();render();return;}
   const d=day();if(!d)return;
   d.exercises.push({name:it.n,muscle:it.m,desc:it.d||'',sets:[{w:'',r:''}]});
   save();closePicker();render();
@@ -471,7 +487,7 @@ function swapRender(q){
   const list=t.alts.filter(function(a){return !q||a.indexOf(q)>-1;});
   document.getElementById('pkList').innerHTML=list.length?list.map(function(a){
     const i=t.alts.indexOf(a);
-    return '<button class="pk" onclick="pickSwapEx('+i+')">'+exThumb(a)+'<span class="grow" style="text-align:right">'+esc(a)+'</span>'+icon('swap')+'</button>';
+    return '<button class="pk" onclick="pickSwapEx('+i+')">'+exThumb(a)+'<span class="grow" style="text-align:right"><span dir="ltr">'+esc(exEN(a))+'</span><br><small>'+esc(a)+'</small></span>'+icon('swap')+'</button>';
   }).join(''):'<p class="muted" style="text-align:center">مفيش نتائج</p>';
 }
 function pickSwapEx(i){
@@ -500,9 +516,28 @@ function makeProgramGo(tplKey,days){
   let names,daysEx;
   if(tplKey==='custom'){names=[];for(let i=0;i<days;i++)names.push('يوم '+(i+1));daysEx=names.map(function(){return [];});}
   else{names=P.map(function(d){return d[0];});daysEx=P.map(function(d){return d[1].map(function(t){return ex(t[0],t[1]);});});}
+  if(tplKey!=='custom'&&(db.profile.gender==='f')){const ad=adaptForWomen(names,daysEx);names=ad.names;daysEx=ad.daysEx;}
   db.program={id:uid(),name:tplKey==='custom'?'برنامجي الخاص':tplName(tplKey),tpl:tplKey,days:names.map(function(n,i){return{id:uid(),name:n,exercises:daysEx[i]};})};
   save();go('workout');
 }
+
+/* نسخة البنات: نفس التمارين الأساسية + تركيز جلوتس/رجل أعلى وتردد أعلى — حسب الأبحاث */
+const GLUTE_ROT=[['هيب ثرست',2],['تقريب جهاز',2],['بلغاري سبليت سكوات',2],['لانجز دمبل',2]];
+const GLUTE_SET=['هيب ثرست','تقريب جهاز','بلغاري سبليت سكوات','لانجز دمبل','رومانيان ديدلفت','سكوات بار','ليج بريس'];
+function adaptForWomen(names,daysEx){
+  let gi=0;
+  const out=daysEx.map(function(exs,di){
+    const has=exs.filter(function(e){return GLUTE_SET.indexOf(e.name)>-1;}).length;
+    const isLower=/رجل|Legs|سفلي|Lower/i.test(names[di]||'');
+    const need=isLower?(has<3?1:0):(has<1?1:0);
+    if(!need||exs.length>=11)return exs.slice();
+    const pick=GLUTE_ROT[gi++%GLUTE_ROT.length];
+    if(exs.some(function(e){return e.name===pick[0];}))return exs.slice();
+    const cp=exs.slice();cp.push(ex(pick[0],pick[1]));return cp;
+  });
+  return {names:names,daysEx:out};
+}
+
 function makeProgram(tplKey,days){
   if(tplKey!=='custom'){
     const need={ppl:3,arnold:3,bro:3}[tplKey]||0;
@@ -517,7 +552,7 @@ const BUILD={
 'fullbody_3':[
 ['Full Body 1',[['بنش مستوي بار',2],['بنش عالي دمبل',2],['سحب علوي واسع',2],['رو دمبل',2],['رفرفة جانبي دمبل',2],['فيس بول',2],['باي هامر',2],['تراي حبل',2],['سكوات بار',2],['ليج اكستنشن',1],['رومانيان ديدلفت',2],['هيب ثرست',2],['سمانة واقف',2],['كرانش كابل',1],['رفع رجل أرضي',1]]],
 ['Full Body 2',[['بنش عالي بار',2],['فلاي كابل',1],['سحب علوي ضيق',2],['رو جهاز',1],['رفرفة جانبي كابل',2],['رفرفة خلفي جهاز',1],['باي دمبل بالتبادل',2],['تراي حبل',2],['هاك سكوات',2],['ليج بريس',1],['ليج كيرل جلوس',2],['بلغاري سبليت سكوات',2],['سمانة جلوس',2],['بلانك',1]]],
-['Full Body 3',[['بنش جهاز',2],['متوازي للصدر',1],['العقلة',2],['سحب أرضي كابل',1],['أرنولد برس',2],['فيس بول',1],['باي بريتشر',2],['تراي حبل',2],['ليج بريس',1],['لانجز دمبل',1],['ليج كيرل نائم',2],['لانجز دمبل',2],['سمانة واقف',2],['سايد بلانك',1]]]],
+['Full Body 3',[['بنش جهاز',2],['متوازي للصدر',1],['العقلة',2],['سحب أرضي كابل',1],['أرنولد برس',2],['فيس بول',1],['باي بريتشر',2],['تراي حبل',2],['ليج بريس',1],['لانجز دمبل',3],['ليج كيرل نائم',2],['سمانة واقف',2],['سايد بلانك',1]]]],
 'fullbody_4':[
 ['Full Body 1',[['بنش مستوي بار',2],['بنش عالي دمبل',1],['سحب علوي واسع',2],['رو دمبل',1],['رفرفة جانبي دمبل',2],['فيس بول',1],['باي هامر',2],['تراي حبل',2],['سكوات بار',2],['رومانيان ديدلفت',2],['هيب ثرست',2],['سمانة واقف',2],['كرانش كابل',1]]],
 ['Full Body 2',[['بنش عالي بار',2],['فلاي كابل',1],['سحب علوي ضيق',2],['رو جهاز',1],['رفرفة جانبي كابل',2],['رفرفة خلفي جهاز',1],['باي دمبل بالتبادل',2],['تراي حبل',2],['هاك سكوات',2],['ليج كيرل جلوس',2],['بلغاري سبليت سكوات',2],['سمانة جلوس',2],['بلانك',1]]],
@@ -559,7 +594,7 @@ const BUILD={
 ['Upper 3',[['بنش جهاز',2],['متوازي للصدر',1],['العقلة',2],['سحب أرضي كابل',1],['أرنولد برس',2],['باي تركيز',2],['تراي حبل',2]]],
 ['Lower 3',[['ليج بريس',2],['لانجز دمبل',1],['ليج كيرل نائم',2],['هيب ثرست',2],['سمانة واقف',2],['رفع رجل أرضي',2]]]],
 'ppl_3':[
-['Push',[['بنش مستوي بار',4],['بنش عالي دمبل',3],['فلاي كابل',3],['رفرفة جانبي دمبل',4],['أرنولد برس',2],['تراي حبل',3],['تراي حبل',2]]],
+['Push',[['بنش مستوي بار',4],['بنش عالي دمبل',3],['فلاي كابل',3],['رفرفة جانبي دمبل',4],['أرنولد برس',2],['تراي حبل',5]]],
 ['Pull',[['العقلة',3],['سحب علوي واسع',3],['رو بار منحني',2],['سحب أمامي بذراع مفرودة',2],['فيس بول',2],['رفرفة خلفي منحني',2],['باي بار متعرج',3],['باي هامر',2],['باي كابل',1]]],
 ['Legs',[['سكوات بار',3],['ليج بريس',3],['ليج اكستنشن',2],['رومانيان ديدلفت',3],['ليج كيرل جلوس',2],['ليج كيرل نائم',1],['هيب ثرست',3],['لانجز دمبل',3],['سمانة واقف',3],['سمانة جلوس',3],['كرانش كابل',2],['رفع رجل معلق',2]]]],
 'ppl_4':[
@@ -575,14 +610,14 @@ const BUILD={
 ['Pull 2',[['سحب علوي ضيق',2],['العقلة',2],['رو جهاز',2],['سحب أمامي بذراع مفرودة',1],['فيس بول',1],['باي دمبل بالتبادل',2],['باي كابل',2]]]],
 'ppl_6':[
 ['Push 1',[['بنش مستوي بار',3],['بنش عالي دمبل',2],['رفرفة جانبي دمبل',3],['تراي حبل',2],['تراي خلف الرأس دمبل',1]]],
-['Pull 1',[['سحب علوي واسع',3],['رو دمبل',2],['فيس فول',0],['فيس بول',2],['باي بار متعرج',2],['باي هامر',1]]],
+['Pull 1',[['سحب علوي واسع',3],['رو دمبل',2],['فيس بول',2],['باي بار متعرج',2],['باي هامر',1]]],
 ['Legs 1',[['سكوات بار',2],['ليج بريس',2],['رومانيان ديدلفت',2],['ليج كيرل جلوس',1],['هيب ثرست',2],['لانجز دمبل',1],['سمانة واقف',2],['سمانة جلوس',1],['كرانش كابل',1],['رفع رجل أرضي',1]]],
 ['Push 2',[['بنش عالي بار',3],['فلاي كابل',2],['رفرفة جانبي كابل',3],['تراي حبل',2],['تراي خلف الرأس دمبل',1]]],
 ['Pull 2',[['سحب علوي ضيق',2],['العقلة',2],['رو جهاز',2],['سحب أمامي بذراع مفرودة',1],['فيس بول',1],['باي دمبل بالتبادل',2],['باي كابل',1]]],
 ['Legs 2',[['هاك سكوات',2],['ليج اكستنشن',2],['رومانيان ديدلفت',2],['ليج كيرل نائم',1],['هيب ثرست',2],['بلغاري سبليت سكوات',1],['سمانة واقف',2],['سمانة جلوس',1],['كرانش',1],['بلانك',1]]]],
 'arnold_3':[
 ['Chest + Back',[['بنش مستوي دمبل',3],['بنش عالي بار',2],['فلاي كابل',2],['متوازي للصدر',3],['العقلة',3],['سحب علوي ضيق',2],['رو بار منحني',2],['تي بار رو',3]]],
-['Shoulders + Arms',[['ضغط أكتاف دمبل',2],['رفرفة جانبي دمبل',2],['رفرفة جانبي كابل',2],['فيس بول',2],['رفرفة خلفي منحني',2],['باي بار متعرج',3],['باي هامر',2],['باي تركيز',1],['تراي حبل',3],['تراي حبل',2]]],
+['Shoulders + Arms',[['ضغط أكتاف دمبل',2],['رفرفة جانبي دمبل',2],['رفرفة جانبي كابل',2],['فيس بول',2],['رفرفة خلفي منحني',2],['باي بار متعرج',3],['باي هامر',2],['باي تركيز',1],['تراي حبل',5]]],
 ['Legs',[['سكوات بار',3],['ليج بريس',3],['ليج اكستنشن',2],['رومانيان ديدلفت',3],['ليج كيرل جلوس',2],['ليج كيرل نائم',1],['هيب ثرست',3],['لانجز دمبل',3],['سمانة واقف',3],['سمانة جلوس',3],['كرانش كابل',2],['رفع رجل معلق',2]]]],
 'arnold_4':[
 ['Chest + Back 1',[['بنش مستوي بار',2],['بنش عالي دمبل',2],['سحب علوي واسع',2],['رو دمبل',2]]],
@@ -603,11 +638,11 @@ const BUILD={
 ['Shoulders + Arms 2',[['أرنولد برس',1],['رفرفة جانبي كابل',2],['رفرفة خلفي منحني',1],['باي دمبل بالتبادل',2],['باي كابل',1],['تراي حبل',2],['تراي خلف الرأس دمبل',1]]],
 ['Legs 2',[['هاك سكوات',2],['ليج اكستنشن',2],['رومانيان ديدلفت',2],['ليج كيرل نائم',1],['هيب ثرست',2],['بلغاري سبليت سكوات',1],['سمانة واقف',2],['سمانة جلوس',1],['كرانش',1],['بلانك',1]]]],
 'bro_3':[
-['Chest + Shoulders + Arms',[['بنش مستوي بار',4],['بنش عالي دمبل',3],['فلاي كابل',3],['رفرفة جانبي دمبل',4],['أرنولد برس',2],['تراي حبل',3],['تراي حبل',2]]],
+['Chest + Shoulders + Arms',[['بنش مستوي بار',4],['بنش عالي دمبل',3],['فلاي كابل',3],['رفرفة جانبي دمبل',4],['أرنولد برس',2],['تراي حبل',5]]],
 ['Back + Rear + Biceps',[['العقلة',3],['سحب علوي واسع',3],['رو بار منحني',2],['سحب أمامي بذراع مفرودة',2],['فيس بول',2],['رفرفة خلفي منحني',2],['باي بار متعرج',3],['باي هامر',2],['باي كابل',1]]],
 ['Legs + Calves + Abs',[['سكوات بار',3],['ليج بريس',3],['ليج اكستنشن',2],['رومانيان ديدلفت',3],['ليج كيرل جلوس',2],['ليج كيرل نائم',1],['هيب ثرست',3],['لانجز دمبل',3],['سمانة واقف',3],['سمانة جلوس',3],['كرانش كابل',2],['رفع رجل معلق',2]]]],
 'bro_4':[
-['Chest + Triceps',[['بنش مستوي بار',4],['بنش عالي دمبل',3],['فلاي كابل',3],['تراي حبل',3],['تراي حبل',2]]],
+['Chest + Triceps',[['بنش مستوي بار',4],['بنش عالي دمبل',3],['فلاي كابل',3],['تراي حبل',5]]],
 ['Back + Rear + Biceps',[['العقلة',3],['سحب علوي واسع',3],['رو بار منحني',2],['سحب أمامي بذراع مفرودة',2],['فيس بول',2],['رفرفة خلفي منحني',2],['باي بار متعرج',3],['باي هامر',2],['باي كابل',1]]],
 ['Legs',[['سكوات بار',3],['ليج بريس',2],['ليج اكستنشن',3],['رومانيان ديدلفت',3],['ليج كيرل جلوس',2],['ليج كيرل نائم',1],['هيب ثرست',3],['لانجز دمبل',3]]],
 ['Shoulders + Calves + Abs',[['رفرفة جانبي دمبل',4],['أرنولد برس',2],['سمانة واقف',3],['سمانة جلوس',3],['كرانش كابل',2],['رفع رجل معلق',2]]]],
@@ -616,16 +651,16 @@ const BUILD={
 ['Back + Rear',[['العقلة',3],['سحب علوي ضيق',3],['رو بار منحني',2],['سحب أمامي بذراع مفرودة',2],['فيس بول',2],['رفرفة خلفي منحني',2]]],
 ['Legs',[['سكوات بار',3],['ليج بريس',2],['ليج اكستنشن',3],['رومانيان ديدلفت',3],['ليج كيرل جلوس',3],['هيب ثرست',3],['لانجز دمبل',3]]],
 ['Shoulders',[['رفرفة جانبي دمبل',4],['أرنولد برس',2]]],
-['Arms + Calves + Abs',[['باي بار متعرج',3],['باي هامر',2],['باي تركيز',1],['تراي حبل',3],['تراي حبل',2],['سمانة واقف',3],['سمانة جلوس',3],['كرانش كابل',2],['رفع رجل معلق',2]]]],
+['Arms + Calves + Abs',[['باي بار متعرج',3],['باي هامر',2],['باي تركيز',1],['تراي حبل',5],['سمانة واقف',3],['سمانة جلوس',3],['كرانش كابل',2],['رفع رجل معلق',2]]]],
 'bro_6':[
 ['Chest',[['بنش مستوي بار',4],['بنش عالي دمبل',3],['فلاي كابل',3]]],
 ['Back + Rear',[['العقلة',3],['سحب علوي ضيق',3],['رو بار منحني',2],['سحب أمامي بذراع مفرودة',2],['فيس بول',2],['رفرفة خلفي منحني',2]]],
 ['Legs',[['سكوات بار',3],['ليج بريس',2],['ليج اكستنشن',3],['رومانيان ديدلفت',3],['ليج كيرل جلوس',3],['هيب ثرست',3],['لانجز دمبل',3]]],
 ['Shoulders',[['رفرفة جانبي دمبل',4],['أرنولد برس',2]]],
-['Arms + Calves + Abs',[['باي بار متعرج',3],['باي هامر',2],['باي تركيز',1],['تراي حبل',3],['تراي حبل',2],['سمانة واقف',3],['سمانة جلوس',3],['كرانش كابل',2],['رفع رجل معلق',2]]],
+['Arms + Calves + Abs',[['باي بار متعرج',3],['باي هامر',2],['باي تركيز',1],['تراي حبل',5],['سمانة واقف',3],['سمانة جلوس',3],['كرانش كابل',2],['رفع رجل معلق',2]]],
 ['Extra (اختياري)',[['بلانك',2],['حبل نط',1],['روسيان تويست',1]]]]};
 function day(){if(!db.program)return null;for(let i=0;i<db.program.days.length;i++)if(db.program.days[i].id===view.did)return db.program.days[i];return null;}
-function renameEx(i){const d=day();if(!d||!d.exercises[i])return;renameTarget={d:d,ei:i};pkMode='rename';openPicker();document.getElementById('pkTitle').textContent='اختار الاسم الجديد لـ «'+esc(d.exercises[i].name)+'»';}
+function renameEx(i){const d=day();if(!d||!d.exercises[i])return;const e=d.exercises[i];inputSheet('تسمية التمرين بالعربي',e.ar||e.name,[],'حفظ',function(v){if(v&&v!==e.name)e.ar=v;else delete e.ar;save();render();});}
 function askDelEx(i){const d=day();if(!d||!d.exercises[i])return;const nm=d.exercises[i].name;askSheet('حذف التمرين؟','«'+esc(nm)+'» هيتمسح من اليوم ده نهائي ومش هيرجع.','حذف',true,function(){d.exercises.splice(i,1);save();render();});}
 function delEx(i){askDelEx(i);}
 function moveEx(i,dir){const ex=day().exercises;const j=i+dir;if(j<0||j>=ex.length)return;const t=ex[i];ex[i]=ex[j];ex[j]=t;save();render();}
@@ -684,8 +719,9 @@ function wSaveForm(n){
   render();
 }
 function wQuickAdd(n){view.wex=n;go('weights');}
-function repStep(i,d){const el=document.getElementById('tr_'+i);if(!el)return;let v=parseInt(el.value)||0;v=Math.max(0,v+d);el.value=v;el.focus();}
-function repPick(i,v){const el=document.getElementById('tr_'+i);if(!el)return;el.value=v;}
+function repOpts(cur){let h='<option value="" disabled'+(cur?'':' selected')+'>اختر العدات…</option>';for(let v=4;v<=15;v++){h+='<option value="'+v+'"'+(String(cur)===String(v)?' selected':'')+'>'+v+(v===8?' (المقترح)':'')+' عدات</option>';}if(cur&&(+cur<4||+cur>15))h+='<option value="'+cur+'" selected>'+cur+' عدات</option>';return h;}
+function repStep(i,d){const el=document.getElementById('tr_'+i);if(!el)return;let v=(parseInt(el.value)||8)+d;v=Math.max(1,Math.min(30,v));let f=false;for(let k=0;k<el.options.length;k++)if(el.options[k].value==String(v))f=true;if(!f){const o=document.createElement('option');o.value=String(v);o.textContent=v+' عدات';el.appendChild(o);}el.value=String(v);}
+function repPick(i,v){const el=document.getElementById('tr_'+i);if(!el)return;repStep(i,0);el.value=String(v);}
 function logSet(i){
   const d=day();if(!d||!d.exercises[i])return;const n=d.exercises[i].name;
   const w=document.getElementById('tw_'+i),r=document.getElementById('tr_'+i),nt=document.getElementById('tn_'+i);
@@ -697,6 +733,26 @@ function logSet(i){
   if(!view.keepIn)view.keepIn={};view.keepIn[i]={w:wv,r:rv};
   db.program.lastDid=d.id;db.program.lastDate=dateKey();save();
   startRest(num(db.profile.rest)||120,d.id+':'+i);render();attachRest(true);
+}
+const CARDIO_T={'مشي على السير':{opts:[10,15,20,30],def:15},'جري':{opts:[3,5,8,10,15],def:5},'دراجة ثابتة':{opts:[5,10,15,20],def:10},'إليبتكال':{opts:[5,10,15,20],def:10},'حبل نط':{opts:[1,2,3],def:2},'تجديف':{opts:[3,5,8,10],def:5},'جامبنج جاكس':{opts:[1,2,3],def:2},'هاي نيز':{opts:[1,2,3],def:2},'قفز تبديلي':{opts:[1,2,3],def:2}};
+let _ct=null;
+function cOpts(n){const t=CARDIO_T[n]||{opts:[1,2,3,5],def:2};let h='';t.opts.forEach(function(v){h+='<option value="'+v+'"'+(v===t.def?' selected':'')+'>'+v+' '+(v===1?'دقيقة':'دقايق')+'</option>';});return h;}
+function cardioStart(i){const n=cardioList()[i];const sl=document.getElementById('cdur_'+i);const mins=sl?+sl.value:2;const box=document.getElementById('ctxt_'+i);if(box)box.innerHTML='';let left=mins*60;clearInterval(_ct);unlockAudio();
+ const draw=function(){if(!document.getElementById('ctxt_'+i))return clearInterval(_ct);const m=Math.floor(Math.max(0,left)/60),ss=Math.max(0,left)%60;document.getElementById('ctxt_'+i).innerHTML='<span id="cdone">'+m+':'+String(ss).padStart(2,'0')+'</span>';};
+ draw();_ct=setInterval(function(){left--;if(left<0){clearInterval(_ct);beep();try{if(navigator.vibrate)navigator.vibrate([200,100,200]);}catch(e){}const b2=document.getElementById('ctxt_'+i);if(b2)b2.innerHTML='<span id="cdone">خلص! عاش \uD83D\uDCAA</span> <button class="btn btn-sm" onclick="cardioRest('+i+')">راحة ('+Math.round(num(db.profile.rest)/60*10)/10+' د)</button>';return;}draw();},1000);}
+function cardioRest(i){const box=document.getElementById('ctxt_'+i);let left=num(db.profile.rest)||120;clearInterval(_ct);const draw=function(){if(!document.getElementById('ctxt_'+i))return clearInterval(_ct);const m=Math.floor(Math.max(0,left)/60),ss=Math.max(0,left)%60;document.getElementById('ctxt_'+i).innerHTML='<span class="muted">راحة: </span><span id="cdone">'+m+':'+String(ss).padStart(2,'0')+'</span>';};draw();_ct=setInterval(function(){left--;if(left<0){clearInterval(_ct);beep();try{if(navigator.vibrate)navigator.vibrate([200,100,200]);}catch(e){}const b2=document.getElementById('ctxt_'+i);if(b2)b2.innerHTML='<span id="cdone">يلا اللي بعده \uD83D\uDD25</span>';return;}draw();},1000);}
+function cardioList(){let arr=[];LIB.forEach(function(g){if(g[0]==='كارديو')g[1].forEach(function(t){arr.push({n:t[0],d:t[1]});});});return arr;}
+function renderCardio(){
+ let h='<div class="section-head"><h2>كارديو</h2><span class="badge">تمارين هوائية بمؤقت</span></div>';
+ h+='<p class="sub">اختار المدة ودوس ابدأ — التايمر هيعد تنازلي ويصفر لما تخلص، وبعدها خد راحتك بنفس مؤقت الراحة بتاعك.</p>';
+ cardioList().forEach(function(x,i){
+  h+='<div class="card"><div class="row">'+exThumb(x.n)+'<span class="exname" dir="ltr" style="text-align:right">'+esc(exEN(x.n))+'<br><span class="meta" style="font-size:11.5px;color:var(--muted)" dir="rtl">'+esc(x.n)+'</span></span></div>'
+  +'<p class="sub">'+esc(x.d)+'</p>'
+  +'<div class="row"><select class="w" style="flex:1;min-height:44px" id="cdur_'+i+'">'+cOpts(x.n)+'</select><button class="btn btn-neon btn-sm" style="flex:1" onclick="cardioStart('+i+')">'+icon('play')+' ابدأ</button></div>'
+  +'<div class="row" id="ctxt_'+i+'"></div></div>';
+ });
+ h+='<button class="btn" onclick="go(\'home\')">'+icon('back')+' الرئيسية</button>';
+ return h;
 }
 function shareDay(did){
   const p=db.program;if(!p)return;const d=p.days.find(function(x){return x.id===did;});if(!d)return;
@@ -882,13 +938,15 @@ function buildMeals(tpl){
   view.nmeals=meals;
 }
 function mealTotal(m){let s=0;m.items.forEach(function(it){const f=FOODS[it.fi];s+=it.side==='a'?f.a[1]:f.b[1];});return s;}
+const CAL100=[["صدر فراخ مشوي",165,31],["ورك فراخ مشوي",184,18],["لحم مشوي",200,26],["كفتة مشوية",220,18],["كبدة مشوية",190,29],["قوانص",150,22],["تونة محلول ملحي",130,24],["سردين مشوي",200,20],["ماكريل",260,20],["بلطي مشوي",128,26],["سلمون",208,22],["جمبري",99,24],["سبيط",92,18],["بيض مسلوق",155,13],["جبنة قريش",105,17],["زبادي يوناني",59,10],["لبن خالي الدسم",35,3.4],["لبن رايب",60,3],["رز مسلوق",130,2.4],["رز بسمتي",121,2.5],["مكرونة مسلوقة",131,5],["مكرونة قمح كامل",124,5],["عيش بلدي",270,9],["عيش سن",250,9],["توست",265,9],["شوفان",389,17],["كورن فليكس",357,8],["فول مدمس",115,8],["عدس",116,9],["لوبيا",115,8],["حمص مسلوق",164,9],["فاصوليا بيضا",140,9],["ترمس",120,16],["فشار",387,12],["بطاطس مسلوقة",80,2],["بطاطا",90,1.5],["قلقاس",110,1.5],["فريك",125,4.5],["برغل",125,3.5],["كشري",150,5],["ذرة مشوية",96,3.4],["ملوخية",40,3],["سبانخ",35,3],["خضار سوتيه",40,1.5],["سلطة خضراء",25,1],["فاصوليا خضراء",35,2],["بامية",40,2],["شوربة عدس",70,5],["شوربة خضار",40,1],["حمص الشام",60,4],["طعمية فرن",220,9],["موز",89,1.1],["تفاح",52,0.3],["برتقال",47,0.9],["فراولة",32,0.7],["مانجو",60,0.8],["خوخ",39,0.9],["كيوي",61,1.1],["بطيخ",30,0.6],["شمام",34,0.8],["جوافة",68,2.6],["كمثرى",57,0.4],["بلح",130,2],["تمر جاف",300,2],["تين مجفف",250,2],["عسل",304,0.3],["عسل أسود",290,1],["مربى لايت",150,0.5],["زيت زيتون",884,0],["زيت حار",884,0],["طحينة",595,17],["سمسم",573,18],["مكسرات مشكلة",580,20],["فول سوداني",567,26],["لب سوري",584,21],["أفوكادو",160,2],["زيتون",115,1],["مهلبية لايت",65,3],["رز بلبن لايت",100,4],["واي بروتين",400,80]];
+function calcFood(){const qe=document.getElementById('cfQ'),ge=document.getElementById('cfG'),box=document.getElementById('cfRes');const q=qe?qe.value.trim():'';const g=parseFloat(ge?ge.value:'')||0;if(!q||!(g>0)){if(box)box.innerHTML='<p class="sub">اكتب اسم الأكل والوزن بالجرام الأول.</p>';return;}const hit=CAL100.find(function(x){return x[0]===q||x[0].indexOf(q)>-1||q.indexOf(x[0])>-1;});if(!hit){if(box)box.innerHTML='<p class="sub">مش لاقي «'+esc(q)+'» — جرّب كلمة تانية (مثال: رز، فراخ، موز).</p>';return;}const kc=Math.round(hit[1]*g/100),pr=Math.round(hit[2]*g/100*10)/10;if(box)box.innerHTML='<p class="sub" style="font-size:15px"><b style="color:#fff">'+esc(hit[0])+' ('+g+' جم)</b> = <b style="color:var(--neon)">'+kc+' سعرة</b> • بروتين ~'+pr+' جم</p>';}
 function swapFood(mi,ii){const m=view.nmeals[mi];if(!m)return;const it=m.items[ii];const f=FOODS[it.fi];const cur=it.side==='a'?f.a[1]:f.b[1];view.swapList={mi:mi,ii:ii,cur:cur,g:f.g,opts:[]};FOODS.forEach(function(xf,fi){if(fi===it.fi&&false)return;if(xf.g!==f.g)return;if(!foodOK(fi))return;['a','b'].forEach(function(side){const nm=side==='a'?xf.a[0]:xf.b[0],kc=side==='a'?xf.a[1]:xf.b[1];if(fi===it.fi&&side===it.side)return;if(Math.abs(kc-cur)>20)return;view.swapList.opts.push({fi:fi,side:side,nm:nm,kc:kc,g:xf.g,p:xf.p});});});view.swapList.opts.sort(function(a,b){return Math.abs(a.kc-cur)-Math.abs(b.kc-cur);});render();}
 function closeSwap(){view.swapList=null;render();}
 function pickSwap(fi,side){const sl=view.swapList;if(!sl)return;view.nmeals[sl.mi].items[sl.ii]={fi:fi,side:side};view.swapList=null;save();render();}
 function suggestTpl(){const t=calcTDEE();if(!t)return alert('كمّل وزنك وطولك وعمرك الأول');let best=1500;for(let v=1200;v<=3500;v+=50){if(Math.abs(v-t)<=Math.abs(best-t))best=v;}view.ntpl=best;db.profile.tpl=best;db.profile.tplSet=true;buildMeals(best);save();render();}
 function setTpl(v){view.ntpl=+v;db.profile.tpl=+v;db.profile.tplSet=true;buildMeals(+v);save();render();}
 /* ============ جسمي + صور ============ */
-function renderCalBox(){const box=document.getElementById('calBox');if(!box)return;const b=calcBMR();if(!b){box.innerHTML='';return;}const act=num(db.profile.act)||1.55;const t=Math.round(b*act/10)*10;const g=db.profile.goal;let btns='<div class="subtabs">';btns+='<button class="'+(g==='lose'?'on':'')+'" onclick="setGoalX(\'lose\')">تخسيس</button>';btns+='<button class="'+(g==='same'?'on':'')+'" onclick="setGoalX(\'same\')">ثبات</button>';btns+='<button class="'+(g==='gain'?'on':'')+'" onclick="setGoalX(\'gain\')">زيادة</button>';btns+='</div>';let cur='';if(g==='lose')cur='<p class="sub">هدفك الحالي: <b style="color:#fff">التخسيس</b> — سعراتك اليومية: <b style="color:#fff">'+(t-400)+'</b></p>';else if(g==='gain')cur='<p class="sub">هدفك الحالي: <b style="color:#fff">الزيادة</b> — سعراتك اليومية: <b style="color:#fff">'+(t+300)+'</b></p>';else cur='<p class="sub">هدفك الحالي: <b style="color:#fff">الثبات</b> — سعراتك اليومية: <b style="color:#fff">'+t+'</b></p>';box.innerHTML='<div class="card glow" style="margin-top:10px"><h3>سعراتك على حسب هدفك</h3><div class="kv"><span>عشان تخس (عجز 400 — متوازن وآمن)</span><b>'+(t-400)+' سعرة</b></div><div class="kv"><span>عشان يثبت وزنك</span><b>'+t+' سعرة</b></div><div class="kv"><span>عشان تزيد (فائض 300)</span><b>'+(t+300)+' سعرة</b></div><p class="sub" style="font-size:11px">محسوبة بمعادلة Mifflin-St Jeor × نشاطك — أرقام استرشادية.</p>'+btns+cur+'</div>';}
+function renderCalBox(){const box=document.getElementById('calBox');if(!box)return;const b=calcBMR();if(!b){box.innerHTML='';return;}const act=num(db.profile.act)||1.55;const t=Math.round(b*act/10)*10;const g=db.profile.goal;let btns='<div class="subtabs">';btns+='<button class="'+(g==='lose'?'on':'')+'" onclick="setGoalX(\'lose\')">تخسيس</button>';btns+='<button class="'+(g==='same'?'on':'')+'" onclick="setGoalX(\'same\')">ثبات</button>';btns+='<button class="'+(g==='gain'?'on':'')+'" onclick="setGoalX(\'gain\')">زيادة</button>';btns+='</div>';const need=t+curAdj();const albl=g==='lose'?('العجز الحالي '+(-curAdj())+' سعرة'):g==='gain'?('الفائض الحالي +'+curAdj()+' سعرة'):'ثبات بدون عجز';let cur='';if(g==='lose')cur='<p class="sub">هدفك الحالي: <b style="color:#fff">التخسيس</b> — سعراتك اليومية: <b style="color:#fff">'+need+'</b></p>';else if(g==='gain')cur='<p class="sub">هدفك الحالي: <b style="color:#fff">الزيادة</b> — سعراتك اليومية: <b style="color:#fff">'+need+'</b></p>';else cur='<p class="sub">هدفك الحالي: <b style="color:#fff">الثبات</b> — سعراتك اليومية: <b style="color:#fff">'+need+'</b></p>';box.innerHTML='<div class="card glow" style="margin-top:10px"><h3>سعراتك على حسب هدفك</h3><div class="kv"><span>احتياجك ('+albl+')</span><b>'+need+' سعرة</b></div><p class="sub">\uD83D\uDCA1 عايز تزوّد العجز أو تقلله؟ غيّره من صفحة <b>التغذية ← سعراتك اليومية</b> (قايمة المستوى).</p><p class="sub" style="font-size:11px">محسوبة بمعادلة Mifflin-St Jeor × نشاطك — أرقام استرشادية.</p>'+btns+cur+'</div>';}
 function setGoalX(g){db.profile.goal=g;save();render();}
 function saveProfile(){
   const g=function(id){const e=document.getElementById(id);return e?e.value.trim():'';};
@@ -935,6 +993,17 @@ function saveBody(){
   if(!save()){const it=db.body[db.body.length-1];if(it.photo){it.photo='';if(save()){alert('القياس اتحفظ من غير الصورة لأن المساحة مليانة.');render();return;}}db.body.pop();save();return;}
   render();
 }
+function weekReport(){
+  const ws=(db.body||[]).filter(function(x){return num(x.weight)>0;}).sort(function(a,b){return a.ts-b.ts;});
+  if(ws.length<2)return '';
+  const cur=ws[ws.length-1];let prev=null;
+  for(let i=ws.length-2;i>=0;i--){if(cur.ts-ws[i].ts>=6*86400000){prev=ws[i];break;}}
+  if(!prev)prev=ws[ws.length-2];
+  const d=Math.round((num(cur.weight)-num(prev.weight))*10)/10;
+  const days=Math.max(1,Math.round((cur.ts-prev.ts)/86400000));
+  const line=d<0?'نزلت <b style="color:var(--neon)">'+Math.abs(d)+' كجم</b> \uD83C\uDF89':d>0?'زدت <b style="color:#ffb74d">'+d+' كجم</b> \uD83D\uDCAA':'وزنك ثابت \u2705';
+  return '<div class="card glow"><div class="section-head" style="margin:0 0 4px"><h2>تقرير الأسبوع \uD83D\uDCCA</h2></div><p class="sub">آخر وزن: <b style="color:#fff">'+esc(cur.weight)+' كجم</b> ('+esc(cur.date)+')</p><p class="sub">من '+esc(prev.weight)+' كجم ('+esc(prev.date)+') — في '+days+(days===1?' يوم':' أيام')+': '+line+'</p></div>';
+}
 function delBody(ts){askSheet('حذف القياس؟','القياس ده هيتمسح نهائي.','حذف',true,function(){db.body=db.body.filter(function(x){return x.ts!==ts;});save();render();});}
 /* ============ شاشة البداية ============ */
 function renderOb(){
@@ -952,7 +1021,7 @@ function renderOb(){
   }else if(view.obStep===1){
     const p=db.profile;
     h+='<div class="step">خطوة 2 من 3</div><h1>بيانات <i>جسمك</i></h1><p class="muted">عشان نحسب سعراتك صح.</p>';
-    h+='<div class="card glow"><div class="row"><input class="w" style="flex:1" type="number" inputmode="decimal" id="oW" placeholder="الوزن (كجم)" value="'+esc(p.weight)+'"> <input class="w" style="flex:1" type="number" inputmode="decimal" id="oH" placeholder="الطول (سم)" value="'+esc(p.height)+'"></div><div class="row"><input class="w" style="flex:1" type="number" inputmode="numeric" id="oA" placeholder="العمر" value="'+esc(p.age)+'"> <select id="oG" style="flex:1"><option value="m" '+(p.gender!=='f'?'selected':'')+'>راجل</option><option value="f" '+(p.gender==='f'?'selected':'')+'>ست</option></select></div></div>';
+    h+='<div class="card glow"><div class="row"><input class="w" style="flex:1" type="number" inputmode="decimal" id="oW" placeholder="الوزن (كجم)" value="'+esc(p.weight)+'"> <input class="w" style="flex:1" type="number" inputmode="decimal" id="oH" placeholder="الطول (سم)" value="'+esc(p.height)+'"></div><div class="row"><input class="w" style="flex:1" type="number" inputmode="numeric" id="oA" placeholder="العمر" value="'+esc(p.age)+'"> <select id="oG" style="flex:1"><option value="m" '+(p.gender!=='f'?'selected':'')+'>ذكر</option><option value="f" '+(p.gender==='f'?'selected':'')+'>أنثى</option></select></div></div>';
     h+='<button class="btn btn-neon btn-block" onclick="obSaveBody()">كمّل '+icon('back')+'</button>';
   }else{
     h+='<div class="step">خطوة 3 من 3</div><h1>إيه <i>هدفك؟</i></h1><p class="muted">هنظبط سعراتك على أساسه.</p>';
@@ -982,6 +1051,7 @@ function render(){
   const v=view.name;
   if(v==='admin'){a.innerHTML=renderAdmin();navOn('nav-more');return;}
   if(v==='plans'){a.innerHTML=renderPaywall(false)+'<button class="btn" onclick="go(\'more\')">'+icon('back')+' رجوع</button>';navOn('nav-more');return;}
+  if(v==='cardio'){a.innerHTML=renderCardio();navOn('nav-home');return;}
   if(v==='home'){
     navOn('nav-home');
     const ti=todayIdx();
@@ -994,6 +1064,7 @@ function render(){
     }
     const wc=Object.keys(db.weights).length;
     h+='<div class="statgrid"><div class="stat2 clickable" onclick="go(\'workout\')"><span class="thumb">'+icon('box')+'</span><span><span class="n">'+(db.program?1:0)+'</span><br><span class="k">نظام تدريبي</span></span></div><div class="stat2 hl clickable" onclick="go(\'more\')"><span class="thumb">'+icon('gym')+'</span><span><span class="n">'+db.profile.days+'</span><br><span class="k">أيامك في الأسبوع</span></span></div><div class="stat2 clickable" onclick="go(\'weights\')"><span class="thumb">'+icon('scale')+'</span><span><span class="n">'+wc+'</span><br><span class="k">تمارين مسجلة</span></span></div></div>';
+      h+='<div class="cardio-banner" onclick="go(\'cardio\')"><img src="cardio-run.jpg" alt="كارديو"><div class="ov"><div style="flex:1"><b>كارديو \uD83C\uDFC3</b><br><small>تمارين هوائية بمؤقت • مشي، جري، نط والمزيد</small></div><div class="go">'+icon('play')+'</div></div></div>';
     if(db.program){
       const p=db.program;
       h+='<div class="card"><div class="section-head" style="margin:0 0 4px"><h2>الأنظمة التدريبية</h2></div><p class="sub">كل نظام = جدول كامل. جواه أيام، وكل يوم تمارين وأدوار.</p>';
@@ -1015,6 +1086,7 @@ function render(){
       if(!view.wdays)view.wdays=db.profile.days||3;
       if(!view.wtpl){
         let h='<div class="section-head"><h2>اختار نظامك</h2></div><p class="muted">اختار واحد من البرامج الجاهزة، أو ابنِ تمرينك بنفسك.</p>';
+        if(db.profile.gender==='f')h+='<div class="card glow"><p class="sub">\uD83D\uDC69 برامج البنات عندنا متظبطة تلقائي: نفس التمارين الأساسية + تركيز جلوتس ورجل أعلى وتردد أعلى — حسب الأبحاث.</p></div>';
         TPLS.forEach(function(t){const need=t.key==='ppl'||t.key==='arnold'||t.key==='bro'?' (يحتاج 3 أيام على الأقل)':'';h+='<div class="item mainbtn" onclick="view.wtpl=\''+t.key+'\';render()"><span class="thumb">'+icon('box')+'</span><span class="grow"><span class="nm">'+esc(t.name)+'</span><br><span class="meta">'+esc(tplName(t.key))+need+'</span></span><span class="ibtn" style="pointer-events:none">'+icon('play')+'</span></div>';});
         h+='<div class="item mainbtn" onclick="view.wtpl=\'custom\';render()"><span class="thumb">'+icon('plus')+'</span><span class="grow"><span class="nm">بناء تمرين بنفسك</span><br><span class="meta">أيام فاضية تملاها من المكتبة براحتك</span></span><span class="ibtn" style="pointer-events:none">'+icon('play')+'</span></div>';
         a.innerHTML=h;
@@ -1042,7 +1114,7 @@ function render(){
     const d=day();if(!d)return go('workout');
     let h='<div class="section-head"><h2>'+esc(d.name)+'</h2><span class="badge">'+d.exercises.length+' تمرين</span></div>';
     d.exercises.forEach(function(e,i){
-      h+='<div class="card"><div class="row">'+exThumb(e.name)+'<span class="exname">'+esc(e.name)+(e.muscle&&e.muscle!=='عام'?'<br><span class="meta" style="font-size:11.5px;color:var(--muted)">'+esc(e.muscle)+'</span>':'')+'</span>';
+      h+='<div class="card"><div class="row">'+exThumb(e.name)+exShow(e)+(e.muscle&&e.muscle!=='عام'?'<span class="meta" style="font-size:11.5px;color:var(--muted)">'+esc(e.muscle)+'</span>':'');
       h+='<button class="ibtn" onclick="moveEx('+i+',-1)">'+icon('up')+'</button><button class="ibtn" onclick="moveEx('+i+',1)">'+icon('down')+'</button><button class="ibtn" onclick="renameEx('+i+')">'+icon('pen')+'</button><button class="ibtn danger" onclick="delEx('+i+')">'+icon('trash')+'</button></div>';
       h+='<p class="sub" style="margin:2px 0 4px;cursor:pointer" onclick="openLb(\''+e.name.replace(/'/g,"\\'")+'\')">'+esc(e.desc||'دوس على الصورة عشان تشوف التمرين')+'</p>';
       if(typeof SWAPS!=='undefined'&&SWAPS[e.name])h+='<button class="btn btn-sm btn-block" style="margin-bottom:6px" onclick="swapExById(\''+d.id+'\','+i+')">'+icon('swap')+' تبديل التمرين ببديل من القايمة</button>';
@@ -1066,11 +1138,10 @@ function render(){
     d.exercises.forEach(function(e,i){
       const pr=prOf(e.name),rm=best1RM(e.name),ss=sessionsOf(e.name),tod=(ss[0]&&ss[0].k===dateKey())?ss[0]:null,prev=tod?ss[1]:ss[0];
       const ki=view.keepIn[i];const pre=ki||(tod?tod.last:(prev?prev.first:null));const last=pre;
-      h+='<div class="card"><div class="row">'+exThumb(e.name)+'<span class="exname">'+esc(e.name)+'</span></div>';
+      h+='<div class="card"><div class="row">'+exThumb(e.name)+exShow(e)+'</div>';
       if(pr>0)h+='<div><span class="prchip">'+icon('bolt')+' أحسن وزن: '+pr+' كجم</span>'+(rm>0?'<span class="prchip">الأقصى المتوقع: ~'+rm+' كجم</span>':'')+'</div>';
       h+='<div class="warmnote">سخّن الأول: دور واحد بنص الوزن اللي بتلعب بيه ('+(last&&num(last.w)?('~'+Math.round(num(last.w)/2)+' كجم'):'وزن خفيف')+') — مش محسوب.</div>';
-      h+='<div class="repchips">'+[6,8,10,12,15].map(function(v){return '<button onclick="repPick('+i+','+v+')">'+v+'</button>';}).join('')+'</div>';
-      h+='<div class="row"><input class="w" style="flex:1" type="number" inputmode="decimal" id="tw_'+i+'" placeholder="الوزن (كجم)" value="'+esc(last?last.w:'')+'"><div class="repctl"><button class="ibtn" onclick="repStep('+i+',-1)">−</button><input class="w" style="flex:1" type="number" inputmode="numeric" id="tr_'+i+'" placeholder="عدات" value="'+esc(last?last.r:'')+'"><button class="ibtn" onclick="repStep('+i+',1)">+</button></div></div>';
+      h+='<div class="row"><input class="w" style="flex:1" type="number" inputmode="decimal" id="tw_'+i+'" placeholder="الوزن (كجم)" value="'+esc(last?last.w:'')+'"> <select class="w" style="flex:1;min-height:46px;font-size:18px" id="tr_'+i+'">'+repOpts(last?last.r:'')+'</select><button class="ibtn" style="width:44px;height:44px;font-size:20px" onclick="repStep('+i+',1)">+</button><button class="ibtn" style="width:44px;height:44px;font-size:20px" onclick="repStep('+i+',-1)">−</button></div></div>';
       h+='<input class="noteinput" id="tn_'+i+'" placeholder="ملاحظة (اختياري) — مثلا: كتف وجعني / كانت سهلة">';
       h+='<div class="row"><button class="btn btn-neon btn-sm" style="flex:1" onclick="logSet('+i+')">حفظ المجموعة + تشغيل التايمر</button></div>';
       if(restEx===d.id+':'+i&&restEnd)h+=restBarHTML();
@@ -1090,7 +1161,7 @@ function render(){
     const keys=Object.keys(db.weights);
     if(view.wex&&db.weights[view.wex]){
       const n=view.wex,ss=sessionsOf(n),last=(db.weights[n]||[])[0]||{w:'',r:''},pr=db.prs&&db.prs[n];
-      h+='<div class="card glow"><h3>'+esc(n)+'</h3><p class="sub">بنحتفظ بآخر 3 جلسات (تمرينات) بكل مجموعاتها — الجلسة الرابعة تمسح الأقدم. «أحسن وزن» بيفضل محفوظ دايمًا.</p>';
+      h+='<div class="card glow"><h3 dir="ltr" style="text-align:right">'+esc(exEN(n))+'</h3><p class="sub">'+esc(n)+'</p><p class="sub">بنحتفظ بآخر 3 جلسات (تمرينات) بكل مجموعاتها — الجلسة الرابعة تمسح الأقدم. «أحسن وزن» بيفضل محفوظ دايمًا.</p>';
       if(pr&&num(pr.w)>0)h+='<div><span class="prchip">'+icon('bolt')+' أحسن وزن: '+esc(pr.w)+' كجم'+(pr.r?' × '+esc(pr.r):'')+'</span>'+(pr.rm?'<span class="prchip">الأقصى المتوقع: ~'+pr.rm+' كجم</span>':'')+' <button class="btn btn-sm" style="padding:4px 10px" onclick="prReset(\''+esc(n)+'\')">تصفير</button></div>';
       ss.forEach(function(se,si){
         h+='<div class="sessbox'+(si===0?' today':'')+'"><div class="row" style="margin:0"><b style="flex:1">'+(si===0?'الأحدث':'الجلسة '+(si+1))+' — '+sessLabel(se)+'</b><span class="muted">أعلى '+se.max+' كجم</span></div>';
@@ -1106,7 +1177,7 @@ function render(){
       if(!keys.length)h+='<div class="card"><div class="empty">'+icon('scale')+'<br>لسه مسجلتش أوزان.<br>دوس «تمرين» واختار من المكتبة أو من تمرين اليوم.</div></div>';
       keys.forEach(function(n){
         const ss=sessionsOf(n),l=ss[0];
-        h+='<div class="item mainbtn" onclick="view.wex=\''+esc(n)+'\';render()"><span class="thumb">'+icon('scale')+'</span><span class="grow"><span class="nm">'+esc(n)+'</span><br><span class="meta">'+(l?('آخر مرة ('+sessLabel(l)+'): أعلى '+l.max+' كجم • '):'')+ss.length+' '+(ss.length===1?'جلسة':'جلسات')+(prOf(n)>0?' • أحسن '+prOf(n)+' كجم':'')+'</span></span></div>';
+        h+='<div class="item mainbtn" onclick="view.wex=\''+esc(n)+'\';render()"><span class="thumb">'+icon('scale')+'</span><span class="grow"><span class="nm" dir="ltr" style="text-align:right">'+esc(exEN(n))+'</span><br><span class="meta">'+(l?('آخر مرة ('+sessLabel(l)+'): أعلى '+l.max+' كجم • '):'')+ss.length+' '+(ss.length===1?'جلسة':'جلسات')+(prOf(n)>0?' • أحسن '+prOf(n)+' كجم':'')+'</span></span></div>';
       });
     }
     a.innerHTML=h;
@@ -1117,13 +1188,14 @@ function render(){
     const hasBase=p.weight&&p.height&&p.age;
     let h;
     if(!view.editBase&&hasBase){
-      const gname=p.gender==='f'?'ست':'راجل';
+      const gname=p.gender==='f'?'أنثى':'ذكر';
       const aname=p.act==='1.2'?'نشاط قليل':(p.act==='1.9'?'نشاط عالي':'نشاط متوسط');
       h='<div class="section-head"><h2>جسمي</h2></div><div class="card glow"><div class="row"><b style="flex:1">بياناتي الأساسية</b><button class="ibtn" onclick="view.editBase=true;render()">'+icon('pen')+'</button></div><div class="kv"><span>الوزن</span><b>'+esc(p.weight)+' كجم</b></div><div class="kv"><span>الطول</span><b>'+esc(p.height)+' سم</b></div><div class="kv"><span>العمر</span><b>'+esc(p.age)+'</b></div><div class="kv"><span>النوع / النشاط</span><b>'+gname+' / '+aname+'</b></div>'+(p.fat?'<div class="kv"><span>الدهون</span><b>'+esc(p.fat)+' %</b></div>':'')+'</div><div id="calBox"></div>';
     }else{
-      h='<div class="section-head"><h2>جسمي</h2></div><div class="card glow"><div class="row"><b style="flex:1">'+(hasBase?'تعديل بياناتي':'الأساسي (للسعرات)')+'</b>'+(hasBase?'<button class="ibtn" onclick="view.editBase=false;render()">'+icon('x')+'</button>':'')+'</div><div class="row"><input class="w" style="flex:1" type="number" inputmode="decimal" id="pWeight" placeholder="الوزن" value="'+esc(p.weight)+'"> <input class="w" style="flex:1" type="number" inputmode="decimal" id="pHeight" placeholder="الطول" value="'+esc(p.height)+'"> <input class="w" style="flex:1" type="number" inputmode="numeric" id="pAge" placeholder="العمر" value="'+esc(p.age)+'"></div><div class="row"><select id="pGender" style="flex:1"><option value="m" '+(p.gender!=='f'?'selected':'')+'>راجل</option><option value="f" '+(p.gender==='f'?'selected':'')+'>ست</option></select><select id="pAct" style="flex:1"><option value="1.2" '+(p.act==='1.2'?'selected':'')+'>نشاط قليل</option><option value="1.55" '+((!p.act||p.act==='1.55')?'selected':'')+'>نشاط متوسط</option><option value="1.9" '+(p.act==='1.9'?'selected':'')+'>نشاط عالي</option></select></div><div class="row"><input class="w" style="flex:1" type="number" inputmode="decimal" id="pFat" placeholder="الدهون % (اختياري)" value="'+esc(p.fat||'')+'"></div><button class="btn btn-neon btn-sm" onclick="saveProfile()">'+icon('check')+' حفظ</button></div><div id="calBox"></div>';
+      h='<div class="section-head"><h2>جسمي</h2></div><div class="card glow"><div class="row"><b style="flex:1">'+(hasBase?'تعديل بياناتي':'الأساسي (للسعرات)')+'</b>'+(hasBase?'<button class="ibtn" onclick="view.editBase=false;render()">'+icon('x')+'</button>':'')+'</div><div class="row"><input class="w" style="flex:1" type="number" inputmode="decimal" id="pWeight" placeholder="الوزن" value="'+esc(p.weight)+'"> <input class="w" style="flex:1" type="number" inputmode="decimal" id="pHeight" placeholder="الطول" value="'+esc(p.height)+'"> <input class="w" style="flex:1" type="number" inputmode="numeric" id="pAge" placeholder="العمر" value="'+esc(p.age)+'"></div><div class="row"><select id="pGender" style="flex:1"><option value="m" '+(p.gender!=='f'?'selected':'')+'>ذكر</option><option value="f" '+(p.gender==='f'?'selected':'')+'>أنثى</option></select><select id="pAct" style="flex:1"><option value="1.2" '+(p.act==='1.2'?'selected':'')+'>نشاط قليل</option><option value="1.55" '+((!p.act||p.act==='1.55')?'selected':'')+'>نشاط متوسط</option><option value="1.9" '+(p.act==='1.9'?'selected':'')+'>نشاط عالي</option></select></div><div class="row"><input class="w" style="flex:1" type="number" inputmode="decimal" id="pFat" placeholder="الدهون % (اختياري)" value="'+esc(p.fat||'')+'"></div><button class="btn btn-neon btn-sm" onclick="saveProfile()">'+icon('check')+' حفظ</button></div><div id="calBox"></div>';
     }
     h+='<div class="card glow"><h3>سجّل قياس جديد</h3><p class="sub">الوزن أساسي فقط — الدهون والصورة اختيارية للمقارنة البصرية مع الوقت. الحفظ يحدّث بياناتك الأساسية.</p><div class="row"><div class="field">'+icon('scale')+'<input type="number" inputmode="decimal" id="bWeight" placeholder="الوزن (كجم)"></div><div class="field">'+icon('body')+'<input type="number" inputmode="decimal" id="bFat" placeholder="الدهون % (اختياري)"></div></div><button class="dashedbtn" onclick="openPhoto()">'+icon('cam')+' صورة تقدم (اختياري)</button><img class="photo" id="photoPrev" style="display:none"><input type="file" id="photoInp" accept="image/*" style="display:none" onchange="readPhoto(this)"><button class="btn btn-neon btn-block" onclick="saveBody()">'+icon('check')+' حفظ القياس</button></div>';
+    h+=weekReport();
     db.body.slice().reverse().forEach(function(x){
       h+='<div class="card"><div class="row"><span class="thumb" style="width:40px;height:40px">'+icon('body')+'</span><b style="flex:1">'+esc(x.date)+'</b><button class="ibtn danger" onclick="delBody('+x.ts+')">'+icon('trash')+'</button></div><div class="kv"><span>الوزن</span><b>'+(x.weight?esc(x.weight)+' كجم':'—')+'</b></div><div class="kv"><span>الدهون</span><b>'+(x.fat?esc(x.fat)+' %':'—')+'</b></div><div class="kv"><span>الصدر / الوسط</span><b>'+(x.chest?esc(x.chest):'—')+' / '+(x.waist?esc(x.waist):'—')+' سم</b></div><div class="kv"><span>الدراع / الفخد</span><b>'+(x.arm?esc(x.arm):'—')+' / '+(x.thigh?esc(x.thigh):'—')+' سم</b></div>'+(x.photo?'<img class="photo" src="'+x.photo+'">':'')+'</div>';
     });
@@ -1157,6 +1229,7 @@ function render(){
     if(view.swapList){const sl=view.swapList;
       h+='<div id="swapSheet" style="position:fixed;inset:0;z-index:60;background:rgba(0,0,0,.7);display:flex;align-items:flex-end;justify-content:center" onclick="if(event.target===this)closeSwap()"><div class="sheet" style="max-height:80vh"><div class="top"><b>بدائل '+esc(FGROUPS[sl.g]||'')+' (~'+sl.cur+' سعرة)'+(view.noFood&&view.noFood.length?' — مفلترة من حساسيتك':'')+'</b><button class="ibtn" onclick="closeSwap()">'+icon('x')+'</button></div><div id="pkList">'+(sl.opts.length?sl.opts.map(function(o){return '<button class="pk" onclick="pickSwap('+o.fi+',\''+o.side+'\')">'+icon('swap')+' '+esc(o.nm)+' <b>'+o.kc+'</b>'+'<small>بروتين ~'+o.p+'جم • فرق '+(o.kc>sl.cur?'+':'')+(o.kc-sl.cur)+'</small></button>';}).join(''):'<p class="muted" style="text-align:center">مفيش بديل مناسب في نفس المجموعة</p>')+'</div></div></div>';
     }
+    h+='<div class="card"><h3>حاسبة السعرات \uD83E\uDDEE</h3><p class="sub">عندك أكل بره النظام؟ اكتب اسمه ووزنه بالجرام — نحسبه من قاعدة بياناتنا المدققة.</p><div class="row"><input class="full" id="cfQ" list="cfList" style="flex:2" placeholder="مثال: رز مسلوق، فراخ، موز"><datalist id="cfList">'+CAL100.map(function(x){return '<option value="'+esc(x[0])+'">';}).join('')+'</datalist><input class="w" type="number" inputmode="decimal" id="cfG" placeholder="جرام"></div><button class="btn btn-neon btn-sm btn-block" onclick="calcFood()">احسب السعرات</button><div id="cfRes"></div></div>';
     h+='<button class="btn" onclick="go(\'more\')">'+icon('back')+' رجوع</button>';
     a.innerHTML=h;
   }
@@ -1223,8 +1296,8 @@ function renderLib(){
   LIB.forEach(function(g){
     if(view.libM!=='الكل'&&view.libM!==g[0])return;
     g[1].forEach(function(t){
-      if(q&&t[0].indexOf(q)<0&&t[1].indexOf(q)<0)return;
-      h+='<div class="item" onclick="openLb(\''+t[0].replace(/'/g,"\\'")+'\')">'+exThumb(t[0])+'<span class="grow"><span class="nm">'+esc(t[0])+'</span><br><span class="meta">'+esc(g[0])+' • '+esc(t[1])+'</span></span></div>';
+      if(q&&t[0].indexOf(q)<0&&t[1].indexOf(q)<0&&exEN(t[0]).toLowerCase().indexOf(q.toLowerCase())<0)return;
+      h+='<div class="item" onclick="openLb(\''+t[0].replace(/'/g,"\\'")+'\')">'+exThumb(t[0])+'<span class="grow"><span class="nm" dir="ltr" style="text-align:right">'+esc(exEN(t[0]))+'</span><br><span class="meta">'+esc(t[0])+' • '+esc(g[0])+'</span></span></div>';
     });
   });
   list.innerHTML=h||'<p class="muted" style="text-align:center">مفيش نتائج</p>';
@@ -1254,7 +1327,7 @@ function applyCoupon(){
   view.couponInput=code;render();
  }).catch(function(){alert('محتاج نت عشان أتحقق من الكود');});
 }
-function couponUse(){try{if(view.coupon&&fbOK&&fbUser)firebase.firestore().collection('coupons').doc(view.coupon.code).set({used:firebase.firestore.FieldValue.increment(1)},{merge:true});}catch(e){}}
+function couponUse(){try{if(view.coupon&&fbOK&&fbUser){const code=view.coupon.code;firebase.firestore().collection('coupons').doc(code).set({used:firebase.firestore.FieldValue.increment(1)},{merge:true});const pl=view.payPlan||'m',pr=pp(pl).final;firebase.firestore().collection('refs').add({code:code,email:fbUser.email,plan:pl,price:pr,ts:Date.now()});}}catch(e){}}
 const PAY_VODA="01008709651", PAY_WA="201008709651";
 let fbUser=null,fbSub=null,fbReady=false,fbOK=false,_cloudT=null,_lastCloud=0;
 function fbEmail(){return (fbUser&&fbUser.email||'').toLowerCase();}
@@ -1336,7 +1409,7 @@ function renderPaywall(full){
     +'<div class="paybox hot"><b>شهري — '+PRICE_M()+' جنيه</b> <s class="muted">بدل '+WAS_M+'</s></div>'
     +'<div class="paybox"><b>سنوي — '+PRICE_Y()+' جنيه</b> <s class="muted">بدل '+WAS_Y+'</s> <span class="badge">الأوفر — أوفر من الشهري</span></div>'
     +'<div class="paybox"><b>3 شهور — '+curPrices().q+' جنيه</b>'+(curPrices().q<curPrices().qw?' <s class="muted">بدل '+curPrices().qw+'</s>':'')+' <span class="badge">الوسط — وفّر وجرّب براحتك</span></div>'
-    +'<div class="card" style="margin:10px 0"><h3>عندك كود خصم؟</h3><div class="row"><input class="full" id="cpnIn" style="flex:1" placeholder="اكتب الكود هنا" value="'+esc(view.couponInput||view.coupon&&view.coupon.code||'')+'"><button class="btn btn-sm" onclick="applyCoupon()">تطبيق</button></div><div id="cpnMsg">'+(view.coupon?('<p class="sub">✅ كود <b>'+esc(view.coupon.code)+'</b> شغال — الشهري بقى <b style="color:#fff">'+pp('m').final+' بدل '+pp('m').base+'</b> • السنوي بقى <b style="color:#fff">'+pp('y').final+' بدل '+pp('y').base+'</b></p>'):'')+'</div></div>'
+    +'<div class="card" style="margin:10px 0"><h3>عندك كود خصم؟</h3><div class="row"><input class="full" id="cpnIn" style="flex:1" placeholder="اكتب الكود هنا" value="'+esc(view.couponInput||view.coupon&&view.coupon.code||'')+'"><button class="btn btn-sm" onclick="applyCoupon()">تطبيق</button></div><div id="cpnMsg">'+(view.coupon?((view.coupon.value>0?'<p class="sub">✅ كود <b>'+esc(view.coupon.code)+'</b> شغال — الشهري بقى <b style="color:#fff">'+pp('m').final+' بدل '+pp('m').base+'</b> • السنوي بقى <b style="color:#fff">'+pp('y').final+' بدل '+pp('y').base+'</b></p>':'<p class="sub">✅ كود <b>'+esc(view.coupon.code)+'</b> شغال (كود متابعة)</p>')):'')+'</div></div>'
     +'<div class="row"><button class="btn btn-sm '+(view.payPlan!=='q'&&view.payPlan!=='y'?'btn-neon':'')+'" style="flex:1" onclick="view.payPlan=\'m\';render()">شهري ('+pm.final+')</button><button class="btn btn-sm '+(view.payPlan==='q'?'btn-neon':'')+'" style="flex:1" onclick="view.payPlan=\'q\';render()">3 شهور ('+pq.final+')</button><button class="btn btn-sm '+(view.payPlan==='y'?'btn-neon':'')+'" style="flex:1" onclick="view.payPlan=\'y\';render()">سنوي ('+py.final+')</button></div>'
     +'<p class="sub">1) حوّل <b style="color:#fff">'+planPrice+' جنيه</b> على فودافون كاش: <b style="color:#fff" dir="ltr">'+PAY_VODA+'</b></p>'
     +'<p class="sub">2) ابعت سكرين التحويل على واتساب مع إيميلك:<br><b style="color:#fff" dir="ltr">'+em+'</b></p>'
@@ -1461,21 +1534,23 @@ function plansCardHTML(){
 function renderAdmin(){
   if(!isAdmin())return '<div class="card"><div class="empty">ل للأدمن بس.</div></div>';
   let h='<div class="section-head"><h2>لوحة الأدمن</h2><span class="badge">تحكم كامل</span></div>';
-  h+='<div class="card"><input class="full" id="admQ" placeholder="ابحث بإيميل المشترك…" value="'+esc(view.admQ||'')+'" oninput="view.admQ=this.value;adminFilter()">'
-    +'<div class="row"><button class="btn btn-neon btn-sm" style="flex:1" onclick="adminLoad()">تحديث القايمة</button></div><div id="admList"><p class="muted">جاري التحميل…</p></div></div>';
-  h+='<div class="card"><h3>رسالة جماعية للمشتركين \uD83D\uDCE9</h3><p class="sub">اكتب رسالة واحدة تظهر لكل المشتركين في «رسايل الكابتن» (نصيحة، تنبيه عرض، تشجيع). بتظهر لما يفتحوا التطبيق — من غير إزعاج.</p>'
-    +'<textarea class="full" id="anncIn" rows="2" style="text-align:right;min-height:56px" placeholder="مثال: عاش يا وحوش \uD83D\uDCAA الأسبوع ده ركزوا على الرجل…"></textarea>'
-    +'<div class="row"><button class="btn btn-neon btn-sm" style="flex:1" onclick="sendAnnc()">إرسال للكل</button><button class="btn btn-sm" style="flex:1" onclick="clearAnnc()">مسح الرسالة</button></div><div id="anncCur"><p class="muted">جاري التحميل…</p></div></div>';
+  h+='<div class="card"><h3>رسالة جماعية \uD83D\uDCE9</h3><div class="row"><textarea class="full" id="anncIn" rows="1" style="flex:1;text-align:right;min-height:44px" placeholder="اكتب رسالة لكل المشتركين…"></textarea></div><div class="row"><button class="btn btn-neon btn-sm" style="flex:1" onclick="sendAnnc()">إرسال</button><button class="btn btn-sm" onclick="clearAnnc()">مسح</button></div><div id="anncCur"><p class="muted">جاري التحميل…</p></div></div>';
   setTimeout(anncAdminLoad,50);
-  h+='<div class="card"><h3>أكواد الخصم</h3><p class="sub">اعمل كود ووزعه — المستخدم يكتبه في شاشة الاشتراك وياخد الخصم تلقائي، من غير ما تغير أي حاجة في الكود.</p>'
+  h+='<div class="card"><h3>\uD83E\uDD1D المسوقين (أفلييت)</h3><p class="sub">كل مسوق ليه كود باسمه: المشتري ياخد خصم، والمسوق ياخد عمولة تتحسب تلقائي هنا. دوس على اسم المسوق عشان تشوف تفاصيله.</p>'
+    +'<div class="row"><input class="full" id="afName" style="flex:1" placeholder="اسم المسوق (مثال: كوتش أشرف)"><input class="full" id="afCode" style="flex:1;max-width:130px" placeholder="الكود"></div>'
+    +'<div class="row"><input class="w" style="flex:1" type="number" id="afDisc" value="0" placeholder="خصم المشتري % (0 = تتبع فقط)"><input class="w" style="flex:1" type="number" id="afRate" value="20" placeholder="عمولة %"><button class="btn btn-neon btn-sm" style="flex:1" onclick="affilCreate()">إضافة مسوق</button></div><div id="affList"><p class="muted">جاري التحميل…</p></div></div>';
+  h+='<div class="card"><h3>أكواد الخصم</h3><p class="sub">اعمل كود ووزعه — المستخدم يكتبه في شاشة الاشتراك وياخد الخصم تلقائي. أكواد المسوقين عليها \uD83E\uDD1D.</p>'
     +'<div class="row"><input class="full" id="cpCode" style="flex:1" placeholder="الكود (مثال: RAMADAN20)"><select id="cpType"><option value="pct">% نسبة</option><option value="flat">جنيه ثابت</option></select></div>'
     +'<div class="row"><input class="w" style="flex:1" type="number" id="cpVal" placeholder="القيمة (20 = 20% أو 20 جنيه)"><select id="cpPlan" style="flex:1"><option value="both">كل الباقات</option><option value="m">شهري بس</option><option value="q">3 شهور بس</option><option value="y">سنوي بس</option></select><input class="w" style="flex:1" type="number" id="cpMax" placeholder="عدد مرات (فاضي = بلا حد)"></div>'
     +'<button class="btn btn-neon btn-sm btn-block" onclick="couponCreate()">إنشاء الكود</button><div id="cpnList"><p class="muted">جاري التحميل…</p></div></div>';
-  h+='<div class="card"><h3>الأسعار المعروضة</h3><p class="sub">الشغال دلوقتي: شهري '+PRICE_M()+' • 3 شهور '+pp('q').final+' • سنوي '+PRICE_Y()+' (بدل '+WAS_Y+') ('+curPrices().tag+') • الدفع: فودافون كاش '+PAY_VODA+'</p></div>';
+  h+='<div class="card"><h3>الأسعار المعروضة</h3><p class="sub">شهري '+PRICE_M()+' • 3 شهور '+pp('q').final+' • سنوي '+PRICE_Y()+' ('+curPrices().tag+')</p></div>';
+  h+='<div class="card"><div class="section-head" style="margin:0 0 4px"><h2>المشتركين</h2><span class="badge" id="admCount">…</span></div><input class="full" id="admQ" placeholder="ابحث بإيميل المشترك…" value="'+esc(view.admQ||'')+'" oninput="view.admQ=this.value;adminFilter()">'
+    +'<div class="row"><button class="btn btn-neon btn-sm" style="flex:1" onclick="adminLoad()">تحديث</button></div><div id="admList"><p class="muted">جاري التحميل…</p></div></div>';
   h+='<button class="btn" onclick="go(\'more\')">'+icon('back')+' رجوع</button>';
   setTimeout(adminLoad,50);
   return h;
 }
+function planOf(o){if(!o||!o.createdAt)return{k:'new',label:'جديد'};if(o.blocked)return{k:'blocked',label:'\u26D4 موقوف'};const now=Date.now();if(o.subUntil&&now<o.subUntil){const left=o.subUntil-now,D=86400000;if(left>300*D)return{k:'y',label:'\u2705 سنوي'};if(left>60*D)return{k:'q',label:'\u2705 3 شهور'};return{k:'m',label:'\u2705 شهري'};}if(o.trialEnds&&now<o.trialEnds)return{k:'trial',label:'\U0001F193 تجربة'};return{k:'exp',label:'\u231B منتهي'};}
 function admStatus(s){
   if(!s||!s.createdAt)return 'جديد';
   if(s.blocked)return '⛔ موقوف';
@@ -1490,6 +1565,7 @@ function adminLoad(){
   firebase.firestore().collection('users').orderBy('createdAt','desc').limit(200).get().then(function(q){
     const arr=[];q.forEach(function(d){const o=d.data()||{};o._id=d.id;arr.push(o);});
     view.admUsers=arr;const dc={};arr.forEach(function(o){(o.devices||[]).forEach(function(d){dc[d]=(dc[d]||0)+1;});});view.devCount=dc;adminFilter();
+    try{affilLoad();}catch(e){}
     firebase.firestore().collection('coupons').orderBy('createdAt','desc').limit(100).get().then(function(q){const a=[];q.forEach(function(d){const o=d.data()||{};o._id=d.id;a.push(o);});renderCoupons(a);}).catch(function(){const b=document.getElementById('cpnList');if(b)b.innerHTML='<p class="muted">فشل تحميل الأكواد</p>';});
   }).catch(function(e){box.innerHTML='<p class="muted">فشل التحميل: '+esc(e&&e.message)+'</p>';});
 }
@@ -1498,13 +1574,16 @@ function adminFilter(){
   const q=(view.admQ||'').trim().toLowerCase();
   const arr=view.admUsers.filter(function(o){return !q||(o.email||'').toLowerCase().indexOf(q)>-1;});
   if(!arr.length){box.innerHTML='<p class="muted">مفيش نتائج</p>';return;}
+  try{const cc=document.getElementById('admCount');if(cc&&view.admUsers){const act=view.admUsers.filter(function(o){const k=planOf(o).k;return k==='m'||k==='q'||k==='y';}).length,tr=view.admUsers.filter(function(o){return planOf(o).k==='trial';}).length;cc.textContent=act+' مشترك • '+tr+' تجربة';}}catch(e){}
   box.innerHTML='<p class="sub">'+arr.length+' مشترك</p>'+arr.map(function(o){
-    const id=o._id;
-    return '<div class="admrow"><span class="grow" style="flex:1;min-width:150px"><b style="font-size:13px">'+esc(o.email||'؟')+'</b><br><span class="muted" style="font-size:11.5px">'+esc(o.name||'')+' • '+esc(admStatus(o))+(sharedDev(o)?' • \u26A0\uFE0F جهاز مشترك':'')+'</span></span>'
-    +'<button class="btn btn-sm" onclick="adminAct(\''+id+'\',\'month\')">شهر</button>'
-    +'<button class="btn btn-sm" onclick="adminAct(\''+id+'\',\'quarter\')">3 شهور</button>'
-    +'<button class="btn btn-sm" onclick="adminAct(\''+id+'\',\'year\')">سنة</button>'
-    +'<button class="btn btn-sm" onclick="adminAct(\''+id+'\',\'block\')">'+(o.blocked?'فك':'وقف')+'</button></div>';
+    const id=o._id,pk=planOf(o);
+    const pc=function(k,t){return '<div class="planchip'+(pk.k===k?' on':'')+'">'+t+'</div>';};
+    return '<div class="admrow" style="display:block"><span class="grow" style="flex:1;min-width:150px"><b style="font-size:13px">'+esc(o.email||'؟')+'</b><br><span class="muted" style="font-size:11.5px">'+esc(o.name||'')+' • '+esc(admStatus(o))+(sharedDev(o)?' • \u26A0\uFE0F جهاز مشترك':'')+'</span></span>'
+    +'<div class="planchips">'+pc('m','شهري')+pc('q','3 شهور')+pc('y','سنوي')+pc(pk.k==='trial'?'trial':(pk.k==='new'?'new':(pk.k==='blocked'?'blocked':'exp')),pk.label)+'</div>'
+    +'<div class="row"><button class="btn btn-sm" style="flex:1" onclick="adminAct(\''+id+'\',\'month\')">+ شهر</button>'
+    +'<button class="btn btn-sm" style="flex:1" onclick="adminAct(\''+id+'\',\'quarter\')">+ 3 شهور</button>'
+    +'<button class="btn btn-sm" style="flex:1" onclick="adminAct(\''+id+'\',\'year\')">+ سنة</button>'
+    +'<button class="btn btn-sm" style="flex:1" onclick="adminAct(\''+id+'\',\'block\')">'+(o.blocked?'فك الوقف':'وقف')+'</button></div></div>';
   }).join('');
 }
 function sendAnnc(){
@@ -1526,6 +1605,52 @@ function anncAdminLoad(){
   box.innerHTML=(d.exists&&d.data().msg)?'<p class="sub">النشطة حاليًا: «'+esc(d.data().msg)+'»</p>':'<p class="muted">مفيش رسالة نشطة</p>';
  }).catch(function(){box.innerHTML='';});
 }
+function affilCreate(){
+ const g=function(id){const e=document.getElementById(id);return e?e.value.trim():'';};
+ const name=g('afName'),code=g('afCode').toUpperCase().replace(/\s+/g,'');
+ const disc=parseFloat(g('afDisc'))||0,rate=parseFloat(g('afRate'))||20;
+ if(!name||!code)return noteSheet('اكتب اسم المسوق والكود الأول');
+ if(rate>50)return noteSheet('العمولة كبيرة أوي — أكتر حاجة 50%');
+ firebase.firestore().collection('affils').doc(code).set({name:name,rate:rate,disc:disc,active:true,createdAt:Date.now()}).then(function(){
+  return firebase.firestore().collection('coupons').doc(code).set({type:'pct',value:disc,plan:'both',maxUses:0,used:0,active:true,createdAt:Date.now(),affil:true});
+ }).then(function(){noteSheet('المسوق '+esc(name)+' اتضاف \u2705 (كوده: '+code+')');adminLoad();}).catch(function(e){noteSheet('فشل: '+(e&&e.message));});
+}
+function affilToggle(code,on){
+ firebase.firestore().collection('affils').doc(code).set({active:on},{merge:true}).then(function(){
+  return firebase.firestore().collection('coupons').doc(code).set({active:on},{merge:true}).catch(function(){});
+ }).then(function(){adminLoad();});
+}
+function affilDel(code){
+ askSheet('مسح المسوق؟','«'+code+'» هيتمسح هو والكود بتاعه. سجل العمولات القديم هيفضل محفوظ.','مسح',true,function(){
+  firebase.firestore().collection('affils').doc(code).delete().then(function(){
+   return firebase.firestore().collection('coupons').doc(code).delete().catch(function(){});
+  }).then(function(){adminLoad();});
+ });
+}
+function affilToggleView(code){view.affOpen=(view.affOpen===code?null:code);renderAffils(view.affData||{affils:[],refs:{}});}
+function renderAffils(data){
+ const box=document.getElementById('affList');if(!box)return;
+ const affils=data.affils||[],refs=data.refs||{};
+ if(!affils.length){box.innerHTML='<p class="muted">لسه مفيش مسوقين — ضيف أول واحد من فوق.</p>';return;}
+ box.innerHTML=affils.map(function(a){
+  const rs=refs[a._id]||[];let tot=0;rs.forEach(function(r){tot+=+r.price||0;});
+  const com=Math.round(tot*(+a.rate||0)/100);
+  const open=view.affOpen===a._id;
+  return '<div><div class="affhead" onclick="affilToggleView(\''+esc(a._id)+'\')"><span style="flex:1"><b>'+esc(a.name||a._id)+'</b> <span dir="ltr" style="color:var(--neon)">'+esc(a._id)+'</span><br><span class="muted" style="font-size:11.5px">'+rs.length+' اشتراك • مبيعات '+tot+' جنيه • عمولة '+com+' جنيه ('+(+a.rate||0)+'%)'+(a.active?'':' • \uD83D\uDD34 موقوف')+'</span></span><span style="font-size:18px">'+(open?'\u25B2':'\u25BC')+'</span></div>'
+  +(open?'<div style="padding:0 4px 8px">'+(rs.length?rs.map(function(r){return '<div class="admrow"><span style="flex:1;font-size:12.5px">'+esc(r.email||'؟')+'<br><span class="muted">'+(r.plan==='m'?'شهري':r.plan==='q'?'3 شهور':'سنوي')+' • '+esc(r.price)+' جنيه • '+esc(new Date(r.ts||0).toLocaleDateString('ar-EG'))+'</span></span></div>';}).join(''):'<p class="muted">لسه مفيش اشتراكات بالكود ده</p>')
+  +'<div class="row"><button class="btn btn-sm" style="flex:1" onclick="affilToggle(\''+esc(a._id)+'\','+(!a.active)+')">'+(a.active?'إيقاف':'تشغيل')+'</button><button class="btn btn-sm" style="flex:1" onclick="affilDel(\''+esc(a._id)+'\')">مسح</button></div></div>':'')
+  +'</div>';
+ }).join('');
+}
+function affilLoad(){
+ firebase.firestore().collection('affils').orderBy('createdAt','desc').limit(100).get().then(function(q){
+  const affils=[];q.forEach(function(d){const o=d.data()||{};o._id=d.id;affils.push(o);});
+  return firebase.firestore().collection('refs').orderBy('ts','desc').limit(500).get().then(function(q2){
+   const refs={};q2.forEach(function(d){const o=d.data()||{};const c=o.code||'?';if(!refs[c])refs[c]=[];refs[c].push(o);});
+   view.affData={affils:affils,refs:refs};renderAffils(view.affData);
+  });
+ }).catch(function(){const b=document.getElementById('affList');if(b)b.innerHTML='<p class="muted">فشل تحميل المسوقين</p>';});
+}
 function couponCreate(){
  const c=function(id){const e=document.getElementById(id);return e?e.value.trim():'';};
  const code=c('cpCode').toUpperCase().replace(/\s+/g,'');
@@ -1543,7 +1668,8 @@ function renderCoupons(arr){
  if(!arr.length){box.innerHTML='<p class="muted">لسه مفيش أكواد — اعمل أول كود من فوق.</p>';return;}
  box.innerHTML='<p class="sub">'+arr.length+' كود</p>'+arr.map(function(o){
   const left=o.maxUses>0?(o.maxUses-(o.used||0))+' متبقي':'مفتوح';
-  return '<div class="admrow"><span style="flex:1;min-width:140px"><b dir="ltr">'+esc(o._id)+'</b><br><span class="muted" style="font-size:11.5px">'+(o.type==='pct'?o.value+'%':o.value+' جنيه')+' • '+(o.plan==='m'?'شهري':o.plan==='q'?'3 شهور':o.plan==='y'?'سنوي':'كل الباقات')+' • استُخدم '+(o.used||0)+' • '+left+' • '+(o.active?'🟢 شغال':'🔴 موقوف')+'</span></span>'
+  const tag=o.affil?' affil':'';
+  return '<div class="admrow"><span style="flex:1;min-width:140px"><b dir="ltr">'+esc(o._id)+'</b>'+(o.affil?' 🤝':'')+'<br><span class="muted" style="font-size:11.5px">'+(o.type==='pct'?o.value+'%':o.value+' جنيه')+' • '+(o.plan==='m'?'شهري':o.plan==='q'?'3 شهور':o.plan==='y'?'سنوي':'كل الباقات')+' • استُخدم '+(o.used||0)+' • '+left+' • '+(o.active?'🟢 شغال':'🔴 موقوف')+'</span></span>'
   +'<button class="btn btn-sm" onclick="couponToggle(\''+esc(o._id)+'\','+(!o.active)+')">'+(o.active?'إيقاف':'تشغيل')+'</button>'
   +'<button class="btn btn-sm" onclick="couponDel(\''+esc(o._id)+'\')">مسح</button></div>';
  }).join('');
@@ -1580,5 +1706,5 @@ function adminAct(uid,act){
   }
 })();
 </script>
-<script>window.__CF$cv$params={r:'a5ebfc64ff2b6a1b',t:'MTc5NTM5Mjk5NA==',u:'01a205c2fce3701e91efcfa7d43ea567',ut:'fvuIJaEyFORRIjL9v9mjSyCxjeW7ZrTyuW67zE2sv1g-1795392994-1.2.1.1-LsE9yw2tlLo_ZUyfB3GxFnb8ZUVq6f0voM5mOioNYOJ1Xv.9g07BGC8kuSOfDXI9XoioKOaq.7uI0Q9PpPjgAZCkndJusUNawCkJcNYDzUE',i:60};(function(){if(!document.body)return;var l=window.location,o;try{o=new URL(l.origin).origin}catch(e){try{o=new URL(new URL(l.href).origin).origin}catch(e){o=''}}var u='/cdn-cgi/challenge-platform/scripts/precursor/main.js?ray=a5ebfc64ff2b6a1b',s=document.createElement('script');s.src=o?new URL(u,o).href:u;document.head.appendChild(s);})();</script></body>
+<script>window.__CF$cv$params={r:'a5f04b81be1413d3',t:'MTc5NTQzODE3Nw==',u:'01a208746e797542b42ba040ff006f83',ut:'klPGGp7PTAf5Bjr8_7XNv3OzIfEc_cA5DtY0lnnteHQ-1795438177-1.2.1.1-wLStBmDKc2h6K69RlrrSf_5hpb7TRkmpppV66y5_Hl2EzqvoTG35yycM5nXyjBK4LH17Cvqwr0Idxjfontq57TsRFsgwx7hJ5Wd0rAh6_5g',i:60};(function(){if(!document.body)return;var l=window.location,o;try{o=new URL(l.origin).origin}catch(e){try{o=new URL(new URL(l.href).origin).origin}catch(e){o=''}}var u='/cdn-cgi/challenge-platform/scripts/precursor/main.js?ray=a5f04b81be1413d3',s=document.createElement('script');s.src=o?new URL(u,o).href:u;document.head.appendChild(s);})();</script></body>
 </html>
