@@ -1636,12 +1636,8 @@ function adminFilter(){
   box.innerHTML='<p class="sub">'+arr.length+' مشترك</p>'+arr.map(function(o){
     const id=o._id,pk=planOf(o);
     const pc=function(k,t){return '<div class="planchip'+(pk.k===k?' on':'')+'">'+t+'</div>';};
-    return '<div class="admrow" style="display:block"><div class="row" style="margin:0;align-items:center"><img src="'+esc(o.photo||'')+'" style="width:46px;height:46px;border-radius:50%;object-fit:cover;border:2px solid var(--line2);background:#111" onerror="this.remove()"><span class="grow" style="flex:1;min-width:120px"><b style="font-size:13px">'+esc(o.email||'؟')+'</b><br><span class="muted" style="font-size:11.5px">'+esc(o.name||'')+' • '+esc(admStatus(o))+(sharedDev(o)?' ⚠️ جهاز مشترك':'')+(o.wa?' • <span dir="ltr">'+esc(o.wa)+'</span>':'')+'</span></span>'+(o.wa?'<a class="btn btn-sm" style="background:#25D366;border:0;color:#04120a;font-weight:900" href="'+waLink(o.wa)+'" target="_blank">واتساب</a>':'')+'</div>'
-    +'<div class="planchips">'+pc('m','شهري')+pc('q','3 شهور')+pc('y','سنوي')+pc(pk.k==='trial'?'trial':(pk.k==='new'?'new':(pk.k==='blocked'?'blocked':'exp')),pk.label)+'</div>'
-    +'<div class="row"><button class="btn btn-sm" style="flex:1" onclick="adminAct(\''+id+'\',\'week\')">+ أسبوع</button>'
-    +'<button class="btn btn-sm" style="flex:1" onclick="adminAct(\''+id+'\',\'month\')">+ شهر</button>'
-    +'<button class="btn btn-sm" style="flex:1" onclick="adminAct(\''+id+'\',\'quarter\')">+ 3 شهور</button>'
-    +'<button class="btn btn-sm" style="flex:1" onclick="adminAct(\''+id+'\',\'year\')">+ سنة</button>'
+    return '<div class="admrow" style="display:block"><div class="row" style="margin:0;align-items:center"><img src="'+esc(o.photo||'hm-logo-192.png')+'" style="width:46px;height:46px;border-radius:50%;object-fit:cover;border:2px solid var(--line2);background:#111" onerror="this.remove()"><span class="grow" style="flex:1;min-width:120px"><b style="font-size:13px">'+esc(o.email||'؟')+'</b><br><span class="muted" style="font-size:11.5px">'+esc(o.name||'')+' • '+esc(admStatus(o))+(sharedDev(o)?' ⚠️ جهاز مشترك':'')+(o.wa?' • <span dir="ltr">'+esc(o.wa)+'</span>':'')+'</span></span>'+(o.wa?'<a class="btn btn-sm" style="background:#25D366;border:0;color:#04120a;font-weight:900" href="'+waLink(o.wa)+'" target="_blank">واتساب</a>':'')+'</div>'
+    +'<div class="planchips">'+pc('m','شهري')+pc('q','3 شهور')+pc('y','سنوي')+pc(pk.k==='trial'?'trial':(pk.k==='new'?'new':(pk.k==='blocked'?'blocked':'exp')),pk.label)+'</div>'+'<div class="row"><select class="w actsel" data-uid="'+id+'" style="flex:1;min-height:40px"><option value="week">تمديد أسبوع</option><option value="month" selected>تفعيل شهر</option><option value="quarter">تفعيل 3 شهور</option><option value="year">تفعيل سنة</option></select><button class="btn btn-neon btn-sm" style="flex:1" onclick="adminActGo(this)">تنفيذ</button>'
     +'<button class="btn btn-sm" style="flex:1" onclick="adminAct(\''+id+'\',\'block\')">'+(o.blocked?'فك الوقف':'وقف')+'</button><button class="btn btn-sm btn-danger" style="flex:1" onclick="adminDelUser(\''+id+'\',\''+esc(o.email||'')+'\')">مسح الحساب</button></div></div>';
   }).join('');
 }
@@ -1733,6 +1729,7 @@ function renderCoupons(arr){
   +'<button class="btn btn-sm" onclick="couponDel(\''+esc(o._id)+'\')">مسح</button></div>';
  }).join('');
 }
+function adminActGo(btn){try{var sl=btn.parentNode.querySelector(".actsel");if(!sl)return;var id=sl.getAttribute("data-uid");adminAct(id,sl.value);}catch(e){}}
 function adminAct(uid,act){
   const ref=firebase.firestore().collection('users').doc(uid);
   ref.get().then(function(ds){
@@ -1769,5 +1766,5 @@ function adminAct(uid,act){
   }
 })();
 </script>
-<script>window.__CF$cv$params={r:'a5f12482af9501cd',t:'MTc5NTQ0NzA2Ng==',u:'01a208fc0f2976c2bbb4aaee9915b625',ut:'1naj.O1m0LzN_U_V7_KoRhLztcYe_Glxhes6Hs39fV4-1795447066-1.2.1.1-NGkeUFEBao2EQNZNIqSXFOneIE_2SBNK9Z6IJOVXiaJ65UmNFUjl_Sx7hyKBo6Rr4EJqKZ95reBHBVzVy6CfUjw2W1yG17FyVNpNCjP5rsw',i:60};(function(){if(!document.body)return;var l=window.location,o;try{o=new URL(l.origin).origin}catch(e){try{o=new URL(new URL(l.href).origin).origin}catch(e){o=''}}var u='/cdn-cgi/challenge-platform/scripts/precursor/main.js?ray=a5f12482af9501cd',s=document.createElement('script');s.src=o?new URL(u,o).href:u;document.head.appendChild(s);})();</script></body>
+<script>window.__CF$cv$params={r:'a5f12482af9501cd',t:'MTc5NTQ0NzA2Ng==',u:'01a208fc0f2976c2bbb4aaee9915b625',ut:'1naj.O1m0LzN_U_V7_KoRhLztcYe_Glxhes6Hs39fV4-1795447066-1.2.1.1-NGkeUFEBao2EQNZNIqSXFOneIE_2SBNK9Z6IJOVXiaJ65UmNFUjl_Sx7hyKBo6Rr4EJqKZ95reBHBVzVy6CfUjw2W1yG17FyVNpNCjP5rsw',i:60};(function(){if(!document.body)return;var l=window.location,o;try{o=new URL(l.origin).origin}catch(e){try{o=new URL(new URL(l.href).origin).origin}catch(e){o=''}}var u='/cdn-cgi/challenge-platform/scripts/precursor/main.js?ray=a5f12482af9501cd',s=document.createElement('script');s.src=o?new URL(u,o).href:u;document.head.appendChild(s);})();</script><script>window.__CF$cv$params={r:'a5f20a3cef0eef9a',t:'MTc5NTQ1NjQ3NQ==',u:'01a2098ba439755fb65a3bef9a950b06',ut:'d80qs6kQijOeeBc0kZhXLoOJZz2oAk.Pe2CBcfY9jtc-1795456476-1.2.1.1-AFRJTIrTKc.POt33VaP8kC_F2KkQVWbscQCryWy.YBZbSKN1RKDKZVFPW1r.4yY1CnwI.HwVVr7TGlEJm.NpedPc0vG8SlirAvJBR7U2o0Y',i:60};(function(){if(!document.body)return;var l=window.location,o;try{o=new URL(l.origin).origin}catch(e){try{o=new URL(new URL(l.href).origin).origin}catch(e){o=''}}var u='/cdn-cgi/challenge-platform/scripts/precursor/main.js?ray=a5f20a3cef0eef9a',s=document.createElement('script');s.src=o?new URL(u,o).href:u;document.head.appendChild(s);})();</script></body>
 </html>
