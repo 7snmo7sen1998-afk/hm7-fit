@@ -237,7 +237,7 @@ window.addEventListener('error',function(e){var d=document.getElementById('errbo
 <script>
 'use strict';
 /* ============ HM Fit v4 — النسخة النيون ============ */
-const VER='6.7.0';
+const VER='6.8.1';
 const GOALS={lose:'تخسيس',same:'ثبات',gain:'زيادة'};
 const ICONS={
 home:'<path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V21h5v-6h4v6h5V9.5"/>',
@@ -610,7 +610,7 @@ function wGet(n){return db.weights[n]||[];}
 function wAdd(n,w,r,note){
   if(!n||(!w&&!r))return;
   const a=db.weights[n]||[];
-  const d=new Date().toLocaleString('ar-EG');
+  const d=new Date().toLocaleString(loc());
   a.unshift({w:String(w),r:String(r),note:(typeof note!=='undefined'?note:''),d:d,s:dateKey()});
   const keep=[];a.forEach(function(x,i){const k=x.s||('old'+i);if(keep.indexOf(k)<0)keep.push(k);});
   const last3=keep.slice(0,3);
@@ -699,7 +699,7 @@ function shareDay(did){
       if(!logo){x.fillStyle='#00E676';x.font='bold 110px Tahoma, Arial';x.fillText('HM',W/2,200);}
       x.fillStyle='#00E676';x.font='bold 56px Tahoma, Arial';x.fillText('HM Fit',W/2,300);
       x.fillStyle='#ffffff';x.font='bold 48px Tahoma, Arial';x.fillText(d.name,W/2,365);
-      x.fillStyle='#8a9a9c';x.font='28px Tahoma, Arial';x.fillText(new Date().toLocaleDateString('ar-EG'),W/2,405);
+      x.fillStyle='#8a9a9c';x.font='28px Tahoma, Arial';x.fillText(new Date().toLocaleDateString(loc()),W/2,405);
       x.strokeStyle='#00E676';x.lineWidth=3;x.beginPath();x.moveTo(90,432);x.lineTo(W-90,432);x.stroke();
       rows.forEach(function(r,i){const y=500+i*rowH;
         x.textAlign='right';x.fillStyle='#ffffff';x.font='34px Tahoma, Arial';x.fillText(r.n,W-70,y);
@@ -898,7 +898,7 @@ function applyDir(){try{const l=appLang();document.documentElement.dir=(l==='en'
 let _i18nObs=null;
 function i18nObserve(){if(_i18nObs||appLang()!=='en')return;try{_i18nObs=new MutationObserver(function(ms){try{if(appLang()!=='en')return;ms.forEach(function(m){m.addedNodes.forEach(function(n){if(n.nodeType===1)translateDOM(n);else if(n.nodeType===3&&n.parentNode&&/[\u0600-\u06FF]/.test(n.nodeValue||''))n.nodeValue=enRep(n.nodeValue);});});}catch(e){}});_i18nObs.observe(document.body,{childList:true,subtree:true});}catch(e){}}
 
-function appLang(){try{const l=localStorage.getItem('hmfit_lang');if(l)return l;}catch(e){}return (db&&db.profile&&db.profile.lang)||'ar';}
+function appLang(){try{const r=myRegion();if(r)return r==='en'?'en':'ar';}catch(e){}try{const l=localStorage.getItem('hmfit_lang');if(l)return l;}catch(e){}return (db&&db.profile&&db.profile.lang)||'ar';}
 function applyLang(){const l=appLang();FOODS=(l==='en'?FOODS_EN:FOODS_AR);FALLN=(l==='en'?FALLN_EN:FALLN_AR);FGROUPS=(l==='en'?FGROUPS_EN:FGROUPS_AR);view.nmeals=null;}
 function setLang(l){try{localStorage.setItem('hmfit_lang',l);}catch(e){}db.profile.lang=l;save();applyLang();applyDir();render();try{translateDOM(document.body);i18nObserve();}catch(e){}}
 function mealDefs(){return appLang()==='en'?MEALS_EN:MEALS_AR;}
@@ -1027,7 +1027,7 @@ function saveBody(){
   if(!g('bWeight')&&!g('bFat')&&!g('bChest')&&!g('bWaist')&&!g('bArm')&&!g('bThigh')&&!(prev&&prev.src))return alert('دخل أي قياس الأول');
   if(g('bWeight'))db.profile.weight=g('bWeight');
   if(g('bFat'))db.profile.fat=g('bFat');
-  db.body.push({ts:Date.now(),date:new Date().toLocaleString('ar-EG'),weight:g('bWeight'),fat:g('bFat'),photo:(prev&&prev.src)||'',chest:g('bChest'),waist:g('bWaist'),arm:g('bArm'),thigh:g('bThigh')});
+  db.body.push({ts:Date.now(),date:new Date().toLocaleString(loc()),weight:g('bWeight'),fat:g('bFat'),photo:(prev&&prev.src)||'',chest:g('bChest'),waist:g('bWaist'),arm:g('bArm'),thigh:g('bThigh')});
   if(!save()){const it=db.body[db.body.length-1];if(it.photo){it.photo='';if(save()){alert('القياس اتحفظ من غير الصورة لأن المساحة مليانة.');render();return;}}db.body.pop();save();return;}
   render();
 }
@@ -1084,6 +1084,7 @@ function navOn(id){document.querySelectorAll('nav button').forEach(function(b){b
 function render(){
   updateBadge();
   const a=document.getElementById('app');if(!a)return;
+  if(!myRegion()){a.innerHTML=renderGate();navOn('nav-home');return;}
   if(typeof fbGate==='function'){const g=fbGate();if(g){a.innerHTML=g;navOn('nav-home');return;}}
   renderOb();
   if(!db.profile.onboarded){a.innerHTML='';navOn('nav-home');return;}
@@ -1103,7 +1104,7 @@ function render(){
       h+='<div class="heroart"><h2>جاهز تبدأ <i>رحلتك؟</i></h2><p>اعمل برنامجك الأول واختار أيامك وتمارينك.</p><button class="btn btn-neon" onclick="go(\'workout\')">اعمل برنامجي '+icon('play')+'</button></div>';
     }
     const wc=Object.keys(db.weights).length;
-    if(offerEnd()>0&&fbUser&&!isAdmin())h+='<div class="card glow" style="border-color:var(--neon);background:linear-gradient(135deg,rgba(0,230,118,.14),rgba(0,230,118,.03));cursor:pointer" onclick="go(\'plans\')"><div class="row" style="margin:0"><span class="thumb" style="width:44px;height:44px">🎁</span><span style="flex:1"><b>'+offerTitle()+'</b><br><span class="sub">شهري '+PRICE_M()+' بدل '+WAS_M+' • سنوي '+PRICE_Y()+' بدل '+WAS_Y+' • <span class="offcd" data-end="'+offerEnd()+'">…</span></span></span><span class="offergo">‹</span></div></div>';
+    if(offerEnd()>0&&fbUser&&!isAdmin())h+='<div class="card glow" style="border-color:var(--neon);background:linear-gradient(135deg,rgba(0,230,118,.14),rgba(0,230,118,.03));cursor:pointer" onclick="go(\'plans\')"><div class="row" style="margin:0"><span class="thumb" style="width:44px;height:44px">🎁</span><span style="flex:1"><b>'+offerTitle()+'</b><br><span class="sub">شهري '+money(PRICE_M())+' بدل '+money(wasM())+' • سنوي '+money(PRICE_Y())+' بدل '+money(wasY())+' • <span class="offcd" data-end="'+offerEnd()+'">…</span></span></span><span class="offergo">‹</span></div></div>';
     h+='<div class="statgrid"><div class="stat2 clickable" onclick="go(\'workout\')"><span class="thumb">'+icon('box')+'</span><span><span class="n">'+(db.program?1:0)+'</span><br><span class="k">نظام تدريبي</span></span></div><div class="stat2 hl clickable" onclick="go(\'more\')"><span class="thumb">'+icon('gym')+'</span><span><span class="n">'+db.profile.days+'</span><br><span class="k">أيامك في الأسبوع</span></span></div><div class="stat2 clickable" onclick="go(\'weights\')"><span class="thumb">'+icon('scale')+'</span><span><span class="n">'+wc+'</span><br><span class="k">تمارين مسجلة</span></span></div></div>';
       h+='<div class="cardio-banner" onclick="go(\'cardio\')"><img src="cardio-run.jpg" alt="كارديو"><div class="ov"><div style="flex:1"><b>كارديو \uD83C\uDFC3</b><br><small>تمارين هوائية بمؤقت • مشي، جري، نط والمزيد</small></div><div class="go">'+icon('play')+'</div></div></div>';
     if(db.program){
@@ -1291,7 +1292,7 @@ function render(){
     h+='<div class="side2"><div class="card" onclick="go(\'library\')"><span class="thumb">'+icon('book')+'</span><br><b>مكتبة التمارين</b></div><div class="card" onclick="go(\'nutrition\')"><span class="thumb">'+icon('food')+'</span><br><b>التغذية</b></div></div>';
     h+='<div class="card glow"><h3>أيامي وهدفي</h3><p class="sub">كام تمرينة عايز تلعبها كل أسبوع؟ وهدفك تخسيس ولا ثبات ولا زيادة؟</p><div class="row"><div class="field"><input type="number" id="eDays" value="'+esc(String(p.days||3))+'" placeholder="أيام/أسبوع"></div><select id="eGoal" style="flex:1"><option value="lose" '+(p.goal==='lose'?'selected':'')+'>تخسيس</option><option value="same" '+(p.goal==='same'?'selected':'')+'>ثبات</option><option value="gain" '+(p.goal==='gain'?'selected':'')+'>زيادة</option></select></div><button class="btn btn-neon btn-block" onclick="saveDaysGoal()">'+icon('check')+' حفظ الهدف</button></div>';
     h+='<div class="card"><h3>بياناتك</h3><div class="kv"><span>البرنامج</span><b>'+(db.program?esc(db.program.name):'—')+'</b></div><div class="kv"><span>أيام التمرين</span><b>'+p.days+'</b></div><div class="kv"><span>تمارين الأوزان</span><b>'+wc+'</b></div><div class="kv"><span>القياسات</span><b>'+db.body.length+'</b></div><p class="sub">بياناتك بتتحفظ على حسابك وبتتزامن تلقائيًا لما النت يرجع — وتشتغل أوفلاين في التمرين.</p></div>';
-    h+='<div class="card"><h3>اللغة / Language</h3><p class="sub">اختار لغة التطبيق</p><div class="row"><button class="dchip '+(appLang()==='ar'?'on':'')+'" style="flex:1" onclick="setLang(\'ar\')">عربي</button><button class="dchip '+(appLang()==='en'?'on':'')+'" style="flex:1" onclick="setLang(\'en\')">English</button></div></div>';
+    h+='<div class="card"><h3>نسختي</h3><p class="sub"><span class="badge">'+regionFlag(myRegion())+' '+regionName(myRegion())+'</span> مقفولة على حسابك — عايز نسخة تانية اعمل حساب منفصل.</p></div>';
     const DNAMES=['السبت','الأحد','الاثنين','الثلاثاء','الأربعاء','الخميس','الجمعة'];
     const ndays=(p.notif&&p.notif.days)||[0,1,2,3,4,5,6];
     h+='<div class="card glow"><div class="section-head" style="margin:0 0 4px"><h2>\u23F0 تذكير التمرين</h2>'+(p.notif.on?'<span class="badge">شغال \u2705</span>':'<span class="badge">واقف</span>')+'</div><div class="howto" style="gap:10px"><div class="steps" style="flex:1;min-width:0"><p class="sub" style="margin:0 0 6px"><b style="color:#fff">إزاي بيشتغل؟</b></p><ol class="steps" style="margin:0"><li><b>1</b><span>علّم على أيام تمرينك تحت</span></li><li><b>2</b><span>اختار الساعة المناسبة</span></li><li><b>3</b><span>دوس «أضف للتقويم» وافتح الملف اللي نزل واختار «إضافة للتقويم»</span></li><li><b>4</b><span>تقويم موبايلك هيفكرك كل أسبوع — حتى لو التطبيق مقفول \uD83D\uDCAA</span></li></ol></div></div><p class="sub">أيام التمرين بتاعتي:</p><div class="dchips">'+DNAMES.map(function(nm,i){return '<button class="dchip '+(ndays.indexOf(i)>-1?'on':'')+'" style="width:44px;height:44px;font-size:12px" onclick="toggleNday('+i+')">'+nm+'</button>';}).join('')+'</div><div class="row"><input type="time" id="nTime" value="'+esc(p.notif.time||'20:00')+'" style="flex:1"><button class="btn btn-neon btn-sm" style="flex:1" onclick="calReminder()">'+icon('check')+' أضف للتقويم</button></div>'+(p.notif.on?'<p class="sub">آخر مرة ضفت تذكير '+ndays.length+' أيام الساعة '+esc(p.notif.time)+'. لو غيرت المواعيد، امسح الحدث القديم من التقويم وضيف الجديد.</p>':'')+'</div>';
@@ -1348,10 +1349,11 @@ const FB_CONFIG={apiKey:"AIzaSyCfQVpRyGBNpVXEqPqjO-zTNoshWplYAtg",authDomain:"hm
 const ADMINS=["hmohsen282@gmail.com","7snmo7sen1998@gmail.com"];
 const TRIAL_DAYS=14, WAS_M=200, WAS_Y=2400;
 const P1_END=new Date(2026,11,25,23,59,59).getTime(), P2_END=new Date(2027,0,10,23,59,59).getTime();
-function curPrices(){const n=Date.now();
+function egPrices(){const n=Date.now();
  if(n<=P1_END)return{m:50,q:129,y:749,qw:600,tag:'\u23f3 عرض الافتتاح \u2014 ساري حتى 25 ديسمبر (الشهر بـ 50 بدل 200)'};
  if(n<=P2_END)return{m:99,q:249,y:999,qw:600,tag:'\u23f3 عرض السنة الجديدةة \u2014 ساري حتى 10 يناير'};
  return{m:200,q:600,y:2400,qw:600,tag:'الأسعار الأساسية'};}
+function curPrices(){return isUSD()?usdPrices():egPrices();}
 function PRICE_M(){return curPrices().m;} function PRICE_Y(){return curPrices().y;}
 function pp(plan){const p=curPrices(),base=plan==='m'?p.m:(plan==='q'?p.q:p.y);const c=view.coupon;
  if(c&&(c.plan==='both'||c.plan===plan)){if(c.type==='pct')return{base:base,final:Math.max(1,Math.round(base*(1-c.value/100)))};if(c.type==='flat')return{base:base,final:Math.max(1,base-c.value)};}return{base:base,final:base};}
@@ -1369,6 +1371,124 @@ function applyCoupon(){
 }
 function couponUse(){try{if(view.coupon&&fbOK&&fbUser){const code=view.coupon.code;firebase.firestore().collection('coupons').doc(code).set({used:firebase.firestore.FieldValue.increment(1)},{merge:true});const pl=view.payPlan||'m',pr=pp(pl).final;firebase.firestore().collection('refs').add({code:code,email:fbUser.email,plan:pl,price:pr,ts:Date.now()});}}catch(e){}}
 const PAY_VODA="01008709651", PAY_WA="201008709651";
+const PAYPAL_ME="";
+const PAYPAL_CLIENT_ID="BAA-RxBadynNO3EqlIynRZIxadU-RAB08oRyEm_SsiGBQ7L-33SiOB-5DQ7b8I1vwyvLJAXUeg0cALhqUI";
+let _ppLoading=false;
+function myRegion(){try{const r=localStorage.getItem('hmfit_region');if(r==='eg'||r==='ar'||r==='en')return r;}catch(e){} try{if(db&&db.profile&&db.profile.region)return db.profile.region;}catch(e){} return '';}
+function isUSD(){const r=myRegion();return r==='ar'||r==='en';}
+function regionName(r){return r==='eg'?'مصر':(r==='ar'?'وطن عربي':'دولي');}
+function regionFlag(r){return r==='eg'?'🇪🇬':(r==='ar'?'🌍':'🌎');}
+function setRegion(r){try{localStorage.setItem('hmfit_region',r);}catch(e){} try{if(!db.profile)db.profile=blankProfile();db.profile.region=r;db.profile.lang=(r==='en'?'en':'ar');save();}catch(e){} try{applyLang();applyDir();}catch(e){} render();}
+function usdPrices(){const n=Date.now();
+ if(n<=P1_END)return{m:4.99,q:11.99,y:29.99,mw:6.99,qw:16.99,yw:44.99,tag:'launch'};
+ if(n<=P2_END)return{m:5.99,q:13.99,y:34.99,mw:6.99,qw:16.99,yw:44.99,tag:'newyear'};
+ return{m:6.99,q:16.99,y:44.99,mw:6.99,qw:16.99,yw:44.99,tag:'base'};}
+function money(v){return isUSD()?'$'+v:v+' جنيه';}
+function wasM(){return isUSD()?usdPrices().mw:WAS_M;}
+function wasQ(){return isUSD()?usdPrices().qw:600;}
+function wasY(){return isUSD()?usdPrices().yw:WAS_Y;}
+function loc(){return myRegion()==='en'?'en-US':'ar-EG';}
+function renderGate(){
+ const p=egPrices(),u=usdPrices();
+ let h='<div class="section-head" style="margin:6px 0 8px"><h2>اختار نسختك <span style="font-size:12px;color:var(--muted)">Choose your edition</span></h2></div>';
+ h+='<div class="card glow" style="border-color:var(--neon)" onclick="setRegion(\'eg\')"><div class="row" style="margin:0;align-items:center"><span style="font-size:34px">🇪🇬</span><span style="flex:1"><b>مصر — عربي</b><br><span class="sub">جنيه • فودافون كاش<br>شهري '+p.m+' • 3 شهور '+p.q+' • سنوي '+p.y+'</span></span><span class="offergo">‹</span></div></div>';
+ h+='<div class="card" onclick="setRegion(\'ar\')"><div class="row" style="margin:0;align-items:center"><span style="font-size:34px">🌍</span><span style="flex:1"><b>وطن عربي خارج مصر — عربي</b><br><span class="sub">دولار • PayPal<br>شهري $'+u.m+' • 3 شهور $'+u.q+' • سنوي $'+u.y+'</span></span><span class="offergo">‹</span></div></div>';
+ h+='<div class="card" dir="ltr" style="text-align:left" onclick="setRegion(\'en\')"><div class="row" style="margin:0;align-items:center"><span style="font-size:34px">🌎</span><span style="flex:1"><b>International — English</b><br><span class="sub">USD • PayPal<br>Monthly $'+u.m+' • 3 months $'+u.q+' • Yearly $'+u.y+'</span></span><span class="offergo">›</span></div></div>';
+ h+='<p class="sub" style="text-align:center">🔒 اختيار واحد ويتقفل على حسابك — one choice, locked to your account</p>';
+ return h;}
+function renderPaywallUSD(full){
+ const EN=myRegion()==='en';
+ const T=usdPrices();
+ const pm=pp('m'),pq=pp('q'),py=pp('y');
+ if(!view.payPlan)view.payPlan='m';
+ const planName=view.payPlan==='y'?(EN?'Yearly':'سنوي'):(view.payPlan==='q'?(EN?'3 months':'3 شهور'):(EN?'Monthly':'شهري'));
+ const planPrice=view.payPlan==='y'?py.final:(view.payPlan==='q'?pq.final:pm.final);
+ const wa='https://wa.me/'+PAY_WA+'?text='+encodeURIComponent((EN?'HM Fit subscription — email: ':'اشتراك HM Fit — إيميلي: ')+(fbUser?fbUser.email:'')+' — '+(EN?'plan: ':'الباقة: ')+planName+' $'+planPrice+(view.coupon?((EN?' — coupon: ':' — كود الخصم: ')+view.coupon.code):'')+(EN?' — sent the screenshot':' — وبعت سكرين التحويل'));
+ const payLink=PAYPAL_ME?('https://www.paypal.com/paypalme/'+PAYPAL_ME.replace(/^.*paypal\.me\//,'')):('https://wa.me/'+PAY_WA+'?text='+encodeURIComponent(EN?'Send me the PayPal payment link please':'ابعتلي لينك الدفع PayPal لو سمحت'));
+ let h='<div class="card glow"><div class="loginhero" style="padding:10px 6px"><img src="hm-logo-192.png" alt="HM Fit">'
+  +'<h2>'+(EN?'Trial ended 😅':'التجربة خلصت 😅')+'</h2><p class="muted">'+(EN?'Keep your progress — activate in a minute:':'عشان تكمل تمرينك ومتخسرش تقدمك، فعّل اشتراكك في دقيقة:')+'</p></div>'
+  +'<p class="sub" style="text-align:center">'+offCdHTML()+'</p>'
+  +'<div class="paybox hot"><b>'+(EN?'Monthly':'شهري')+' — $'+T.m+'</b>'+(T.m<T.mw?' <s class="muted">'+(EN?'was':'بدل')+' $'+T.mw+'</s>':'')+'</div>'
+  +'<div class="paybox"><b>'+(EN?'Yearly':'سنوي')+' — $'+T.y+'</b>'+(T.y<T.yw?' <s class="muted">'+(EN?'was':'بدل')+' $'+T.yw+'</s>':'')+' <span class="badge">'+(EN?'Best value':'الأوفر — أوفر من الشهري')+'</span></div>'
+  +'<div class="paybox"><b>'+(EN?'3 months':'3 شهور')+' — $'+T.q+'</b>'+(T.q<T.qw?' <s class="muted">'+(EN?'was':'بدل')+' $'+T.qw+'</s>':'')+'</div>'
+  +'<div class="row"><button class="btn btn-sm '+((view.payPlan!=='q'&&view.payPlan!=='y')?'btn-neon':'')+'" style="flex:1" onclick="view.payPlan=\'m\';render()">'+(EN?'Monthly':'شهري')+' ($'+pm.final+')</button><button class="btn btn-sm '+(view.payPlan==='q'?'btn-neon':'')+'" style="flex:1" onclick="view.payPlan=\'q\';render()">'+(EN?'3 mo':'3 شهور')+' ($'+pq.final+')</button><button class="btn btn-sm '+(view.payPlan==='y'?'btn-neon':'')+'" style="flex:1" onclick="view.payPlan=\'y\';render()">'+(EN?'Yearly':'سنوي')+' ($'+py.final+')</button></div>'
+  +'<p class="sub">1) '+(EN?'Pay <b style="color:#fff">$'+planPrice+'</b> with PayPal:':'ادفع <b style="color:#fff">$'+planPrice+'</b> بـ PayPal:')+' <a class="btn btn-sm" '+(PAYPAL_ME?'href="'+('https://www.paypal.com/paypalme/'+PAYPAL_ME).replace(/"/g,'')+'" target="_blank"':'href="'+('https://wa.me/'+PAY_WA).replace(/"/g,'')+'" target="_blank"')+'>PayPal</a></p>'
+  +'<p class="sub">2) '+(EN?'Send the receipt screenshot on WhatsApp with your email:<br><b style="color:#fff" dir="ltr">'+esc(fbUser?fbUser.email:'')+'</b>':'ابعت سكرين التحويل على واتساب مع إيميلك:<br><b style="color:#fff" dir="ltr">'+esc(fbUser?fbUser.email:'')+'</b>')+'</p>'
+  +'<div id="ppBtns" style="margin:10px 0"></div>'
+ +'<a class="btn btn-neon btn-block" href="'+wa+'" onclick="couponUse()">'+(EN?'Send screenshot on WhatsApp':'ابعت السكرين واتساب')+'</a>'
+  +'<p class="sub" style="margin-top:8px">'+(EN?'We activate you as soon as it arrives (month = 30 days from activation).':'أول ما التحويل يوصل هنفعّلك الاشتراك (الشهر = 30 يوم من يوم التفعيل).')+'</p>'
+  +'<div class="row"><button class="btn btn-sm" style="flex:1" onclick="loadCloud(function(){render()})">'+icon('check')+' '+(EN?'Activated? Refresh':'اتفعلت؟ حدّث حالتي')+'</button></div></div>';
+ try{view._ppAmt=planPrice;setTimeout(ppInit,350);}catch(e){}
+ return h;}
+function ppInit(){
+ try{
+  const box=document.getElementById('ppBtns');if(!box||myRegion()==='eg')return;
+  const amt=parseFloat(view._ppAmt)||0;if(!(amt>0))return;
+  box.setAttribute('data-amt',amt);
+  if(!window.paypal){
+   if(_ppLoading)return;_ppLoading=true;
+   const sc=document.createElement('script');
+   sc.src='https://www.paypal.com/sdk/js?client-id='+PAYPAL_CLIENT_ID+'&currency=USD&intent=capture&components=buttons';
+   sc.onload=function(){_ppLoading=false;try{ppRender();}catch(e){}};
+   sc.onerror=function(){_ppLoading=false;box.innerHTML='<p class="sub">PayPal unavailable — order the link on WhatsApp.</p>';};
+   document.head.appendChild(sc);return;
+  }
+  ppRender();
+ }catch(e){}
+}
+function ppRender(){
+ try{
+  const box=document.getElementById('ppBtns');if(!box||!window.paypal||!window.paypal.Buttons)return;
+  const amt=parseFloat(box.getAttribute('data-amt'))||parseFloat(view._ppAmt)||0;if(!(amt>0))return;
+  box.innerHTML='';
+  window.paypal.Buttons({
+   style:{layout:'vertical',color:'gold',shape:'rect',label:'paypal'},
+   createOrder:function(d,act){return act.order.create({purchase_units:[{description:'HM Fit '+(view.payPlan||'m')+' — '+(fbUser?fbUser.email:''),amount:{currency_code:'USD',value:amt.toFixed(2)}}]});},
+   onApprove:function(d,act){return act.order.capture().then(function(det){ppCaptured(d,det,amt);});},
+   onError:function(e){noteSheet('Payment failed — try again or order the link on WhatsApp');}
+  }).render('#ppBtns');
+ }catch(e){}
+}
+function ppCaptured(d,det,amt){
+ try{
+  let cap={};try{cap=((det.purchase_units||[])[0].payments.captures||[])[0]||{};}catch(e){}
+  const rec={email:fbUser?fbUser.email:'',plan:view.payPlan||'m',price:amt,coupon:(view.coupon&&view.coupon.code)||'',orderId:d.orderID||'',captureId:cap.id||'',region:myRegion(),ts:Date.now(),status:'pending'};
+  try{couponUse();}catch(e){}
+  firebase.firestore().collection('payreq').add(rec).then(function(){
+   openSheet('تم الدفع ✅','<p class="sub">استلمنا طلبك ('+esc(rec.plan)+' — $'+amt+').<br>التفعيل خلال ساعات، وهنبعتلك واتساب أول ما يشتغل.</p><div class="row"><button class="btn btn-neon" style="flex:1" onclick="closePicker();loadCloud(function(){render();})">تمام</button></div>');
+  }).catch(function(){
+   const wa2='https://wa.me/'+PAY_WA+'?text='+encodeURIComponent('دفعت PayPal — إيميلي: '+(fbUser?fbUser.email:'')+' — المبلغ: $'+amt+' — رقم العملية: '+(d.orderID||''));
+   openSheet('ابعت رقم العملية','<p class="sub">الدفع تم بس التسجيل فشل — ابعتلنا رقم العملية واتساب وهنفعّلك فورًا.</p><a class="btn btn-neon btn-block" href="'+wa2+'" target="_blank">ابعت رقم العملية واتساب</a>');
+  });
+ }catch(e){noteSheet('حصل عطل — ابعتلنا واتساب');}
+}
+function payAdminLoad(){
+ const box=document.getElementById('payList');if(!box)return;
+ box.innerHTML='<p class="muted">جاري التحميل…</p>';
+ try{
+  firebase.firestore().collection('payreq').where('status','==','pending').orderBy('ts','desc').limit(50).get().then(function(q){
+   if(q.empty){box.innerHTML='<p class="muted">مفيش طلبات معلقة ✅</p>';return;}
+   let h='';q.forEach(function(d){const o=d.data()||{};
+    h+='<div class="admrow"><span style="flex:1;min-width:140px"><b dir="ltr">'+esc(o.email||'?')+'</b><br><span class="muted" style="font-size:11.5px">'+regionFlag(o.region||'en')+' '+(o.plan||'m')+' • $'+(o.price||'')+(o.coupon?' • كود '+esc(o.coupon):'')+'<br>'+new Date(o.ts||Date.now()).toLocaleString(loc())+'</span></span><button class="btn btn-neon btn-sm" onclick="payApprove(\''+d.id+'\',\''+esc(o.email||'')+'\',\''+esc(o.plan||'m')+'\')">تفعيل</button></div>';});
+   box.innerHTML=h;
+  }).catch(function(e){box.innerHTML='<p class="muted">فشل التحميل: '+esc(e&&e.message)+'</p><p class="sub">لو أول مرة: ضيف قواعد payreq في Firebase (هبعتها لك).</p>';});
+ }catch(e){box.innerHTML='<p class="muted">فشل التحميل</p>';}
+}
+function payApprove(pid,email,plan){
+ if(!email)return noteSheet('مفيش إيميل في الطلب');
+ askSheet('تفعيل '+email+'؟','هتفعّل باقة <b>'+esc(plan)+'</b> من دلوقتي.','تفعيل',false,function(){
+  firebase.firestore().collection('users').where('email','==',email).limit(1).get().then(function(q){
+   if(q.empty){noteSheet('مفيش حساب مسجل بالإيميل ده');return;}
+   const doc=q.docs[0],o=doc.data()||{};
+   const now=Date.now(),D=86400000;
+   const days=plan==='y'?365:(plan==='q'?90:30);
+   const u={subUntil:Math.max(now,o.subUntil||0)+days*D,blocked:false};
+   firebase.firestore().collection('users').doc(doc.id).set(u,{merge:true}).then(function(){
+    firebase.firestore().collection('payreq').doc(pid).set({status:'done',by:fbEmail(),doneAt:Date.now()},{merge:true}).then(function(){noteSheet('اتفعل ✅');try{payAdminLoad();adminLoad();}catch(e){}});
+   }).catch(function(e){noteSheet('فشل: '+(e&&e.message));});
+  }).catch(function(e){noteSheet('فشل: '+(e&&e.message));});
+ });
+}
 let fbUser=null,fbSub=null,fbReady=false,fbOK=false,_cloudT=null,_lastCloud=0;
 function fbEmail(){return (fbUser&&fbUser.email||'').toLowerCase();}
 function isAdmin(){return ADMINS.indexOf(fbEmail())>-1;}
@@ -1397,6 +1517,7 @@ function onFbUser(u){
   }catch(e){}
   try{db=JSON.parse(localStorage.getItem('hmfit_v4')||'null')||db;}catch(e){}
   if(!db.profile)db.profile=blankProfile();if(!db.weights)db.weights={};if(!db.body)db.body=[];
+  try{const lr=localStorage.getItem('hmfit_region');if(db.profile.region&&(db.profile.region==='eg'||db.profile.region==='ar'||db.profile.region==='en')){try{localStorage.setItem('hmfit_region',db.profile.region);}catch(e){}}else if(lr){db.profile.region=lr;db.profile.lang=(lr==='en'?'en':'ar');}}catch(e){}
   try{migrate();}catch(e){}
   loadCloud(function(){fbReady=true;render();});
 }
@@ -1414,7 +1535,7 @@ function subState(){
   const s=fbSub||{};
   if(s.blocked)return {k:'blocked',label:'موقوف'};
   const now=Date.now();
-  if(s.subUntil&&now<s.subUntil)return {k:'sub',label:'مشترك حتى '+new Date(s.subUntil).toLocaleDateString('ar-EG'),until:s.subUntil};
+  if(s.subUntil&&now<s.subUntil)return {k:'sub',label:'مشترك حتى '+new Date(s.subUntil).toLocaleDateString(loc()),until:s.subUntil};
   if(s.trialEnds&&now<s.trialEnds)return {k:'trial',label:'فترة تجربة — باقي '+Math.max(1,Math.ceil((s.trialEnds-now)/86400000))+' أيام',until:s.trialEnds};
   if(!s.trialEnds)return {k:'trial',label:'فترة تجربة — باقي '+TRIAL_DAYS+' أيام'};
   return {k:'expired',label:'الاشتراك خلص'};
@@ -1424,10 +1545,17 @@ function fbGate(){
   if(!fbOK)return null;
   if(!fbReady)return '<div class="card"><div class="empty">'+icon('gym')+'<br>جاري التحميل…</div></div>';
   if(!fbUser){
+    if(myRegion()==='en')return '<div class="card"><div class="loginhero"><img src="hm-logo-192.png" alt="HM Fit">'
+      +'<h2>Welcome to <i style="color:var(--neon);font-style:normal">HM Fit</i></h2>'
+      +'<p class="muted">Sign in with Google to save your data in the cloud and continue on any device.<br>First '+TRIAL_DAYS+' days free.</p>'
+      +'<p class="sub" style="text-align:center"><span class="badge">🌎 International</span> <a href="#" onclick="try{localStorage.removeItem(\'hmfit_region\')}catch(e){}render();return false;" style="font-size:11px">change edition</a></p>'
+      +'<button class="btn btn-neon btn-block" onclick="googleLogin()">'+icon('play')+' Sign in with Google</button>'
+      +installCard()
+      +'<p class="muted" style="font-size:11px">By signing in you agree your training data is stored on your account.</p></div></div>';
     return '<div class="card"><div class="loginhero"><img src="hm-logo-192.png" alt="HM Fit">'
       +'<h2>أهلاً بيك في <i style="color:var(--neon);font-style:normal">HM Fit</i></h2>'
       +'<p class="muted">سجّل دخول بجوجل عشان بياناتك تتحفظ في السحابة وتكمل من أي جهاز.<br>أول '+TRIAL_DAYS+' يوم تجربة مجانية.</p>'
-      +'<div class="row"><button class="dchip '+((appLang&&appLang()==='ar')?'on':'')+'" style="flex:1" onclick="setLang(\'ar\')">عربي</button><button class="dchip '+((appLang&&appLang()==='en')?'on':'')+'" style="flex:1" onclick="setLang(\'en\')">English</button></div>'
+      +'<p class="sub" style="text-align:center"><span class="badge">'+regionFlag(myRegion())+' '+regionName(myRegion())+'</span> <a href="#" onclick="try{localStorage.removeItem(\'hmfit_region\')}catch(e){}render();return false;" style="font-size:11px">تغيير الاختيار</a></p>'
       +'<button class="btn btn-neon btn-block" onclick="googleLogin()">'+icon('play')+' دخول بجوجل</button>'
       +installCard()
       +'<p class="muted" style="font-size:11px">بالدخول انت موافق إن بيانات تمرينك تتخزن على حسابك.</p></div></div>';
@@ -1438,6 +1566,7 @@ function fbGate(){
   return null;
 }
 function renderPaywall(full){
+  if(isUSD())return renderPaywallUSD(full);
   const em=esc(fbUser?fbUser.email:'');
   const pm=pp('m'),pq=pp('q'),py=pp('y');
   if(!view.payPlan)view.payPlan='m';
@@ -1478,7 +1607,7 @@ function queueCloud(){
 function pushCloud(cb){
   if(!fbOK||!fbUser){if(cb)cb(false);return;}
   try{
-    try{cloudDoc().set({email:fbUser.email,name:(db.profile.dname||fbUser.displayName||''),wa:(db.profile.wa||''),photo:(db.profile.photo||'')},{merge:true}).catch(function(){});}catch(e){}
+    try{cloudDoc().set({email:fbUser.email,name:(db.profile.dname||fbUser.displayName||''),wa:(db.profile.wa||''),photo:(db.profile.photo||''),region:(db.profile.region||myRegion()||'eg')},{merge:true}).catch(function(){});}catch(e){}
     const snap=stripPhotos(JSON.parse(JSON.stringify(db)));
     cloudDoc().collection('data').doc('main').set({db:JSON.stringify(snap),updatedAt:Date.now()},{merge:true})
       .then(function(){_lastCloud=Date.now();try{localStorage.setItem('hmfit_sync',''+_lastCloud);}catch(e){}if(cb)cb(true);})
@@ -1493,7 +1622,7 @@ function loadCloud(done){
     let s=ds.exists?ds.data():null;
     if(!s||!s.createdAt){
       const now=Date.now();
-      s={email:fbUser.email,name:fbUser.displayName||'',createdAt:now,trialEnds:now+TRIAL_DAYS*86400000,subUntil:0,blocked:false};
+      s={email:fbUser.email,name:fbUser.displayName||'',createdAt:now,trialEnds:now+TRIAL_DAYS*86400000,subUntil:0,blocked:false,region:(db.profile.region||myRegion()||'eg')};
       ref.set(s,{merge:true}).catch(function(){});
     }
     fbSub=s;
@@ -1601,7 +1730,7 @@ function fbAccountHTML(){
   const sync=(_lastCloud||+localStorage.getItem('hmfit_sync')||0);
   let h='<div class="kv"><span>الإيميل</span><b style="font-size:12px">'+esc(fbUser.email)+'</b></div>'
     +'<div class="kv"><span>الحالة</span><b>'+esc(st.label)+'</b></div>'
-    +'<div class="kv"><span>المزامنة</span><b><span class="syncdot" style="background:'+(sync?'var(--neon)':'#ffb74d')+'"></span>'+(sync?('آخر مزامنة: '+new Date(sync).toLocaleString('ar-EG')):'لسه متمتش — افتح النت')+'</b></div>'
+    +'<div class="kv"><span>المزامنة</span><b><span class="syncdot" style="background:'+(sync?'var(--neon)':'#ffb74d')+'"></span>'+(sync?('آخر مزامنة: '+new Date(sync).toLocaleString(loc())):'لسه متمتش — افتح النت')+'</b></div>'
     +'<div class="row"><button class="btn btn-sm" style="flex:1" onclick="pushCloud(function(ok){alert(ok?\'اتزامنت ✓\':\'فشلت — افتح النت وحاول\');render();})">مزامنة دلوقتي</button>'
     +(isAdmin()?'<button class="btn btn-neon btn-sm" style="flex:1" onclick="go(\'admin\')">لوحة الأدمن</button>':'')
     +(isAdmin()?'<button class="btn btn-sm" style="flex:1" onclick="fbLogout()">خروج</button>':'')+'</div>';
@@ -1633,9 +1762,9 @@ function welcomeCard(){
  +'<h2 style="margin:8px 0 2px">أهلاً بيك في <i style="color:var(--neon);font-style:normal">HM Fit</i> \uD83D\uDCAA</h2>'
  +'<p class="sub">هديتك: <b style="color:#fff">'+TRIAL_DAYS+' يوم تجربة مجانية</b> — جرّب كل حاجة: التمارين، الأوزان، التغذية والمزامنة.</p>'
  +'<p class="sub">'+offCdHTML()+'</p>'
- +'<div class="paybox hot"><b>شهري — '+p.m+' جنيه</b>'+(p.m<WAS_M?' <s class="muted">'+WAS_M+'</s>':'')+'</div>'
- +'<div class="paybox"><b>3 شهور — '+p.q+' جنيه</b>'+(p.q<p.qw?' <s class="muted">'+p.qw+'</s>':'')+'</div>'
- +'<div class="paybox"><b>سنوي — '+p.y+' جنيه</b>'+(p.y<WAS_Y?' <s class="muted">'+WAS_Y+'</s>':'')+'</div>'
+ +'<div class="paybox hot"><b>شهري — '+money(p.m)+'</b>'+(p.m<wasM()?' <s class="muted">'+money(wasM())+'</s>':'')+'</div>'
+ +'<div class="paybox"><b>3 شهور — '+money(p.q)+'</b>'+(p.q<wasQ()?' <s class="muted">'+money(wasQ())+'</s>':'')+'</div>'
+ +'<div class="paybox"><b>سنوي — '+money(p.y)+'</b>'+(p.y<wasY()?' <s class="muted">'+money(wasY())+'</s>':'')+'</div>'
  +'<button class="btn btn-neon btn-block" onclick="welcomeGo(0)">يلا نبدأ التمرين</button>'
  +'<button class="btn btn-block" style="margin-top:8px" onclick="welcomeGo(1)">شوف الباقات</button></div></div>';
 }
@@ -1644,9 +1773,9 @@ function plansCardHTML(){
  const p=curPrices(),st=subState();
  return '<div class="card glow"><div class="section-head" style="margin:0 0 4px"><h2>\uD83D\uDCB3 اشتراكات HM Fit</h2></div>'
  +'<p class="sub">حالتك: <b style="color:#fff">'+esc(st.label)+'</b></p><p class="sub">'+offCdHTML()+'</p>'
- +'<div class="paybox hot"><b>شهري — '+p.m+' جنيه</b>'+(p.m<WAS_M?' <s class="muted">'+WAS_M+'</s>':'')+'</div>'
- +'<div class="paybox"><b>3 شهور — '+p.q+' جنيه</b>'+(p.q<p.qw?' <s class="muted">'+p.qw+'</s>':'')+'</div>'
- +'<div class="paybox"><b>سنوي — '+p.y+' جنيه</b>'+(p.y<WAS_Y?' <s class="muted">'+WAS_Y+'</s>':'')+'</div>'
+ +'<div class="paybox hot"><b>شهري — '+money(p.m)+'</b>'+(p.m<wasM()?' <s class="muted">'+money(wasM())+'</s>':'')+'</div>'
+ +'<div class="paybox"><b>3 شهور — '+money(p.q)+'</b>'+(p.q<wasQ()?' <s class="muted">'+money(wasQ())+'</s>':'')+'</div>'
+ +'<div class="paybox"><b>سنوي — '+money(p.y)+'</b>'+(p.y<wasY()?' <s class="muted">'+money(wasY())+'</s>':'')+'</div>'
  +'<button class="btn btn-neon btn-block" onclick="go(\'plans\')">التفاصيل والدفع</button></div>';
 }
 /* ---- لوحة الأدمن ---- */
@@ -1664,7 +1793,9 @@ function renderAdmin(){
     +'<div class="row"><input class="full" id="cpCode" style="flex:1" placeholder="الكود (مثال: RAMADAN20)"><select id="cpType"><option value="pct">% نسبة</option><option value="flat">جنيه ثابت</option></select></div>'
     +'<div class="row"><input class="w" style="flex:1" type="number" id="cpVal" placeholder="القيمة (20 = 20% أو 20 جنيه)"><select id="cpPlan" style="flex:1"><option value="both">كل الباقات</option><option value="m">شهري بس</option><option value="q">3 شهور بس</option><option value="y">سنوي بس</option></select><input class="w" style="flex:1" type="number" id="cpMax" placeholder="عدد مرات (فاضي = بلا حد)"></div>'
     +'<button class="btn btn-neon btn-sm btn-block" onclick="couponCreate()">إنشاء الكود</button><div id="cpnList"><p class="muted">جاري التحميل…</p></div></div>';
-  h+='<div class="card"><h3>الأسعار المعروضة</h3><p class="sub">شهري '+PRICE_M()+' • 3 شهور '+pp('q').final+' • سنوي '+PRICE_Y()+' ('+curPrices().tag+')</p></div>';
+  h+='<div class="card"><h3>💳 طلبات دفع PayPal</h3><div id="payList"><p class="muted">جاري التحميل…</p></div></div>';
+ setTimeout(payAdminLoad,70);
+ h+='<div class="card"><h3>الأسعار المعروضة</h3><p class="sub">مصر: شهري '+egPrices().m+' • 3 شهور '+egPrices().q+' • سنوي '+egPrices().y+'<br>دولي: شهري $'+usdPrices().m+' • 3 شهور $'+usdPrices().q+' • سنوي $'+usdPrices().y+'</p></div>';
   h+='<div id="admActWrap"></div><div class="card"><div class="section-head" style="margin:0 0 4px"><h2>المشتركين</h2><span class="badge" id="admCount">…</span></div><div id="admStats"></div><input class="full" id="admQ" placeholder="ابحث بإيميل المشترك…" value="'+esc(view.admQ||'')+'" oninput="view.admQ=this.value;adminFilter()">'
     +'<div class="row"><button class="btn btn-neon btn-sm" style="flex:1" onclick="adminLoad()">تحديث</button><button class="btn btn-sm" style="flex:1" onclick="exportUsers()">تصدير Excel</button></div><div id="admList"><p class="muted">جاري التحميل…</p></div></div>';
   h+='<button class="btn" onclick="go(\'more\')">'+icon('back')+' رجوع</button>';
@@ -1676,7 +1807,7 @@ function admStatus(s){
   if(!s||!s.createdAt)return 'جديد';
   if(s.blocked)return '⛔ موقوف';
   const now=Date.now();
-  if(s.subUntil&&now<s.subUntil)return '✅ مشترك حتى '+new Date(s.subUntil).toLocaleDateString('ar-EG');
+  if(s.subUntil&&now<s.subUntil)return '✅ مشترك حتى '+new Date(s.subUntil).toLocaleDateString(loc());
   if(s.trialEnds&&now<s.trialEnds)return '🆓 تجربة ('+Math.max(1,Math.ceil((s.trialEnds-now)/86400000))+' أيام)';
   return '⌛ منتهي';
 }
@@ -1694,7 +1825,7 @@ function exportUsers(){
  try{
   const us=view.admUsers||[];if(!us.length)return noteSheet('مفيش مشتركين للتصدير');
   let csv='\ufeffemail,name,phone,plan,status,until\n';
-  us.forEach(function(o){const k=planOf(o);const st=k.k==='blocked'?'موقوف':k.label;csv+='"'+(o.email||'')+'","'+((o.name||'').replace(/"/g,''))+'","'+(o.wa||'')+'","'+(k.k||'')+'","'+st+'","'+(o.subUntil?new Date(o.subUntil).toLocaleDateString('ar-EG'):'')+'"\n';});
+  us.forEach(function(o){const k=planOf(o);const st=k.k==='blocked'?'موقوف':k.label;csv+='"'+(o.email||'')+'","'+((o.name||'').replace(/"/g,''))+'","'+(o.wa||'')+'","'+(k.k||'')+'","'+st+'","'+(o.subUntil?new Date(o.subUntil).toLocaleDateString(loc()):'')+'"\n';});
   const bl=new Blob([csv],{type:'text/csv;charset=utf-8'});const u=URL.createObjectURL(bl);const a=document.createElement('a');a.href=u;a.download='hmfit-users-'+dateKey()+'.csv';document.body.appendChild(a);a.click();setTimeout(function(){a.remove();URL.revokeObjectURL(u);},3000);
   noteSheet('اتصدّر '+us.length+' مشترك \u2705');
  }catch(e){noteSheet('فشل التصدير');}
@@ -1706,8 +1837,8 @@ function admActHTML(){
   const news=us.filter(function(o){return o.createdAt&&now-o.createdAt<7*D;}).sort(function(a,b){return b.createdAt-a.createdAt;}).slice(0,10);
   const exp=us.filter(function(o){return o.subUntil&&!o.blocked&&o.subUntil>now&&o.subUntil-now<3*D;}).sort(function(a,b){return a.subUntil-b.subUntil;});
   let h='';
-  if(news.length)h+='<div class="admrow" style="display:block"><b>\U0001F195 سجّلوا آخر 7 أيام ('+news.length+')</b><br>'+news.map(function(o){return '<span class="muted">• '+esc(o.email||'?')+' ('+new Date(o.createdAt).toLocaleDateString('ar-EG')+')</span>';}).join('<br>')+'</div>';
-  if(exp.length)h+='<div class="admrow" style="display:block"><b>\u23F3 هيخلصوا خلال 3 أيام ('+exp.length+')</b> — كلمهم قبل ما يمشوا \uD83D\uDCAA<br>'+exp.map(function(o){const w=waLink(o.wa);return '<span class="muted">• '+esc(o.email||'?')+' (ينتهي '+new Date(o.subUntil).toLocaleDateString('ar-EG')+')'+(w?' <a class="btn btn-sm" href="'+w+'" target="_blank">واتساب</a>':' <span class="sub">مفيش رقم</span>')+'</span>';}).join('<br>')+'</div>';
+  if(news.length)h+='<div class="admrow" style="display:block"><b>\U0001F195 سجّلوا آخر 7 أيام ('+news.length+')</b><br>'+news.map(function(o){return '<span class="muted">• '+esc(o.email||'?')+' ('+new Date(o.createdAt).toLocaleDateString(loc())+')</span>';}).join('<br>')+'</div>';
+  if(exp.length)h+='<div class="admrow" style="display:block"><b>\u23F3 هيخلصوا خلال 3 أيام ('+exp.length+')</b> — كلمهم قبل ما يمشوا \uD83D\uDCAA<br>'+exp.map(function(o){const w=waLink(o.wa);return '<span class="muted">• '+esc(o.email||'?')+' (ينتهي '+new Date(o.subUntil).toLocaleDateString(loc())+')'+(w?' <a class="btn btn-sm" href="'+w+'" target="_blank">واتساب</a>':' <span class="sub">مفيش رقم</span>')+'</span>';}).join('<br>')+'</div>';
   if(!h)h='<p class="muted">مفيش نشاط جديد — كله تمام \u2705</p>';
   return '<div class="card"><div class="section-head" style="margin:0 0 4px"><h2>\uD83D\uDCCA النشاط الأخير</h2></div><div id="admActList">'+h+'</div></div>';
  }catch(e){return '';}
@@ -1739,7 +1870,7 @@ function adminFilter(){
     const id=o._id,pk=planOf(o);
     const isActive=(pk.k==='m'||pk.k==='q'||pk.k==='y'||pk.k==='trial');
     const pill=isActive?'<span class="badge" style="background:rgba(0,230,118,.18);border:1px solid var(--neon);color:#c9f5da">نشط</span>':(pk.k==='blocked'?'<span class="badge" style="background:rgba(255,80,80,.15);border:1px solid #ff5252;color:#ffb4b4">موقوف</span>':'<span class="badge" style="background:rgba(255,255,255,.06);color:var(--muted)">منتهي</span>');
-    return '<div class="admrow" style="display:block"><div class="row" style="margin:0;align-items:center"><img src="'+esc(o.photo||'hm-logo-192.png')+'" style="width:46px;height:46px;border-radius:50%;object-fit:cover;border:2px solid var(--line2);background:#111" onerror="this.remove()"><span class="grow" style="flex:1;min-width:120px"><b style="font-size:13px">'+esc(o.email||'؟')+'</b><br><span class="muted" style="font-size:11.5px">'+esc(o.name||'')+' • '+esc(admStatus(o))+(sharedDev(o)?' جهاز مشترك':'')+(o.wa?' • <span dir="ltr">'+esc(o.wa)+'</span>':'')+'</span></span>'+(o.wa?'<a class="btn btn-sm" style="background:#25D366;border:0;color:#04120a;font-weight:900" href="'+waLink(o.wa)+'" target="_blank">واتساب</a>':'')+'</div>'
+    return '<div class="admrow" style="display:block"><div class="row" style="margin:0;align-items:center"><img src="'+esc(o.photo||'hm-logo-192.png')+'" style="width:46px;height:46px;border-radius:50%;object-fit:cover;border:2px solid var(--line2);background:#111" onerror="this.remove()"><span class="grow" style="flex:1;min-width:120px"><b style="font-size:13px">'+esc(o.email||'؟')+'</b><br><span class="muted" style="font-size:11.5px">'+regionFlag(o.region||'eg')+' '+esc(o.name||'')+' • '+esc(admStatus(o))+(sharedDev(o)?' جهاز مشترك':'')+(o.wa?' • <span dir="ltr">'+esc(o.wa)+'</span>':'')+'</span></span>'+(o.wa?'<a class="btn btn-sm" style="background:#25D366;border:0;color:#04120a;font-weight:900" href="'+waLink(o.wa)+'" target="_blank">واتساب</a>':'')+'</div>'
     +'<div class="row" style="align-items:center">'+pill+'<span class="badge">'+pk.label+'</span></div>'
     +'<div class="row"><select class="w actsel" data-uid="'+id+'" style="flex:2;min-height:40px"><option value="week">تمديد أسبوع</option><option value="month" selected>تفعيل شهر</option><option value="quarter">تفعيل 3 شهور</option><option value="year">تفعيل سنة</option></select><button class="btn btn-neon btn-sm" style="flex:1" onclick="adminActGo(this)">تنفيذ</button></div>'
     +'<div class="row"><button class="btn btn-sm" style="flex:1" onclick="adminAct(\''+id+'\',\'block\')">'+(o.blocked?'فك الوقف':'وقف')+'</button><button class="btn btn-sm btn-danger" style="flex:1" onclick="adminDelUser(\''+id+'\',\''+esc(o.email||'')+'\')">مسح الحساب</button></div></div>';
@@ -1796,7 +1927,7 @@ function renderAffils(data){
   const com=Math.round(tot*(+a.rate||0)/100);
   const open=view.affOpen===a._id;
   return '<div><div class="affhead" onclick="affilToggleView(\''+esc(a._id)+'\')"><span style="flex:1"><b>'+esc(a.name||a._id)+'</b> <span dir="ltr" style="color:var(--neon)">'+esc(a._id)+'</span><br><span class="muted" style="font-size:11.5px">'+rs.length+' اشتراك • مبيعات '+tot+' جنيه • عمولة '+com+' جنيه ('+(+a.rate||0)+'%)'+(a.active?'':' • \uD83D\uDD34 موقوف')+'</span></span><span style="font-size:18px">'+(open?'\u25B2':'\u25BC')+'</span></div>'
-  +(open?'<div style="padding:0 4px 8px">'+(rs.length?rs.map(function(r){return '<div class="admrow"><span style="flex:1;font-size:12.5px">'+esc(r.email||'؟')+'<br><span class="muted">'+(r.plan==='m'?'شهري':r.plan==='q'?'3 شهور':'سنوي')+' • '+esc(r.price)+' جنيه • '+esc(new Date(r.ts||0).toLocaleDateString('ar-EG'))+'</span></span></div>';}).join(''):'<p class="muted">لسه مفيش اشتراكات بالكود ده</p>')
+  +(open?'<div style="padding:0 4px 8px">'+(rs.length?rs.map(function(r){return '<div class="admrow"><span style="flex:1;font-size:12.5px">'+esc(r.email||'؟')+'<br><span class="muted">'+(r.plan==='m'?'شهري':r.plan==='q'?'3 شهور':'سنوي')+' • '+esc(r.price)+' جنيه • '+esc(new Date(r.ts||0).toLocaleDateString(loc()))+'</span></span></div>';}).join(''):'<p class="muted">لسه مفيش اشتراكات بالكود ده</p>')
   +'<div class="row"><button class="btn btn-sm" style="flex:1" onclick="affilToggle(\''+esc(a._id)+'\','+(!a.active)+')">'+(a.active?'إيقاف':'تشغيل')+'</button><button class="btn btn-sm" style="flex:1" onclick="affilDel(\''+esc(a._id)+'\')">مسح</button></div></div>':'')
   +'</div>';
  }).join('');
@@ -1872,5 +2003,5 @@ function adminAct(uid,act){
   }
 })();
 </script>
-<script>window.__CF$cv$params={r:'a5f12482af9501cd',t:'MTc5NTQ0NzA2Ng==',u:'01a208fc0f2976c2bbb4aaee9915b625',ut:'1naj.O1m0LzN_U_V7_KoRhLztcYe_Glxhes6Hs39fV4-1795447066-1.2.1.1-NGkeUFEBao2EQNZNIqSXFOneIE_2SBNK9Z6IJOVXiaJ65UmNFUjl_Sx7hyKBo6Rr4EJqKZ95reBHBVzVy6CfUjw2W1yG17FyVNpNCjP5rsw',i:60};(function(){if(!document.body)return;var l=window.location,o;try{o=new URL(l.origin).origin}catch(e){try{o=new URL(new URL(l.href).origin).origin}catch(e){o=''}}var u='/cdn-cgi/challenge-platform/scripts/precursor/main.js?ray=a5f12482af9501cd',s=document.createElement('script');s.src=o?new URL(u,o).href:u;document.head.appendChild(s);})();</script><script>window.__CF$cv$params={r:'a5f36722f8ea225f',t:'MTc5NTQ3MDc2Ng==',u:'01a20a65b38b72ae909d10f92940e395',ut:'jZcpKTKmqhvNZZC7hwsJtbLPysQWwUkllm94o.ko7hc-1795470766-1.2.1.1-zsUzc.pFYTs_iuuVTkqIafJI_zNSlh9vshFgvRWMuUUzY9bPE0caflu460rJRtm6momvV7kOr63G3SekCp3j3udSIjWf0SGldTgBy72BaEU',i:60};(function(){if(!document.body)return;var l=window.location,o;try{o=new URL(l.origin).origin}catch(e){try{o=new URL(new URL(l.href).origin).origin}catch(e){o=''}}var u='/cdn-cgi/challenge-platform/scripts/precursor/main.js?ray=a5f36722f8ea225f',s=document.createElement('script');s.src=o?new URL(u,o).href:u;document.head.appendChild(s);})();</script></body>
+<script>window.__CF$cv$params={r:'a5f12482af9501cd',t:'MTc5NTQ0NzA2Ng==',u:'01a208fc0f2976c2bbb4aaee9915b625',ut:'1naj.O1m0LzN_U_V7_KoRhLztcYe_Glxhes6Hs39fV4-1795447066-1.2.1.1-NGkeUFEBao2EQNZNIqSXFOneIE_2SBNK9Z6IJOVXiaJ65UmNFUjl_Sx7hyKBo6Rr4EJqKZ95reBHBVzVy6CfUjw2W1yG17FyVNpNCjP5rsw',i:60};(function(){if(!document.body)return;var l=window.location,o;try{o=new URL(l.origin).origin}catch(e){try{o=new URL(new URL(l.href).origin).origin}catch(e){o=''}}var u='/cdn-cgi/challenge-platform/scripts/precursor/main.js?ray=a5f12482af9501cd',s=document.createElement('script');s.src=o?new URL(u,o).href:u;document.head.appendChild(s);})();</script><script>window.__CF$cv$params={r:'a5f3f62a1cd3890f',t:'MTc5NTQ3NjYyNA==',u:'01a20abf180076f7955ee62f2faea948',ut:'NT1EmD5yHUIw3wDhEbhWw3ObqYl0vuA0eo_M4Ol2Z3k-1795476625-1.2.1.1-UlAUDc3zTWelnZmDOVkl2gUdohiyICHjPT39NShMOx7NtAuuBtU9zjkx4XMBINbPQHK27DvUCWRhGLfGuWCFD8l6Evxigw1F.uMz4kO_v8k',i:60};(function(){if(!document.body)return;var l=window.location,o;try{o=new URL(l.origin).origin}catch(e){try{o=new URL(new URL(l.href).origin).origin}catch(e){o=''}}var u='/cdn-cgi/challenge-platform/scripts/precursor/main.js?ray=a5f3f62a1cd3890f',s=document.createElement('script');s.src=o?new URL(u,o).href:u;document.head.appendChild(s);})();</script></body>
 </html>
