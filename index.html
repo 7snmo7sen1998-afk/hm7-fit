@@ -26,12 +26,14 @@ background-color:#0A0E0F;background-image:radial-gradient(900px 420px at 85% -5%
 header{position:sticky;top:0;z-index:20;background:rgba(10,14,15,.85);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-bottom:1px solid var(--line)}
 .hwrap{max-width:640px;margin:auto;padding:10px 14px;padding-top:max(10px, env(safe-area-inset-top));display:flex;align-items:center;justify-content:space-between}
 body{padding-top:env(safe-area-inset-top, 0px);}
+html,body{max-width:100%;overflow-x:hidden}
+img{max-width:100%}.tablewrap{overflow-x:auto;-webkit-overflow-scrolling:touch}table.wt{min-width:0}
 .brand{display:flex;align-items:center;gap:10px}
 .brand .tile{width:42px;height:42px;border-radius:14px;background:linear-gradient(135deg,var(--neon),var(--neon2));display:flex;align-items:center;justify-content:center;color:#04120a;font-weight:900;font-size:15px;font-family:Arial,sans-serif;box-shadow:0 0 22px rgba(0,230,118,.45)}
 .brand b{font-size:20px;font-weight:900;display:block;line-height:1.1;letter-spacing:.5px}
 .brand b i{font-style:normal;color:var(--neon)}
 .brand small{font-size:11px;color:var(--muted);font-weight:500}
-main{padding:16px 14px 120px;max-width:640px;margin:auto}
+main{padding:16px 14px 120px;max-width:640px;margin:auto;overflow-x:hidden}
 #app>*{animation:rise .3s ease}
 @keyframes rise{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
 .card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:16px;margin-bottom:14px;backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);box-shadow:0 12px 30px rgba(0,0,0,.35)}
@@ -178,7 +180,7 @@ select{color:#fff}
 .loginhero{text-align:center;padding:34px 18px}.loginhero img{width:110px;height:110px;border-radius:30px;box-shadow:0 0 40px rgba(0,230,118,.4)}
 .paybox{border:2px solid var(--neon);border-radius:18px;padding:14px;margin:10px 0;background:rgba(0,230,118,.06)}
 .paybox.hot{box-shadow:0 0 26px rgba(0,230,118,.3)}
-.admrow{display:flex;align-items:center;gap:8px;background:rgba(0,0,0,.3);border:1px solid var(--line);border-radius:14px;padding:10px;margin:8px 0;flex-wrap:wrap}
+.admrow{display:flex;align-items:center;gap:8px;background:rgba(0,0,0,.3);border:1px solid var(--line);border-radius:14px;padding:10px;margin:8px 0;flex-wrap:wrap;min-width:0;overflow:hidden}.admrow>*{min-width:0}.admrow img{flex:none}
 .syncdot{display:inline-block;width:9px;height:9px;border-radius:50%;margin-inline-end:6px}
 .wmodal{position:fixed;inset:0;z-index:80;background:rgba(0,0,0,.78);display:flex;align-items:center;justify-content:center;padding:20px}
 .repctl{display:flex;align-items:center;gap:6px;flex:1;min-width:0}
@@ -2166,7 +2168,8 @@ function adminLoad(){
 function adminDelUser(uid,email){
  askSheet('مسح حساب '+esc(email||uid)+'؟','هيتمسح ملفه وبيانات تمرينه من السحابة نهائي (مش هيقدر يدخل بحسابه القديم إلا لو سجل من جديد ويبدأ تجربة جديدة).<br>سجل العمولات المرتبط بإيميله هيفضل محفوظ.','مسح نهائي',true,function(){
   const ref=firebase.firestore().collection('users').doc(uid);
-  ref.collection('data').doc('main').delete().catch(function(){}).then(function(){return ref.delete();}).then(function(){noteSheet('اتمسح \u2705');adminLoad();}).catch(function(e){noteSheet('فشل: '+(e&&e.message));});
+  noteSheet('جاري المسح…');
+  ref.collection('data').get().then(function(q){var ps=[];q.forEach(function(d){ps.push(d.ref.delete());});return Promise.all(ps);}).catch(function(){}).then(function(){return ref.delete();}).then(function(){noteSheet('اتمسح \u2705');adminLoad();}).catch(function(e){noteSheet('فشل المسح: '+(e&&e.message));});
  });
 }
 function adminFilter(){
@@ -2313,5 +2316,5 @@ function adminAct(uid,act){
   }
 })();
 </script>
-<script>window.__CF$cv$params={r:'a5f12482af9501cd',t:'MTc5NTQ0NzA2Ng==',u:'01a208fc0f2976c2bbb4aaee9915b625',ut:'1naj.O1m0LzN_U_V7_KoRhLztcYe_Glxhes6Hs39fV4-1795447066-1.2.1.1-NGkeUFEBao2EQNZNIqSXFOneIE_2SBNK9Z6IJOVXiaJ65UmNFUjl_Sx7hyKBo6Rr4EJqKZ95reBHBVzVy6CfUjw2W1yG17FyVNpNCjP5rsw',i:60};(function(){if(!document.body)return;var l=window.location,o;try{o=new URL(l.origin).origin}catch(e){try{o=new URL(new URL(l.href).origin).origin}catch(e){o=''}}var u='/cdn-cgi/challenge-platform/scripts/precursor/main.js?ray=a5f12482af9501cd',s=document.createElement('script');s.src=o?new URL(u,o).href:u;document.head.appendChild(s);})();</script><script>window.__CF$cv$params={r:'a5f63c7befb21d43',t:'MTc5NTUwMDQ3Ng==',u:'01a20c2b0afd712b9646c358a3863840',ut:'FdCH7gfX8HQfysxe08gzly6mEGJ16R2wamcBNdq5c7g-1795500477-1.2.1.1-NDwH3EYrf6OfzUD_SdxBQILKQGkF05jM..73Q1HJeB2MxILla.14j2BEPrqjeJgIVyEUSi14Eh6kfcL8HX7zP5eeCNZWshraTYbFkt.iVKE',i:60};(function(){if(!document.body)return;var l=window.location,o;try{o=new URL(l.origin).origin}catch(e){try{o=new URL(new URL(l.href).origin).origin}catch(e){o=''}}var u='/cdn-cgi/challenge-platform/scripts/precursor/main.js?ray=a5f63c7befb21d43',s=document.createElement('script');s.src=o?new URL(u,o).href:u;document.head.appendChild(s);})();</script></body>
+<script>window.__CF$cv$params={r:'a5f12482af9501cd',t:'MTc5NTQ0NzA2Ng==',u:'01a208fc0f2976c2bbb4aaee9915b625',ut:'1naj.O1m0LzN_U_V7_KoRhLztcYe_Glxhes6Hs39fV4-1795447066-1.2.1.1-NGkeUFEBao2EQNZNIqSXFOneIE_2SBNK9Z6IJOVXiaJ65UmNFUjl_Sx7hyKBo6Rr4EJqKZ95reBHBVzVy6CfUjw2W1yG17FyVNpNCjP5rsw',i:60};(function(){if(!document.body)return;var l=window.location,o;try{o=new URL(l.origin).origin}catch(e){try{o=new URL(new URL(l.href).origin).origin}catch(e){o=''}}var u='/cdn-cgi/challenge-platform/scripts/precursor/main.js?ray=a5f12482af9501cd',s=document.createElement('script');s.src=o?new URL(u,o).href:u;document.head.appendChild(s);})();</script><script>window.__CF$cv$params={r:'a5f652174e85e286',t:'MTc5NTUwMTM2MQ==',u:'01a20c388c8372909769a468545bab1f',ut:'wTVRfO_Bt_pO03_FHDejVOLQxyF0.kr8K772R9_iX_k-1795501362-1.2.1.1-j7WXVaQcUiFwW2xtatEXZdRR48IPgUYs83FWnvOw0iN.t880xNipqbBwKYADOwYX0cTRGEEXYvh6C_Icjqn87_ISuhUTbWYFmfNTva.8e4Y',i:60};(function(){if(!document.body)return;var l=window.location,o;try{o=new URL(l.origin).origin}catch(e){try{o=new URL(new URL(l.href).origin).origin}catch(e){o=''}}var u='/cdn-cgi/challenge-platform/scripts/precursor/main.js?ray=a5f652174e85e286',s=document.createElement('script');s.src=o?new URL(u,o).href:u;document.head.appendChild(s);})();</script></body>
 </html>
