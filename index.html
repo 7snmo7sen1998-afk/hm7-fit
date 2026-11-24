@@ -127,8 +127,8 @@ table.wt td{text-align:center;padding:7px 4px;border-bottom:1px solid rgba(255,2
 .howto img{width:42%;flex:none;border-radius:14px;border:1px solid var(--line)}
 .statgrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-bottom:14px}.stat2{min-width:0;overflow:hidden;padding:10px 6px}.stat2 .k{font-size:10.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:block;line-height:1.6}.stat2 .n{font-size:20px}
 .stat2{display:flex;align-items:center;gap:9px;background:var(--card);border:1px solid var(--line);border-radius:18px;padding:11px 9px}
-.stat2 .n{font-size:20px;font-weight:900;line-height:1.1}
-.stat2 .k{font-size:11px;color:var(--muted);font-weight:700}
+.stat2 .n{font-size:19px;font-weight:900;line-height:1.1;white-space:nowrap}
+.stat2 .k{font-size:10px;color:var(--muted);font-weight:700;white-space:normal;overflow:visible;text-overflow:clip;line-height:1.5;word-break:break-word}
 .stat2.hl{border-color:var(--line2);box-shadow:0 0 20px rgba(0,230,118,.22)}
 .stat2.clickable{cursor:pointer}
 .workout-cta{position:relative;overflow:hidden;border-radius:22px;padding:20px 18px;margin-bottom:14px;border:1px solid var(--line2);background:linear-gradient(135deg,#03130b,#0a4a26 60%,#0d6b34);box-shadow:0 0 30px rgba(0,230,118,.25);display:flex;align-items:center;gap:12px;cursor:pointer}
@@ -1758,7 +1758,7 @@ function payAdminLoad(){
    let h='';q.forEach(function(d){const o=d.data()||{};
     h+='<div class="admrow"><span style="flex:1;min-width:140px"><b dir="ltr">'+esc(o.email||'?')+'</b><br><span class="muted" style="font-size:11.5px">'+regionFlag(o.region||'en')+' '+(o.plan||'m')+' • $'+(o.price||'')+(o.coupon?' • كود '+esc(o.coupon):'')+'<br>'+new Date(o.ts||Date.now()).toLocaleString(loc())+'</span></span><button class="btn btn-neon btn-sm" onclick="payApprove(\''+d.id+'\',\''+esc(o.email||'')+'\',\''+esc(o.plan||'m')+'\')">تفعيل</button></div>';});
    box.innerHTML=h;
-  }).catch(function(e){box.innerHTML='<p class="muted">فشل التحميل: '+esc(e&&e.message)+'</p><p class="sub">لو أول مرة: ضيف قواعد payreq في Firebase (هبعتها لك).</p>';});
+  }).catch(function(e){box.innerHTML='<p class="muted">فشل التحميل: '+esc(e&&e.message)+'</p><p class="sub">تأكد من نشر قواعد payreq في Firebase ثم حدّث الصفحة.</p>';});
  }catch(e){box.innerHTML='<p class="muted">فشل التحميل</p>';}
 }
 function payApprove(pid,email,plan){
@@ -2108,9 +2108,9 @@ function renderAdmin(){
   h+='<div class="card"><h3>\u2B50 آراء المشتركين</h3><p class="sub">اللي تظهره هنا بيبان للعملاء في الرئيسية. لو فاضية مش هيظهر حاجة خالص.</p><div class="row"><input class="full" id="rvName" style="flex:1;max-width:140px" placeholder="الاسم"><input class="full" id="rvText" style="flex:2" placeholder="نص الرأي…"></div><button class="btn btn-neon btn-sm btn-block" onclick="revCreate()">نشر الرأي</button><div id="revList"><p class="muted">جاري التحميل…</p></div></div>';
   setTimeout(revAdminLoad,60);
   h+='<div class="card"><h3>أكواد الخصم</h3><p class="sub">كود يكتبه المستخدم في الاشتراك وياخد الخصم تلقائي. أكواد المسوقين عليها \uD83E\uDD1D.</p>'
-    +'<div class="row"><input class="full" id="cpCode" style="flex:1" placeholder="الكود (مثال: RAMADAN20)"><select id="cpPlan" style="flex:1"><option value="both">كل الباقات</option><option value="m">شهري بس</option><option value="q">3 شهور بس</option><option value="y">سنوي بس</option></select></div>'
+    +'<div class="row"><input class="full" id="cpCode" style="flex:1" placeholder="الكود (مثال: RAMADAN20)"><select id="cpPlan" style="flex:1" onchange="discSync(1)"><option value="m">شهري بس</option><option value="q">3 شهور بس</option><option value="y">سنوي بس</option></select></div>'
     +'<div class="row"><input class="w" style="flex:1" type="number" id="cpPct" placeholder="% نسبة" oninput="discSync(1)"><input class="w" style="flex:1" type="number" id="cpFlat" placeholder="مبلغ ثابت" oninput="discSync(0)"><input class="w" style="flex:1" type="number" id="cpMax" placeholder="عدد مرات (فاضي = بلا حد)"></div>'
-    +'<p class="sub" id="discHint">اكتب النسبة أو المبلغ — التاني يتحسب تلقائي من سعر الباقة الشهرية.</p>'
+    +'<p class="sub" id="discHint">اختار الباقة الأول، وبعدين اكتب النسبة أو المبلغ — التاني يتحسب تلقائي من سعرها.</p>'
     +'<button class="btn btn-neon btn-sm btn-block" onclick="couponCreate()">إنشاء الكود</button><div id="cpnList"><p class="muted">جاري التحميل…</p></div></div>';
   h+='<div class="card"><h3>💳 طلبات دفع PayPal</h3><div id="payList"><p class="muted">جاري التحميل…</p></div></div>';
  setTimeout(payAdminLoad,70);
@@ -2261,14 +2261,15 @@ function affilLoad(){
   });
  }).catch(function(){const b=document.getElementById('affList');if(b)b.innerHTML='<p class="muted">فشل تحميل المسوقين</p>';});
 }
-function discBase(){try{return isUSD()?usdPrices().m:egPrices().m;}catch(e){return 200;}}
+function discPlan(){try{var p=document.getElementById('cpPlan');return (p&&p.value)||'m';}catch(e){return 'm';}}
+function discBase(){try{var pl=discPlan();var T=isUSD()?usdPrices():egPrices();return pl==='y'?T.y:(pl==='q'?T.q:T.m);}catch(e){return 200;}}
 function discSync(fromPct){
  try{
   var base=discBase();if(!(base>0))return;
   var pe=document.getElementById('cpPct'),fe=document.getElementById('cpFlat'),hint=document.getElementById('discHint');
   var p=parseFloat(pe&&pe.value)||0,f=parseFloat(fe&&fe.value)||0;
-  if(fromPct){ if(p>0){f=Math.round(base*p/100*100)/100; if(fe)fe.value=f; if(hint)hint.textContent='خصم '+p+'% = '+f+' '+(isUSD()?'$':'جنيه')+' من '+base+' (الشهري)'; } }
-  else { if(f>0){p=Math.round(f/base*100*10)/10; if(pe)pe.value=p; if(hint)hint.textContent='خصم '+f+' = '+p+'% من '+base+' (الشهري)'; } }
+  if(fromPct){ if(p>0){f=Math.round(base*p/100*100)/100; if(fe)fe.value=f; if(hint)hint.textContent='خصم '+p+'% = '+f+' '+(isUSD()?'$':'جنيه')+' من '+base+' ('+(discPlan()==='y'?'السنوي':discPlan()==='q'?'الـ3 شهور':'الشهري')+')'; } }
+  else { if(f>0){p=Math.round(f/base*100*10)/10; if(pe)pe.value=p; if(hint)hint.textContent='خصم '+f+' = '+p+'% من '+base+' ('+(discPlan()==='y'?'السنوي':discPlan()==='q'?'الـ3 شهور':'الشهري')+')'; } }
  }catch(e){}
 }
 function couponCreate(){
@@ -2278,10 +2279,11 @@ function couponCreate(){
  if(pct>0&&flat>0){typ='pct';val=pct;}
  else if(pct>0){typ='pct';val=pct;}
  else if(flat>0){typ='flat';val=flat;}
+ var cpl=(function(){try{return document.getElementById('cpPlan').value||'m';}catch(e){return 'm';}})();
  if(!code||!(val>0))return alert('اكتب الكود والقيمة الأول (نسبة أو مبلغ)');
  if(typ==='pct'&&val>=100)return alert('النسبة لازم أقل من 100');
  const mx=parseInt(c('cpMax'))||0;
- firebase.firestore().collection('coupons').doc(code).set({type:typ,value:val,plan:c('cpPlan')||'both',maxUses:mx,used:0,active:true,createdAt:Date.now()}).then(function(){alert('الكود '+code+' اتعمل ✅');adminLoad();}).catch(function(e){alert('فشل: '+(e&&e.message));});
+ firebase.firestore().collection('coupons').doc(code).set({type:typ,value:val,plan:cpl,maxUses:mx,used:0,active:true,createdAt:Date.now()}).then(function(){alert('الكود '+code+' اتعمل ✅');adminLoad();}).catch(function(e){alert('فشل: '+(e&&e.message));});
 }
 function couponToggle(code,on){firebase.firestore().collection('coupons').doc(code).set({active:on},{merge:true}).then(function(){adminLoad();});}
 function couponDel(code){askSheet('مسح الكود؟','الكود '+code+' هيتمسح نهائي ومش هيشتغل تاني.','مسح',true,function(){doCouponDel(code);});}
@@ -2336,5 +2338,5 @@ function adminAct(uid,act){
   }
 })();
 </script>
-<script>window.__CF$cv$params={r:'a5f12482af9501cd',t:'MTc5NTQ0NzA2Ng==',u:'01a208fc0f2976c2bbb4aaee9915b625',ut:'1naj.O1m0LzN_U_V7_KoRhLztcYe_Glxhes6Hs39fV4-1795447066-1.2.1.1-NGkeUFEBao2EQNZNIqSXFOneIE_2SBNK9Z6IJOVXiaJ65UmNFUjl_Sx7hyKBo6Rr4EJqKZ95reBHBVzVy6CfUjw2W1yG17FyVNpNCjP5rsw',i:60};(function(){if(!document.body)return;var l=window.location,o;try{o=new URL(l.origin).origin}catch(e){try{o=new URL(new URL(l.href).origin).origin}catch(e){o=''}}var u='/cdn-cgi/challenge-platform/scripts/precursor/main.js?ray=a5f12482af9501cd',s=document.createElement('script');s.src=o?new URL(u,o).href:u;document.head.appendChild(s);})();</script><script>window.__CF$cv$params={r:'a5f9cce6784960c3',t:'MTc5NTUzNzg0OQ==',u:'01a20e654dca70f29427c2dc7127f2b2',ut:'fpbMA3sNCxgNxr4Rys.YM4EIVea6lbBsv7njWjSiDuc-1795537849-1.2.1.1-yEkNQQA1Q1uMslrHDm6zDVe8UJ_C5S7IrKB1NDqctD6IeSjwEmp30oioJ7fw8E7D9Jex65lKl0tlCAPUWCOrTYC0KGujQrzoklYASRm7tK0',i:60};(function(){if(!document.body)return;var l=window.location,o;try{o=new URL(l.origin).origin}catch(e){try{o=new URL(new URL(l.href).origin).origin}catch(e){o=''}}var u='/cdn-cgi/challenge-platform/scripts/precursor/main.js?ray=a5f9cce6784960c3',s=document.createElement('script');s.src=o?new URL(u,o).href:u;document.head.appendChild(s);})();</script></body>
+<script>window.__CF$cv$params={r:'a5f12482af9501cd',t:'MTc5NTQ0NzA2Ng==',u:'01a208fc0f2976c2bbb4aaee9915b625',ut:'1naj.O1m0LzN_U_V7_KoRhLztcYe_Glxhes6Hs39fV4-1795447066-1.2.1.1-NGkeUFEBao2EQNZNIqSXFOneIE_2SBNK9Z6IJOVXiaJ65UmNFUjl_Sx7hyKBo6Rr4EJqKZ95reBHBVzVy6CfUjw2W1yG17FyVNpNCjP5rsw',i:60};(function(){if(!document.body)return;var l=window.location,o;try{o=new URL(l.origin).origin}catch(e){try{o=new URL(new URL(l.href).origin).origin}catch(e){o=''}}var u='/cdn-cgi/challenge-platform/scripts/precursor/main.js?ray=a5f12482af9501cd',s=document.createElement('script');s.src=o?new URL(u,o).href:u;document.head.appendChild(s);})();</script><script>window.__CF$cv$params={r:'a5f9f6732b9cc6a5',t:'MTc5NTUzOTU1MQ==',u:'01a20e7f459571f9b74dab751a010cc8',ut:'wgZSlFT9XKao3vdiIjUpk2oqBN0SHZfCyMJFKlgrFbY-1795539551-1.2.1.1-z_s79eLU7wdKZfnYrWx1SDeOJXAAfD78leqpRTsiic_E5aBJJM53m9Ntjx9yt253AUWXaSjyFnYWUH6Ab8RjEqyWAew9F1L1qK0epE6R_yo',i:60};(function(){if(!document.body)return;var l=window.location,o;try{o=new URL(l.origin).origin}catch(e){try{o=new URL(new URL(l.href).origin).origin}catch(e){o=''}}var u='/cdn-cgi/challenge-platform/scripts/precursor/main.js?ray=a5f9f6732b9cc6a5',s=document.createElement('script');s.src=o?new URL(u,o).href:u;document.head.appendChild(s);})();</script></body>
 </html>
