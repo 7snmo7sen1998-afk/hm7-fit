@@ -237,7 +237,7 @@ window.addEventListener('error',function(e){var d=document.getElementById('errbo
 <script>
 'use strict';
 /* ============ HM Fit v4 — النسخة النيون ============ */
-const VER='6.9.1';
+const VER='6.9.4';
 const GOALS={lose:'تخسيس',same:'ثبات',gain:'زيادة'};
 const ICONS={
 home:'<path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V21h5v-6h4v6h5V9.5"/>',
@@ -335,21 +335,22 @@ function openSheet(title,body){pkMode='sheet';const p=document.getElementById('p
 function noteSheet(msg){openSheet('HM Fit','<p class="sub" style="text-align:center;line-height:2.1">'+msg+'</p><button class="btn btn-neon btn-block" onclick="closePicker()">تمام</button>');}
 function askSheet(title,msg,ok,danger,fn){_sheetFn=fn;openSheet(title,'<p class="sub" style="text-align:center;line-height:2.1">'+msg+'</p><div class="row"><button class="btn" style="flex:1" onclick="closePicker()">إلغاء</button><button class="btn '+(danger?'btn-danger':'btn-neon')+'" style="flex:1" onclick="sheetGo()">'+ok+'</button></div>');}
 function sheetGo(){closePicker();try{if(_sheetFn)_sheetFn();}catch(e){} _sheetFn=null;}
-function inputSheet(title,initial,chips,okLabel,cb){_sheetCb=cb;let h='<input class="full" id="sheetIn" value="'+esc(initial||'')+'" placeholder="اكتب الاسم">';
+function inputSheet(title,initial,chips,okLabel,cb){_sheetCb=cb;let h='<input class="full" id="sheetIn" value="'+esc(initial||'')+'" placeholder="'+(myRegion()==='en'?'Type the name':'اكتب الاسم')+'">';
  if(chips&&chips.length)h+='<div class="chips">'+chips.map(function(c){return '<button class="chip" onclick="document.getElementById(\'sheetIn\').value=\''+c+'\'">'+esc(c)+'</button>';}).join('')+'</div>';
  h+='<div class="row"><button class="btn" style="flex:1" onclick="closePicker()">إلغاء</button><button class="btn btn-neon" style="flex:1" onclick="sheetInputGo()">'+okLabel+'</button></div>';
  openSheet(title,h);setTimeout(function(){const i=document.getElementById('sheetIn');if(i){i.focus();i.select();}},150);}
 function sheetInputGo(){const i=document.getElementById('sheetIn');const v=i?i.value.trim():'';closePicker();try{if(_sheetCb)_sheetCb(v);}catch(e){} _sheetCb=null;}
 window.alert=function(m){try{noteSheet(String(m==null?'':m).replace(/\n/g,'<br>'));}catch(e){}};
 const DAYNAMES=['صدر + تراي','ضهر + باي','رجل','كتف + دراع','بوش','بول','ليجز','علوي','سفلي','Full Body'];
+const DAYNAMES_EN=['Chest + Triceps','Back + Biceps','Legs','Shoulders + Arms','Push','Pull','Legs','Upper','Lower','Full Body'];
 /* ============ نافذة اختيار التمرين ============ */
 let pk={q:'',m:'الكل',items:[]};
 let pkMode='day';
 function addEx(){pkMode='day';openPicker();}
 function addWEx(){pkMode='weights';openPicker();}
 function openPicker(){
-  document.getElementById('pkTitle').textContent='اختار التمرين';
-  const qq=document.getElementById('pkQ');qq.style.display='';qq.placeholder='ابحث عن تمرين… أو اكتب اسم جديد';
+  document.getElementById('pkTitle').textContent=myRegion()==='en'?'Pick an exercise':'اختار التمرين';
+  const qq=document.getElementById('pkQ');qq.style.display='';qq.placeholder=myRegion()==='en'?'Search exercises… or type a new name':'ابحث عن تمرين… أو اكتب اسم جديد';
   pk={q:'',m:'الكل',items:[]};
   document.getElementById('pkQ').value='';
   document.getElementById('pkClose').innerHTML=icon('x');
@@ -465,7 +466,7 @@ function pkRender(){
   LIB.forEach(function(g){if(pk.m!=='الكل'&&pk.m!==g[0])return;g[1].forEach(function(t){if(!q||t[0].indexOf(q)>-1||exEN(t[0]).toLowerCase().indexOf(q.toLowerCase())>-1)pk.items.push({m:g[0],n:t[0],d:t[1]});});});
   let h='';
   pk.items.forEach(function(x,i){const _u=exImg(x.n);h+='<button class="pk" onclick="pickEx('+i+')">'+(_u?'<img class="exthumb" loading="lazy" decoding="async" style="width:44px;height:44px" src="'+_u+'">':icon('gym'))+'<span class="grow" style="text-align:right"><span dir="ltr">'+esc(exEN(x.n))+'</span><br><small>'+(myRegion()==='en'?esc(musEN(x.m)):esc(x.n)+' • '+esc(x.m))+'</small></span></button>';});
-  if(q)h+='<button class="pk" style="border-color:var(--neon)" onclick="pickEx(-1)">'+icon('plus')+' أضف &laquo;'+esc(q)+'&raquo; كتمرين جديد</button>';
+  if(q)h+='<button class="pk" style="border-color:var(--neon)" onclick="pickEx(-1)">'+icon('plus')+' '+(myRegion()==='en'?('Add &laquo;'+esc(q)+'&raquo; as a new exercise'):('أضف &laquo;'+esc(q)+'&raquo; كتمرين جديد'))+'</button>';
   document.getElementById('pkList').innerHTML=h||'<p class="muted" style="text-align:center">مفيش نتائج</p>';
 }
 function pkSetM(m){pk.m=m;pkRender();}
@@ -585,7 +586,7 @@ function swapRender(q){
   const list=t.alts.filter(function(a){return !q||a.indexOf(q)>-1;});
   document.getElementById('pkList').innerHTML=list.length?list.map(function(a){
     const i=t.alts.indexOf(a);
-    return '<button class="pk" onclick="pickSwapEx('+i+')">'+exThumb(a)+'<span class="grow" style="text-align:right"><span dir="ltr">'+esc(exEN(a))+'</span><br><small>'+esc(a)+'</small></span>'+icon('swap')+'</button>';
+    return '<button class="pk" onclick="pickSwapEx('+i+')">'+exThumb(a)+'<span class="grow" style="text-align:right"><span dir="ltr">'+esc(exEN(a))+'</span><br><small>'+(myRegion()==='en'?'':esc(a))+'</small></span>'+icon('swap')+'</button>';
   }).join(''):'<p class="muted" style="text-align:center">مفيش نتائج</p>';
 }
 function pickSwapEx(i){
@@ -604,6 +605,7 @@ const TPLS=[
  {key:'bro',name:'Bro Split',rot:['Chest','Back','Shoulders','Arms','Legs']}
 ];
 function tplName(k){
+  if(myRegion&&myRegion()==='en'){const en={fullbody:'Full Body',upperlower:'Upper / Lower',ppl:'Push / Pull / Legs',arnold:'Arnold Split',bro:'Bro Split',custom:'My Custom Program'};return en[k]||k;}
   const ar={fullbody:'جسم كامل (Full Body)','upperlower':'علوي / سفلي (Upper Lower)',ppl:'دفع / سحب / رجل (PPL)',arnold:'أرنولد (Arnold Split)',bro:'برو سبليت (Bro Split)',custom:'برنامجي الخاص'};
   return ar[k]||k;
 }
@@ -612,10 +614,10 @@ function ex(name,sets){return {name:name,muscle:'',desc:libDesc(name),sets:mkSet
 function makeProgramGo(tplKey,days){
   const P=BUILD[tplKey+'_'+days]||BUILD[tplKey+'_3'];
   let names,daysEx;
-  if(tplKey==='custom'){names=[];for(let i=0;i<days;i++)names.push('يوم '+(i+1));daysEx=names.map(function(){return [];});}
+  if(tplKey==='custom'){names=[];for(let i=0;i<days;i++)names.push((myRegion&&myRegion()==='en'?'Day ':'يوم ')+(i+1));daysEx=names.map(function(){return [];});}
   else{names=P.map(function(d){return d[0];});daysEx=P.map(function(d){return d[1].map(function(t){return ex(t[0],t[1]);});});}
   if(tplKey!=='custom'&&(db.profile.gender==='f')){const ad=adaptForWomen(names,daysEx);names=ad.names;daysEx=ad.daysEx;}
-  db.program={id:uid(),name:tplKey==='custom'?'برنامجي الخاص':tplName(tplKey),tpl:tplKey,days:names.map(function(n,i){return{id:uid(),name:n,exercises:daysEx[i]};})};
+  db.program={id:uid(),name:tplKey==='custom'?(myRegion&&myRegion()==='en'?'My Custom Program':'برنامجي الخاص'):tplName(tplKey),tpl:tplKey,days:names.map(function(n,i){return{id:uid(),name:n,exercises:daysEx[i]};})};
   save();go('workout');
 }
 
@@ -669,15 +671,15 @@ const BUILD={
 'bro_6':[['Chest',[['بنش مستوي بار',4],['بنش عالي دمبل',6]]],['Back + Rear',[['سحب علوي واسع',5],['سحب علوي ضيق',3],['تي بار جهاز',2],['رفرفة خلفي جهاز',4]]],['Legs',[['سكوات بار',3],['ليج بريس',2],['ليج اكستنشن',3],['رومانيان ديدلفت',3],['ليج كيرل نائم',3],['هيب ثرست',3],['لانجز دمبل',3]]],['Shoulders',[['رفرفة جانبي دمبل',4],['ضغط أكتاف جهاز',2]]],['Arms + Calves + Abs',[['باي دمبل بالتبادل',3],['باي هامر',2],['باي بريتشر',1],['تراي حبل',5],['سمانة واقف',6],['كرانش كابل',2],['رفع رجل أرضي',2]]],['Extra (اختياري)',[['بلانك',2],['حبل نط',1],['كرانش',1]]]]
 };
 function day(){if(!db.program)return null;for(let i=0;i<db.program.days.length;i++)if(db.program.days[i].id===view.did)return db.program.days[i];return null;}
-function renameEx(i){const d=day();if(!d||!d.exercises[i])return;const e=d.exercises[i];inputSheet('تسمية التمرين بالعربي',e.ar||e.name,[],'حفظ',function(v){if(v&&v!==e.name)e.ar=v;else delete e.ar;save();render();});}
+function renameEx(i){const d=day();if(!d||!d.exercises[i])return;const e=d.exercises[i];const EN=myRegion()==='en';inputSheet(EN?'Arabic label (shown under the English name)':'تسمية التمرين بالعربي',e.ar||e.name,[],EN?'Save':'حفظ',function(v){if(v&&v!==e.name)e.ar=v;else delete e.ar;save();render();});}
 function askDelEx(i){const d=day();if(!d||!d.exercises[i])return;const nm=d.exercises[i].name;askSheet('حذف التمرين؟','«'+esc(nm)+'» هيتمسح من اليوم ده نهائي ومش هيرجع.','حذف',true,function(){d.exercises.splice(i,1);save();render();});}
 function delEx(i){askDelEx(i);}
 function moveEx(i,dir){const ex=day().exercises;const j=i+dir;if(j<0||j>=ex.length)return;const t=ex[i];ex[i]=ex[j];ex[j]=t;save();render();}
 function addSet(i){const s=day().exercises[i].sets;const l=s[s.length-1]||{w:'',r:''};s.push({w:l.w,r:l.r});save();render();}
 function delSet(i,j){if(day().exercises[i].sets.length<=1)return noteSheet('لازم يفضل دور واحد على الأقل');day().exercises[i].sets.splice(j,1);save();render();}
 function setT(i,j,k,v){day().exercises[i].sets[j][k]=v;save();}
-function renameDay(id){const p=db.program;if(!p)return;const d=p.days.find(function(x){return x.id===id;});if(!d)return;inputSheet('اسم اليوم',d.name,DAYNAMES,'حفظ',function(v){if(!v)return;d.name=v;save();render();});}
-function addDayHome(){if(!db.program)return;inputSheet('يوم جديد','',DAYNAMES,'إضافة',function(v){if(!v)return;db.program.days.push({id:uid(),name:v,exercises:[]});save();render();});}
+function renameDay(id){const p=db.program;if(!p)return;const d=p.days.find(function(x){return x.id===id;});if(!d)return;const EN=myRegion()==='en';inputSheet(EN?'Day name':'اسم اليوم',d.name,EN?DAYNAMES_EN:DAYNAMES,EN?'Save':'حفظ',function(v){if(!v)return;d.name=v;save();render();});}
+function addDayHome(){if(!db.program)return;const EN=myRegion()==='en';inputSheet(EN?'New day':'يوم جديد','',EN?DAYNAMES_EN:DAYNAMES,EN?'Add':'إضافة',function(v){if(!v)return;db.program.days.push({id:uid(),name:v,exercises:[]});save();render();});}
 function resetProgram(){if(!db.program)return go('workout');askSheet('برنامج جديد؟','البرنامج الحالي هيتمسح وتبدأ من الأول. بيانات أوزانك المسجلة مش هتتمسح.','امسح وابدأ',true,function(){db.program=null;save();go('workout');});}
 /* ============ أوزاني — آخر 3 جلسات ============ */
 function prOf(n){const p=db.prs&&db.prs[n];return p?num(p.w):0;}
@@ -685,8 +687,8 @@ function epley1RM(w,r){w=num(w);r=parseInt(r)||0;if(!w||!r)return 0;return Math.
 function best1RM(n){const p=db.prs&&db.prs[n];return p&&p.rm?p.rm:0;}
 /* جلسات التمرين: كل يوم = جلسة، بنحتفظ بآخر 3 جلسات بكل مجموعاتها */
 function sessionsOf(n){const a=db.weights[n]||[];const out=[],map={};a.forEach(function(x,i){const k=x.s||('old'+i);if(!map[k]){map[k]={k:k,d:x.d,sets:[]};out.push(map[k]);}map[k].sets.push({w:x.w,r:x.r,note:x.note,i:i});});out.forEach(function(se){se.sets.reverse();let mx=0;se.sets.forEach(function(t){if(num(t.w)>mx)mx=num(t.w);});se.max=mx;se.first=se.sets[0];se.last=se.sets[se.sets.length-1];});return out;}
-function sessLabel(se){if(se.k===dateKey())return 'النهارده';if(/^old/.test(se.k))return 'جلسة قديمة';const p=se.k.split('-');return p[2]+'/'+p[1];}
-function fmtSet(t){return esc(t.w||'—')+' كجم × '+esc(t.r||'—');}
+function sessLabel(se){const EN=myRegion()==='en';if(se.k===dateKey())return EN?'Today':'النهارده';if(/^old/.test(se.k))return EN?'Old session':'جلسة قديمة';const p=se.k.split('-');return p[2]+'/'+p[1];}
+function fmtSet(t){return esc(t.w||'—')+(myRegion()==='en'?' kg × ':' كجم × ')+esc(t.r||'—');}
 let restTimer=null,restTotal=0,restLeft=0,restEnd=0,restEx=null,restDone=false;
 let _actx=null;
 function unlockAudio(){try{const C=window.AudioContext||window.webkitAudioContext;if(!C)return;if(!_actx)_actx=new C();if(_actx.state==='suspended')_actx.resume();const o=_actx.createOscillator(),g=_actx.createGain();g.gain.value=0.0001;o.connect(g);g.connect(_actx.destination);o.start();o.stop(_actx.currentTime+0.02);}catch(e){}}
@@ -694,7 +696,7 @@ function beep(){try{if(!_actx)return;if(_actx.state==='suspended')_actx.resume()
 function startRest(sec,exKey){unlockAudio();restTotal=sec;restEnd=Date.now()+sec*1000;restEx=exKey||null;restDone=false;clearInterval(restTimer);restTimer=setInterval(tickRest,250);}
 function tickRest(){restLeft=Math.max(0,Math.ceil((restEnd-Date.now())/1000));drawRest();if(restLeft<=0&&!restDone){restDone=true;clearInterval(restTimer);beep();try{if(navigator.vibrate)navigator.vibrate([200,100,200]);}catch(e){}}}
 try{document.addEventListener('visibilitychange',function(){if(!document.hidden&&restEnd&&!restDone)tickRest();});}catch(e){}
-function drawRest(){const el=document.getElementById('restbar');if(!el)return;el.style.display='flex';el.classList.toggle('done',restLeft<=0);const t=el.querySelector('.t'),b=el.querySelector('.bar>div'),l=el.querySelector('.lbl');const m=Math.floor(restLeft/60),ss=restLeft%60;if(t)t.textContent=restLeft<=0?'يلا!':(m+':'+String(ss).padStart(2,'0'));const bt=el.querySelector('button');if(bt)bt.textContent=restLeft<=0?'تمام':'تخطي';if(l)l.textContent=restLeft<=0?'الراحة خلصت — ابدأ المجموعة الجاية':'راحة قبل المجموعة الجاية';if(b)b.style.width=(restTotal?Math.round((restTotal-restLeft)/restTotal*100):0)+'%';}
+function drawRest(){const el=document.getElementById('restbar');if(!el)return;el.style.display='flex';el.classList.toggle('done',restLeft<=0);const t=el.querySelector('.t'),b=el.querySelector('.bar>div'),l=el.querySelector('.lbl');const m=Math.floor(restLeft/60),ss=restLeft%60;const ENR=myRegion()==='en';if(t)t.textContent=restLeft<=0?(ENR?'Go!':'يلا!'):(m+':'+String(ss).padStart(2,'0'));const bt=el.querySelector('button');if(bt)bt.textContent=restLeft<=0?(ENR?'Done':'تمام'):(ENR?'Skip':'تخطي');if(l)l.textContent=restLeft<=0?(ENR?'Rest over — start your next set':'الراحة خلصت — ابدأ المجموعة الجاية'):(ENR?'Rest before next set':'راحة قبل المجموعة الجاية');if(b)b.style.width=(restTotal?Math.round((restTotal-restLeft)/restTotal*100):0)+'%';}
 function stopRest(){clearInterval(restTimer);restEx=null;restEnd=0;const el=document.getElementById('restbar');if(el)el.remove();}
 function restBarHTML(){const EN=myRegion()==='en';return '<div id="restbar"><div style="flex:1;min-width:0"><div class="lbl">'+(EN?'Rest before next set':'راحة قبل المجموعة الجاية')+'</div><div class="bar"><div></div></div></div><span class="t">0:00</span><button class="btn btn-sm" onclick="stopRest()">'+(EN?'Skip':'تخطي')+'</button></div>';}
 function attachRest(scroll){if(!restEx||!restEnd)return;restLeft=Math.max(0,Math.ceil((restEnd-Date.now())/1000));drawRest();if(scroll){const el=document.getElementById('restbar');if(el){const r=el.getBoundingClientRect();if(r.bottom>innerHeight-90||r.top<70)el.scrollIntoView({block:'center',behavior:'smooth'});}}}
@@ -1370,7 +1372,7 @@ function render(){
       let h='<div class="section-head"><h2>'+esc(db.program.name)+'</h2><span class="badge">'+esc(tplName(db.program.tpl))+'</span></div>';
       db.program.days.forEach(function(d,di){
         h+='<div class="card"><div class="row"><span class="thumb" style="width:40px;height:40px">'+icon('gym')+'</span><b style="flex:1">'+esc(d.name)+'</b><button class="ibtn" onclick="renameDay(\''+d.id+'\')">'+icon('pen')+'</button></div><p class="sub">'+d.exercises.length+' '+(ENW2?'exercises':'تمرين')+(di===todayIdx()?(ENW2?' • <b style="color:var(--neon2)">today\u2019s workout</b>':' • <b style="color:var(--neon2)">ده تمرين النهارده</b>'):'')+'</p>';
-        d.exercises.slice(0,4).forEach(function(e){h+='<div class="logline">• <b>'+esc(e.name)+'</b> <span class="muted">'+e.sets.map(function(s){return esc(s.w||'—')+'×'+esc(s.r||'—');}).join(' | ')+'</span></div>';});
+        d.exercises.slice(0,4).forEach(function(e){h+='<div class="logline">• <b>'+esc(myRegion()==='en'?exEN(e.name):e.name)+'</b> <span class="muted">'+e.sets.map(function(s){return esc(s.w||'—')+'×'+esc(s.r||'—');}).join(' | ')+'</span></div>';});
         if(d.exercises.length>4)h+='<p class="muted">+ '+(d.exercises.length-4)+(ENW2?' more exercises…':' تمارين كمان…')+'</p>';
         h+='<div class="row"><button class="btn btn-neon btn-sm" style="flex:1" onclick="go(\'trainday\',{did:\''+d.id+'\'})">'+icon('play')+' '+(ENW2?'Train this day':'اتمرن اليوم ده')+'</button><button class="btn btn-ghost btn-sm" style="flex:1" onclick="go(\'daydetail\',{did:\''+d.id+'\'})">'+icon('pen')+' '+(ENW2?'Edit':'تعديل')+'</button></div></div>';
       });
@@ -1386,7 +1388,7 @@ function render(){
     d.exercises.forEach(function(e,i){
       h+='<div class="card"><div class="row">'+exThumb(e.name)+exShow(e)+(e.muscle&&e.muscle!=='عام'?'<span class="meta" style="font-size:11.5px;color:var(--muted)">'+esc(END2?musEN(e.muscle):e.muscle)+'</span>':'');
       h+='<button class="ibtn" onclick="moveEx('+i+',-1)">'+icon('up')+'</button><button class="ibtn" onclick="moveEx('+i+',1)">'+icon('down')+'</button><button class="ibtn" onclick="renameEx('+i+')">'+icon('pen')+'</button><button class="ibtn danger" onclick="delEx('+i+')">'+icon('trash')+'</button></div>';
-      h+='<p class="sub" style="margin:2px 0 4px;cursor:pointer" onclick="openLb(\''+e.name.replace(/'/g,"\\'")+'\')">'+esc(e.desc||(END2?'Tap the image to view the exercise':'دوس على الصورة عشان تشوف التمرين'))+'</p>';
+      h+='<p class="sub" style="margin:2px 0 4px;cursor:pointer" onclick="openLb(\''+e.name.replace(/'/g,"\\'")+'\')">'+esc(END2?(EXDESC_EN[e.name]||'Tap the image to view the exercise'):(e.desc||'دوس على الصورة عشان تشوف التمرين'))+'</p>';
       if(typeof SWAPS!=='undefined'&&SWAPS[e.name])h+='<button class="btn btn-sm btn-block" style="margin-bottom:6px" onclick="swapExById(\''+d.id+'\','+i+')">'+icon('swap')+' '+(END2?'Swap with an alternative from the list':'تبديل التمرين ببديل من القايمة')+'</button>';
       e.sets.forEach(function(s,j){
         h+='<div class="setbox"><div class="row"><span class="snum">'+(j+1)+'</span><input class="w" type="number" inputmode="decimal" placeholder="'+(END2?'kg':'كجم')+'" value="'+esc(s.w)+'" onchange="setT('+i+','+j+',\'w\',this.value)"> <span class="muted">'+(END2?'kg':'كجم')+'</span><input class="r" type="number" inputmode="numeric" placeholder="'+(END2?'reps':'عدات')+'" value="'+esc(s.r)+'" onchange="setT('+i+','+j+',\'r\',this.value)"> <span class="muted">'+(END2?'reps':'عدة')+'</span><button class="ibtn danger" onclick="delSet('+i+','+j+')">'+icon('x')+'</button></div></div>';
@@ -1413,7 +1415,7 @@ function render(){
       h+='<div class="card"><div class="row">'+exThumb(e.name)+exShow(e)+'</div>';
       if(pr>0)h+='<div><span class="prchip">'+icon('bolt')+' '+(ENT?'Best weight: ':'أحسن وزن: ')+pr+(ENT?' kg':' كجم')+'</span>'+(rm?'<span class="prchip">'+(ENT?'Predicted max: ~':'الأقصى المتوقع: ~')+rm+(ENT?' kg':' كجم')+'</span>':'')+'</div>';
       h+='<div class="warmnote">'+(ENT?'Warm up first: one set with half your working weight ('+(last&&num(last.w)?('~'+Math.round(num(last.w)/2)+' kg'):'light weight')+') — not counted.':'سخّن الأول: دور واحد بنص الوزن اللي بتلعب بيه ('+(last&&num(last.w)?('~'+Math.round(num(last.w)/2)+' كجم'):'وزن خفيف')+') — مش محسوب.')+'</div>';
-      h+='<div class="row"><input class="w" style="flex:1;min-width:0" type="number" inputmode="decimal" id="tw_'+i+'" placeholder="'+(EN?'Weight (kg)':'الوزن (كجم)')+'" value="'+esc(last?last.w:'')+'"><div class="stepper"><span class="stepval"><b id="trv_'+i+'">'+esc(last&&last.r?last.r:'–')+'</b><small>'+(EN?'reps':'عدات')+'</small></span><span class="stepcol"><button class="ibtn" onclick="repStep('+i+',1)">+</button><button class="ibtn" onclick="repStep('+i+',-1)">−</button></span></div><select id="tr_'+i+'" style="display:none" tabindex="-1" aria-hidden="true">'+repOpts(last?last.r:'')+'</select></div>';
+      h+='<div class="row"><input class="w" style="flex:1;min-width:0" type="number" inputmode="decimal" id="tw_'+i+'" placeholder="'+(ENT?'Weight (kg)':'الوزن (كجم)')+'" value="'+esc(last?last.w:'')+'"><div class="stepper"><span class="stepval"><b id="trv_'+i+'">'+esc(last&&last.r?last.r:'–')+'</b><small>'+(ENT?'reps':'عدات')+'</small></span><span class="stepcol"><button class="ibtn" onclick="repStep('+i+',1)">+</button><button class="ibtn" onclick="repStep('+i+',-1)">−</button></span></div><select id="tr_'+i+'" style="display:none" tabindex="-1" aria-hidden="true">'+repOpts(last?last.r:'')+'</select></div>';
       h+='<input class="noteinput" id="tn_'+i+'" placeholder="'+(ENT?'Note (optional) — e.g. shoulder hurt / it was easy':'ملاحظة (اختياري) — مثلا: كتف وجعني / كانت سهلة')+'">';
       h+='<div class="row"><button class="btn btn-neon btn-sm" style="flex:1" onclick="logSet('+i+')">'+(ENT?'Save set + start timer':'حفظ المجموعة + تشغيل التايمر')+'</button></div>';
       if(restEx===d.id+':'+i&&restEnd)h+=restBarHTML();
@@ -2296,5 +2298,5 @@ function adminAct(uid,act){
   }
 })();
 </script>
-<script>window.__CF$cv$params={r:'a5f12482af9501cd',t:'MTc5NTQ0NzA2Ng==',u:'01a208fc0f2976c2bbb4aaee9915b625',ut:'1naj.O1m0LzN_U_V7_KoRhLztcYe_Glxhes6Hs39fV4-1795447066-1.2.1.1-NGkeUFEBao2EQNZNIqSXFOneIE_2SBNK9Z6IJOVXiaJ65UmNFUjl_Sx7hyKBo6Rr4EJqKZ95reBHBVzVy6CfUjw2W1yG17FyVNpNCjP5rsw',i:60};(function(){if(!document.body)return;var l=window.location,o;try{o=new URL(l.origin).origin}catch(e){try{o=new URL(new URL(l.href).origin).origin}catch(e){o=''}}var u='/cdn-cgi/challenge-platform/scripts/precursor/main.js?ray=a5f12482af9501cd',s=document.createElement('script');s.src=o?new URL(u,o).href:u;document.head.appendChild(s);})();</script><script>window.__CF$cv$params={r:'a5f4bffce87da60e',t:'MTc5NTQ4NDg5MQ==',u:'01a20b3d3ba870cc8cab15f0a39f0e48',ut:'Bp2Eigf1.n7gU3gkBgFhKNLj1n1vVLA7QaKFGgkZ7o0-1795484892-1.2.1.1-th_BCwxyb95_iJmTIE__APqIymQvFM.E6KeoBRB36z1XiXnIAnZvL3h47eA0_rDI9yUF0O3yu1qzHFv5BmrEPLO.R73ecbqrjOMTY2BNoWA',i:60};(function(){if(!document.body)return;var l=window.location,o;try{o=new URL(l.origin).origin}catch(e){try{o=new URL(new URL(l.href).origin).origin}catch(e){o=''}}var u='/cdn-cgi/challenge-platform/scripts/precursor/main.js?ray=a5f4bffce87da60e',s=document.createElement('script');s.src=o?new URL(u,o).href:u;document.head.appendChild(s);})();</script></body>
+<script>window.__CF$cv$params={r:'a5f12482af9501cd',t:'MTc5NTQ0NzA2Ng==',u:'01a208fc0f2976c2bbb4aaee9915b625',ut:'1naj.O1m0LzN_U_V7_KoRhLztcYe_Glxhes6Hs39fV4-1795447066-1.2.1.1-NGkeUFEBao2EQNZNIqSXFOneIE_2SBNK9Z6IJOVXiaJ65UmNFUjl_Sx7hyKBo6Rr4EJqKZ95reBHBVzVy6CfUjw2W1yG17FyVNpNCjP5rsw',i:60};(function(){if(!document.body)return;var l=window.location,o;try{o=new URL(l.origin).origin}catch(e){try{o=new URL(new URL(l.href).origin).origin}catch(e){o=''}}var u='/cdn-cgi/challenge-platform/scripts/precursor/main.js?ray=a5f12482af9501cd',s=document.createElement('script');s.src=o?new URL(u,o).href:u;document.head.appendChild(s);})();</script><script>window.__CF$cv$params={r:'a5f529383f685dd1',t:'MTc5NTQ4OTIwMQ==',u:'01a20b7f00be711bb071d05ebc8e0f69',ut:'WoQTLWqgeVsXupbzf6EYIGj_r_01SfLODjtKZ2SaTgk-1795489202-1.2.1.1-Yr_yVgLIQHQ7KiduXa5XctodlHa28Yjxwe4vOSLWtbJLsBYmKhcFsRfrc9gKs6evND6.28JKOc7dF_Qf7gRRBglZntcII61UwUbCez.FJUs',i:60};(function(){if(!document.body)return;var l=window.location,o;try{o=new URL(l.origin).origin}catch(e){try{o=new URL(new URL(l.href).origin).origin}catch(e){o=''}}var u='/cdn-cgi/challenge-platform/scripts/precursor/main.js?ray=a5f529383f685dd1',s=document.createElement('script');s.src=o?new URL(u,o).href:u;document.head.appendChild(s);})();</script></body>
 </html>
