@@ -123,7 +123,7 @@ table.wt td{text-align:center;padding:7px 4px;border-bottom:1px solid rgba(255,2
 .heroart p{margin:0 0 14px;font-size:14px;color:#eaf6ee;position:relative;line-height:1.9;font-weight:500}
 .howto{display:flex;gap:12px;align-items:flex-start}
 .howto img{width:42%;flex:none;border-radius:14px;border:1px solid var(--line)}
-.statgrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-bottom:14px}.stat2{min-width:0;overflow:hidden}.stat2 .k{font-size:11px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:block}.stat2 .n{font-size:22px}
+.statgrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-bottom:14px}.stat2{min-width:0;overflow:hidden;padding:10px 6px}.stat2 .k{font-size:10.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:block;line-height:1.6}.stat2 .n{font-size:20px}
 .stat2{display:flex;align-items:center;gap:9px;background:var(--card);border:1px solid var(--line);border-radius:18px;padding:11px 9px}
 .stat2 .n{font-size:20px;font-weight:900;line-height:1.1}
 .stat2 .k{font-size:11px;color:var(--muted);font-weight:700}
@@ -934,40 +934,57 @@ const FOODS_ENX=[
  {g:'free',p:4,al:['peanut'],a:['apple + peanut butter 1 tbsp',175],b:['banana + 10 almonds',200]}];
 FOODS_EN.push.apply(FOODS_EN,FOODS_ENX);
 const FOODS_GULF=[
- {g:'prot',p:35,al:[],a:['\u0635\u062f\u0631 \u062f\u062c\u0627\u062c \u0645\u0634\u0648\u064a 150\u062c\u0645',250],b:['\u0644\u062d\u0645 \u0645\u0634\u0648\u064a \u0642\u0644\u064a\u0644 \u0627\u0644\u062f\u0647\u0646 130\u062c\u0645',260]},
- {g:'prot',p:32,al:['fish'],a:['\u0633\u0645\u0643 \u0645\u0634\u0648\u064a (\u0647\u0627\u0645\u0648\u0631) 150\u062c\u0645',200],b:['\u062a\u0648\u0646\u0629 \u0628\u0627\u0644\u0645\u0627\u0621 150\u062c\u0645',195]},
- {g:'prot',p:19,al:['egg'],a:['\u0628\u064a\u0636 \u0645\u0633\u0644\u0648\u0642 3 \u062d\u0628\u0627\u062a',210],b:['\u0623\u0648\u0645\u0644\u064a\u062a 3 \u0628\u064a\u0636\u0627\u062a',230]},
- {g:'prot',p:13,al:[],a:['\u0639\u062f\u0633 \u0645\u0637\u0628\u0648\u062e 150\u062c\u0645',175],b:['\u062d\u0645\u0635 \u0645\u0633\u0644\u0648\u0642 120\u062c\u0645',170]},
- {g:'prot',p:12,al:[],a:['\u0641\u0648\u0644 \u0645\u062f\u0645\u0633 150\u062c\u0645',180],b:['\u0641\u0644\u0627\u0641\u0644 \u0628\u0627\u0644\u0641\u0631\u0646 4 \u062d\u0628\u0627\u062a',220]},
- {g:'prot',p:30,al:[],a:['\u0634\u0627\u0648\u0631\u0645\u0627 \u062f\u062c\u0627\u062c 150\u062c\u0645',280],b:['\u0643\u0641\u062a\u0629 \u0645\u0634\u0648\u064a\u0629 130\u062c\u0645',300]},
- {g:'prot',p:20,al:['milk'],a:['\u0632\u0628\u0627\u062f\u064a \u064a\u0648\u0646\u0627\u0646\u064a 200\u062c\u0645',120],b:['\u0644\u0628\u0646\u0629 \u0644\u0627\u064a\u062a 150\u062c\u0645',160]},
- {g:'prot',p:8,al:['milk'],a:['\u062d\u0644\u064a\u0628 \u062e\u0627\u0644\u064a \u0627\u0644\u062f\u0633\u0645 250\u0645\u0644',90],b:['\u0644\u0628\u0646 \u0631\u0627\u064a\u0628 250\u0645\u0644',90]},
- {g:'carb',p:5,al:[],a:['\u0623\u0631\u0632 \u0643\u0628\u0633\u0629 200\u062c\u0645 \u0645\u0637\u0628\u0648\u062e',260],b:['\u0623\u0631\u0632 \u0623\u0628\u064a\u0636 \u0645\u0633\u0644\u0648\u0642 200\u062c\u0645',260]},
- {g:'carb',p:7,al:['wheat'],a:['\u062e\u0628\u0632 \u0623\u0633\u0645\u0631 (\u0635\u0627\u062c) 90\u062c\u0645',240],b:['\u0645\u0639\u0643\u0631\u0648\u0646\u0629 \u0645\u0633\u0644\u0648\u0642\u0629 150\u062c\u0645',200]},
- {g:'carb',p:5,al:[],a:['\u0628\u0637\u0627\u0637\u0633 \u0645\u0633\u0644\u0648\u0642\u0629 250\u062c\u0645',200],b:['\u0628\u0637\u0627\u0637\u0627 \u062d\u0644\u0648\u0629 200\u062c\u0645',180]},
- {g:'carb',p:6,al:['oat'],a:['\u0634\u0648\u0641\u0627\u0646 50\u062c\u0645',195],b:['\u062c\u0631\u0627\u0646\u0648\u0644\u0627 45\u062c\u0645',200]},
- {g:'carb',p:1,al:['banana'],a:['\u0645\u0648\u0632 100\u062c\u0645',90],b:['\u062a\u0645\u0631 5 \u062d\u0628\u0627\u062a (40\u062c\u0645)',110]},
- {g:'carb',p:1,al:[],a:['\u062a\u0641\u0627\u062d 2 \u062d\u0628\u0629 (300\u062c\u0645)',160],b:['\u0628\u0631\u062a\u0642\u0627\u0644 3 \u062d\u0628\u0627\u062a (300\u062c\u0645)',140]},
- {g:'carb',p:1,al:['berry'],a:['\u0641\u0631\u0627\u0648\u0644\u0629 200\u062c\u0645',65],b:['\u0645\u0627\u0646\u062c\u0648 150\u062c\u0645',90]},
- {g:'fat',p:2,al:[],a:['\u0632\u064a\u062a \u0632\u064a\u062a\u0648\u0646 1 \u0645\u0644\u0639\u0642\u0629',120],b:['\u0623\u0641\u0648\u0643\u0627\u062f\u0648 \u0646\u0635\u0641 \u062d\u0628\u0629',120]},
- {g:'fat',p:3,al:['nuts'],a:['\u0644\u0648\u0632 15\u062c\u0645',85],b:['\u0643\u0627\u062c\u0648 20\u062c\u0645',110]},
- {g:'fat',p:5,al:['sesame'],a:['\u0637\u062d\u064a\u0646\u0629 30\u062c\u0645',180],b:['\u062d\u0645\u0635 \u0628\u0627\u0644\u0637\u062d\u064a\u0646\u0629 100\u062c\u0645',180]},
- {g:'fat',p:1,al:[],a:['\u0632\u064a\u062a\u0648\u0646 10 \u062d\u0628\u0627\u062a',50],b:['\u0641\u0648\u0644 \u0633\u0648\u062f\u0627\u0646\u064a 20\u062c\u0645',115]},
- {g:'veg',p:3,al:[],a:['\u062a\u0628\u0648\u0644\u0629 \u0637\u0628\u0642 200\u062c\u0645',120],b:['\u0641\u062a\u0648\u0634 \u0637\u0628\u0642 \u0643\u0628\u064a\u0631',100]},
- {g:'veg',p:3,al:[],a:['\u062e\u0636\u0627\u0631 \u0633\u0648\u062a\u064a\u0647 250\u062c\u0645',90],b:['\u0634\u0648\u0631\u0628\u0629 \u0639\u062f\u0633 \u0637\u0628\u0642',120]},
- {g:'veg',p:2,al:[],a:['\u0633\u0644\u0637\u0629 \u062e\u0636\u0631\u0627\u0621 \u0637\u0628\u0642 \u0643\u0628\u064a\u0631',50],b:['\u0633\u0644\u0637\u0629 \u062e\u064a\u0627\u0631 \u0628\u0627\u0644\u0632\u0628\u0627\u062f\u064a 200\u062c\u0645',80]},
- {g:'veg',p:5,al:[],a:['\u0645\u0644\u0648\u062e\u064a\u0629 \u0645\u0637\u0628\u0648\u062e\u0629 200\u062c\u0645',90],b:['\u0628\u0627\u0645\u064a\u0629 \u0645\u0637\u0628\u0648\u062e\u0629 200\u062c\u0645',110]},
- {g:'fruit',p:1,al:[],a:['\u0628\u0637\u064a\u062e 300\u062c\u0645',90],b:['\u0634\u0645\u0627\u0645 300\u062c\u0645',100]},
- {g:'fruit',p:2,al:[],a:['\u0631\u0645\u0627\u0646 150\u062c\u0645',125],b:['\u0639\u0646\u0628 150\u062c\u0645',105]},
- {g:'fruit',p:1,al:['stone'],a:['\u062e\u0648\u062e 2 \u062d\u0628\u0629 (200\u062c\u0645)',80],b:['\u0643\u0645\u062b\u0631\u0649 250\u062c\u0645',145]},
- {g:'free',p:12,al:['oat','milk','banana'],a:['\u0634\u0648\u0641\u0627\u0646 40\u062c\u0645 + \u062d\u0644\u064a\u0628 200\u0645\u0644 + \u0645\u0648\u0632 80\u062c\u0645',300],b:['\u062a\u0648\u0633\u062a \u0623\u0633\u0645\u0631 + \u0628\u064a\u0636\u062a\u0627\u0646',300]},
- {g:'free',p:30,al:[],a:['\u0643\u0628\u0633\u0629 \u0635\u062f\u0631 \u062f\u062c\u0627\u062c 250\u062c\u0645',380],b:['\u0623\u0631\u0632 \u0635\u064a\u0627\u062f\u064a\u0629 + \u0633\u0645\u0643 200\u062c\u0645',350]},
- {g:'free',p:15,al:['milk','wheat'],a:['\u0644\u0628\u0646\u0629 \u0644\u0627\u064a\u062a 150\u062c\u0645 + \u062e\u0628\u0632 \u0635\u0627\u062c',230],b:['\u062c\u0628\u0646\u0629 \u062d\u0644\u0648\u0645\u064a \u0645\u0634\u0648\u064a\u0629 100\u062c\u0645 + \u0633\u0644\u0637\u0629',280]},
- {g:'free',p:8,al:['milk'],a:['\u062a\u0645\u0631 3 \u062d\u0628\u0627\u062a + \u062d\u0644\u064a\u0628 200\u0645\u0644',200],b:['\u062a\u0641\u0627\u062d + \u0632\u0628\u062f\u0629 \u0641\u0648\u0644 \u0633\u0648\u062f\u0627\u0646\u064a 1 \u0645\u0644\u0639\u0642\u0629',175]}];
+ {g:'prot',p:22,al:[],a:['بيض مسلوق 3 حبات',230],b:['أومليت 3 بيضات',250]},
+ {g:'carb',p:7,al:['wheat'],a:['خبز صاج أسمر 90جم',240],b:['خبز عربي أسمر 60جم',157]},
+ {g:'prot',p:8,al:['milk'],a:['لبنة لايت 50جم',70],b:['زبادي يوناني 170جم',165]},
+ {g:'prot',p:12,al:[],a:['فول مدمس 150جم',180],b:['حمص بالطحينة 100جم',180]},
+ {g:'carb',p:5,al:['oat'],a:['شوفان 50جم',195],b:['كورن فليكس 40جم + حليب',190]},
+ {g:'carb',p:1,al:['milk'],a:['تمر 3 حبات + حليب 200مل',190],b:['تمر 5 حبات (40جم)',110]},
+ {g:'prot',p:35,al:[],a:['صدر دجاج مشوي 150جم',250],b:['لحم مشوي قليل الدهن 130جم',260]},
+ {g:'prot',p:30,al:[],a:['كبسة صدر دجاج 250جم',380],b:['مندي دجاج 250جم',390]},
+ {g:'prot',p:28,al:[],a:['شاورما دجاج منزلية 150جم',280],b:['كفتة مشوية 130جم',300]},
+ {g:'prot',p:32,al:['fish'],a:['سمك مشوي (هامور) 150جم',200],b:['صيادية سمك + أرز 200جم',350]},
+ {g:'prot',p:26,al:[],a:['مچبوس دجاج 250جم',370],b:['أرز صيادية + سمك 200جم',350]},
+ {g:'prot',p:24,al:['fish'],a:['تونة بالماء 150جم',195],b:['سلمون مشوي 120جم',250]},
+ {g:'prot',p:20,al:['fish'],a:['ماكريل مشوي 120جم',300],b:['سردين مشوي 150جم',300]},
+ {g:'prot',p:13,al:[],a:['عدس مطبوخ 150جم',175],b:['حمص مسلوق 120جم',170]},
+ {g:'prot',p:15,al:['milk'],a:['جبنة حلومي مشوية 100جم',320],b:['جبنة قريش 150جم',160]},
+ {g:'prot',p:18,al:['egg','milk'],a:['شكشوكة بيضتين',300],b:['أومليت خضار 3 بيضات',230]},
+ {g:'prot',p:12,al:[],a:['فلافل فرن 4 حبات',220],b:['فول + بيضة مسلوقة',260]},
+ {g:'prot',p:25,al:[],a:['دجاج مسحب مشوي 150جم',270],b:['ديك رومي 120جم + بيضة',200]},
+ {g:'prot',p:22,al:['fish'],a:['تونة + ذرة وسلطة 200جم',220],b:['سلطة دجاج صغيرة',210]},
+ {g:'prot',p:10,al:[],a:['كبدة مشوية 100جم',180],b:['لحم مفروم قليل دهن 100جم',200]},
+ {g:'carb',p:5,al:[],a:['أرز كبسة أبيض 200جم مطبوخ',260],b:['أرز أبيض مسلوق 200جم',260]},
+ {g:'carb',p:6,al:['wheat'],a:['مكرونة مسلوقة 150جم',200],b:['خبز بر 90جم',240]},
+ {g:'carb',p:5,al:[],a:['بطاطس مسلوقة 250جم',200],b:['بطاطا حلوة 200جم',180]},
+ {g:'carb',p:6,al:['oat'],a:['جرانولا 45جم',200],b:['شوفان باللبن والتمر',300]},
+ {g:'carb',p:1,al:['banana'],a:['موز 100جم',90],b:['تفاح 2 حبة (300جم)',160]},
+ {g:'carb',p:1,al:[],a:['برتقال 3 حبات (300جم)',140],b:['رمان 150جم',125]},
+ {g:'carb',p:1,al:['berry'],a:['فراولة 200جم',65],b:['مانجو 150جم',90]},
+ {g:'carb',p:2,al:[],a:['بطيخ 300جم',90],b:['شمام 300جم',100]},
+ {g:'fat',p:2,al:[],a:['زيت زيتون 1 ملعقة',120],b:['أفوكادو نصف حبة',120]},
+ {g:'fat',p:3,al:['nuts'],a:['لوز 15جم',85],b:['كاجو 20جم',110]},
+ {g:'fat',p:5,al:['sesame'],a:['طحينة 30جم',180],b:['حمص بالطحينة 100جم',180]},
+ {g:'fat',p:1,al:[],a:['زيتون 10 حبات',50],b:['فول سوداني 20جم',115]},
+ {g:'fat',p:2,al:['nuts'],a:['مكسرات مشكلة 30جم',175],b:['فستق 30جم',170]},
+ {g:'veg',p:3,al:[],a:['تبولة طبق 200جم',120],b:['فتوش طبق كبير',100]},
+ {g:'veg',p:2,al:[],a:['سلطة خضراء طبق كبير',50],b:['سلطة خيار بالزبادي 200جم',80]},
+ {g:'veg',p:3,al:[],a:['شوربة عدس طبق',120],b:['شوربة خضار طبق',100]},
+ {g:'veg',p:3,al:[],a:['خضار سوتيه 250جم',90],b:['ملوخية مطبوخة 200جم',90]},
+ {g:'veg',p:2,al:[],a:['بامية مطبوخة 200جم',110],b:['فاصوليا خضراء 200جم',110]},
+ {g:'veg',p:3,al:[],a:['جرجير + طماطم + خيار طبق',40],b:['سلطة سيزر دجاج صغيرة',180]},
+ {g:'fruit',p:2,al:[],a:['عنب 150جم',105],b:['تين 3 حبات 150جم',110]},
+ {g:'free',p:12,al:['oat','milk'],a:['شوفان 40جم + حليب 200مل + تمر',300],b:['توست أسمر + بيضتين',300]},
+ {g:'free',p:30,al:[],a:['كبسة صدر دجاج 250جم',380],b:['مندي دجاج + سلطة',400]},
+ {g:'free',p:15,al:['milk','wheat'],a:['لبنة لايت 150جم + خبز صاج',230],b:['حلومي مشوي 100جم + سلطة',280]},
+ {g:'free',p:8,al:['milk'],a:['تمر 3 حبات + حليب 200مل',200],b:['تفاح + زبدة فول سوداني 1 ملعقة',175]},
+ {g:'free',p:20,al:['milk'],a:['زبادي يوناني 200جم + عسل',250],b:['لبن رايب 250مل + تمرتين',180]},
+ {g:'free',p:22,al:[],a:['شاورما دجاج + خبز صاج صغير',350],b:['كفتة + أرز 150جم',380]}
+];
 let FOODS=FOODS_AR, FALLN=FALLN_AR, FGROUPS=FGROUPS_AR;
 const CORE_AR=['بيض مسلوق 3 حبات','جبنة قريش 150جم','عيش بلدي 1 رغيف (90جم)','توست بني 3 شرايح كبار (90جم)','فول مدمس 150جم','صدر فراخ مشوي 150جم','لحم مشوي قليل الدسم 130جم','سلمون مشوي 120جم','تونة محلول ملحي 150جم','رز مسلوق 200جم','بطاطس مسلوقة 250جم','فريك مطبوخ 180جم','خضار سوتيه 250جم','سلطة خضرا طبق كبير','زبادي يوناني 170جم + معلقة عسل','لبن رايب 250مل','شوربة خضار طبق','موزة متوسطة 100جم','تونة محلول ملحي 120جم + معلقة زيت صغيرة','ترمس مسلوق 120جم','تفاح 2 حبة (300جم)','مكسرات مشكلة 30جم'];
 const MEALS_GULF=[['\u0627\u0644\u0641\u0637\u0648\u0631',.25],['\u0627\u0644\u063a\u062f\u0627\u0621',.35],['\u0648\u062c\u0628\u0629 \u062e\u0641\u064a\u0641\u0629',.10],['\u0627\u0644\u0639\u0634\u0627\u0621',.30]];
-const CORE_GULF=['\u0643\u0628\u0633\u0629 \u0635\u062f\u0631 \u062f\u062c\u0627\u062c 250\u062c\u0645','\u0635\u062f\u0631 \u062f\u062c\u0627\u062c \u0645\u0634\u0648\u064a 150\u062c\u0645','\u062a\u0648\u0646\u0629 \u0628\u0627\u0644\u0645\u0627\u0621 150\u062c\u0645','\u0623\u0631\u0632 \u0623\u0628\u064a\u0636 \u0645\u0633\u0644\u0648\u0642 200\u062c\u0645','\u0634\u0648\u0641\u0627\u0646 50\u062c\u0645','\u062a\u0628\u0648\u0644\u0629 \u0637\u0628\u0642 200\u062c\u0645','\u0633\u0644\u0637\u0629 \u062e\u0636\u0631\u0627\u0621 \u0637\u0628\u0642 \u0643\u0628\u064a\u0631','\u0634\u0648\u0631\u0628\u0629 \u0639\u062f\u0633 \u0637\u0628\u0642','\u0632\u0628\u0627\u062f\u064a \u064a\u0648\u0646\u0627\u0646\u064a 200\u062c\u0645','\u062d\u0644\u064a\u0628 \u062e\u0627\u0644\u064a \u0627\u0644\u062f\u0633\u0645 250\u0645\u0644','\u062a\u0645\u0631 5 \u062d\u0628\u0627\u062a (40\u062c\u0645)','\u0644\u0628\u0646\u0629 \u0644\u0627\u064a\u062a 150\u062c\u0645','\u0639\u062f\u0633 \u0645\u0637\u0628\u0648\u062e 150\u062c\u0645','\u0634\u0627\u0648\u0631\u0645\u0627 \u062f\u062c\u0627\u062c 150\u062c\u0645','\u0632\u064a\u062a \u0632\u064a\u062a\u0648\u0646 1 \u0645\u0644\u0639\u0642\u0629','\u0644\u0648\u0632 15\u062c\u0645','\u0645\u0648\u0632 100\u062c\u0645','\u062a\u0641\u0627\u062d 2 \u062d\u0628\u0629 (300\u062c\u0645)','\u0628\u064a\u0636 \u0645\u0633\u0644\u0648\u0642 3 \u062d\u0628\u0627\u062a','\u0623\u0631\u0632 \u0643\u0628\u0633\u0629 200\u062c\u0645 \u0645\u0637\u0628\u0648\u062e'];
+const CORE_GULF=['بيض مسلوق 3 حبات','خبز صاج أسمر 90جم','لبنة لايت 50جم','فول مدمس 150جم','شوفان 50جم','تمر 3 حبات + حليب 200مل','صدر دجاج مشوي 150جم','كبسة صدر دجاج 250جم','تبولة طبق 200جم','سلطة خضراء طبق كبير','شوربة عدس طبق','زيت زيتون 1 ملعقة','لوز 15جم','موز 100جم','تفاح 2 حبة (300جم)','سلطة خيار بالزبادي 200جم','زبادي يوناني 170جم','تونة بالماء 150جم','أرز أبيض مسلوق 200جم','سمك مشوي (هامور) 150جم'];
 const CORE_EN=['oatmeal 40g + skim milk 200ml + banana 80g','3 boiled eggs','grilled chicken breast 150g','tuna in water 150g','brown rice 130g cooked','broccoli 200g','whey shake + banana','cottage cheese 200g','apple + peanut butter 1 tbsp','mixed berries 150g','banana 100g','salmon 120g','sweet potato 150g','large mixed salad','olive oil 1 tbsp','skim milk 250ml','tuna in water 150g','lentils cooked 150g','steamed vegetables 250g','guava 2 (200g)','oatmeal 50g'];
 function isCore(fi){const xf=FOODS[fi];if(!xf)return false;const r=myRegion();const L=(r==='en'?CORE_EN:(r==='ar'?CORE_GULF:CORE_AR));return L.indexOf(xf.a[0])>-1||L.indexOf(xf.b[0])>-1;}
 /* ============ English i18n pack (v6.7.0) ============ */
@@ -1189,7 +1206,7 @@ function buildMeals(tpl){
 }
 function mealTotal(m){let s=0;m.items.forEach(function(it){const f=FOODS[it.fi];s+=it.side==='a'?f.a[1]:f.b[1];});return s;}
 const CAL100=[["صدر فراخ مشوي",165,31],["ورك فراخ مشوي",184,18],["لحم مشوي",200,26],["كفتة مشوية",220,18],["كبدة مشوية",190,29],["قوانص",150,22],["تونة محلول ملحي",130,24],["سردين مشوي",200,20],["ماكريل",260,20],["بلطي مشوي",128,26],["سلمون",208,22],["جمبري",99,24],["سبيط",92,18],["بيض مسلوق",155,13],["جبنة قريش",105,17],["زبادي يوناني",59,10],["لبن خالي الدسم",35,3.4],["لبن رايب",60,3],["رز مسلوق",130,2.4],["رز بسمتي",121,2.5],["مكرونة مسلوقة",131,5],["مكرونة قمح كامل",124,5],["عيش بلدي",270,9],["عيش سن",250,9],["توست",265,9],["شوفان",389,17],["كورن فليكس",357,8],["فول مدمس",115,8],["عدس",116,9],["لوبيا",115,8],["حمص مسلوق",164,9],["فاصوليا بيضا",140,9],["ترمس",120,16],["فشار",387,12],["بطاطس مسلوقة",80,2],["بطاطا",90,1.5],["قلقاس",110,1.5],["فريك",125,4.5],["برغل",125,3.5],["كشري",150,5],["ذرة مشوية",96,3.4],["ملوخية",40,3],["سبانخ",35,3],["خضار سوتيه",40,1.5],["سلطة خضراء",25,1],["فاصوليا خضراء",35,2],["بامية",40,2],["شوربة عدس",70,5],["شوربة خضار",40,1],["حمص الشام",60,4],["طعمية فرن",220,9],["موز",89,1.1],["تفاح",52,0.3],["برتقال",47,0.9],["فراولة",32,0.7],["مانجو",60,0.8],["خوخ",39,0.9],["كيوي",61,1.1],["بطيخ",30,0.6],["شمام",34,0.8],["جوافة",68,2.6],["كمثرى",57,0.4],["بلح",130,2],["تمر جاف",300,2],["تين مجفف",250,2],["عسل",304,0.3],["عسل أسود",290,1],["مربى لايت",150,0.5],["زيت زيتون",884,0],["زيت حار",884,0],["طحينة",595,17],["سمسم",573,18],["مكسرات مشكلة",580,20],["فول سوداني",567,26],["لب سوري",584,21],["أفوكادو",160,2],["زيتون",115,1],["مهلبية لايت",65,3],["رز بلبن لايت",100,4],["واي بروتين",400,80]];
-const CAL100_EN=[["oatmeal",389,17],["skim milk",35,3.4],["banana",89,1.1],["whole wheat toast",265,9],["eggs",155,13],["peanut butter",588,25],["cottage cheese",105,17],["tuna",130,24],["chicken breast",165,31],["lean beef",200,26],["salmon",208,22],["tilapia",128,26],["brown rice",121,2.5],["sweet potato",90,1.5],["quinoa",120,4.5],["broccoli",34,2.8],["mixed salad",25,1],["olive oil",884,0],["avocado",160,2],["almonds",579,21],["apple",52,0.3],["orange",47,0.9],["mixed berries",50,1],["granola",440,10],["whey protein",400,80],["greek yogurt",59,10],["honey",304,0.3],["low-fat yogurt",63,5],["kabsa chicken",190,14],["chicken shawarma",180,16],["hummus",170,5],["tahini",595,17],["dates",280,2],["laban",40,3],["labneh",130,10],["tabbouleh",60,1.5],["fattoush",70,1.5],["lentil soup",55,3.5],["falafel",330,13],["halloumi",320,22]];
+const CAL100_EN=[["oatmeal",389,17],["skim milk",35,3.4],["banana",89,1.1],["whole wheat toast",265,9],["eggs",155,13],["peanut butter",588,25],["cottage cheese",105,17],["tuna",130,24],["chicken breast",165,31],["lean beef",200,26],["salmon",208,22],["tilapia",128,26],["brown rice",121,2.5],["sweet potato",90,1.5],["quinoa",120,4.5],["broccoli",34,2.8],["mixed salad",25,1],["olive oil",884,0],["avocado",160,2],["almonds",579,21],["apple",52,0.3],["orange",47,0.9],["mixed berries",50,1],["granola",440,10],["whey protein",400,80],["greek yogurt",59,10],["honey",304,0.3],["low-fat yogurt",63,5],["kabsa chicken",190,14],["chicken shawarma",180,16],["mandi chicken",195,14],["machboos chicken",185,13],["hummus",170,5],["tahini",595,17],["dates",280,2],["laban",40,3],["labneh",130,10],["tabbouleh",60,1.5],["fattoush",70,1.5],["lentil soup",55,3.5],["falafel",330,13],["halloumi",320,22],["balaleet",250,6],["shakshuka",120,7],["foul medames",120,7],["kabsa chicken",190,14],["chicken shawarma",180,16],["hummus",170,5],["tahini",595,17],["dates",280,2],["laban",40,3],["labneh",130,10],["tabbouleh",60,1.5],["fattoush",70,1.5],["lentil soup",55,3.5],["falafel",330,13],["halloumi",320,22]];
 function calcDB(){return myRegion()==='en'?CAL100_EN:CAL100;}
 function calcFood(){const qe=document.getElementById('cfQ'),ge=document.getElementById('cfG'),box=document.getElementById('cfRes');const q=qe?qe.value.trim():'';const g=parseFloat(ge?ge.value:'')||0;const DB=calcDB();if(!q||!(g>0)){if(box)box.innerHTML=myRegion()==='en'?'<p class="sub">Enter the food name and weight in grams first.</p>':'<p class="sub">اكتب اسم الأكل والوزن بالجرام الأول.</p>';return;}const hit=DB.find(function(x){return x[0]===q||x[0].toLowerCase().indexOf(q.toLowerCase())>-1||q.toLowerCase().indexOf(x[0].toLowerCase())>-1;});if(!hit){if(box)box.innerHTML=myRegion()==='en'?'<p class="sub">Cannot find \u00ab'+esc(q)+'\u00bb — try another word (e.g. chicken, rice, oats).</p>':'<p class="sub">مش لاقي «'+esc(q)+'» — جرّب كلمة تانية (مثال: رز، فراخ، موز).</p>';return;}const kc=Math.round(hit[1]*g/100),pr=Math.round(hit[2]*g/100*10)/10;if(box)box.innerHTML='<p class="sub" style="font-size:15px"><b style="color:#fff">'+esc(hit[0])+' ('+g+(myRegion()==='en'?'g':' جم')+')</b> = <b style="color:var(--neon)">'+kc+(myRegion()==='en'?' kcal':' سعرة')+'</b> • '+(myRegion()==='en'?('protein ~'+pr+'g'):('بروتين ~'+pr+' جم'))+'</p>';}
 function swapFood(mi,ii){const m=view.nmeals[mi];if(!m)return;const it=m.items[ii];const f=FOODS[it.fi];const cur=it.side==='a'?f.a[1]:f.b[1];view.swapList={mi:mi,ii:ii,cur:cur,g:f.g,opts:[]};FOODS.forEach(function(xf,fi){if(fi===it.fi&&false)return;if(xf.g!==f.g)return;if(!foodOK(fi))return;['a','b'].forEach(function(side){const nm=side==='a'?xf.a[0]:xf.b[0],kc=side==='a'?xf.a[1]:xf.b[1];if(fi===it.fi&&side===it.side)return;if(Math.abs(kc-cur)>20)return;view.swapList.opts.push({fi:fi,side:side,nm:nm,kc:kc,g:xf.g,p:xf.p});});});view.swapList.opts.sort(function(a,b){return Math.abs(a.kc-cur)-Math.abs(b.kc-cur);});render();}
@@ -2297,5 +2314,5 @@ function adminAct(uid,act){
   }
 })();
 </script>
-<script>window.__CF$cv$params={r:'a5f12482af9501cd',t:'MTc5NTQ0NzA2Ng==',u:'01a208fc0f2976c2bbb4aaee9915b625',ut:'1naj.O1m0LzN_U_V7_KoRhLztcYe_Glxhes6Hs39fV4-1795447066-1.2.1.1-NGkeUFEBao2EQNZNIqSXFOneIE_2SBNK9Z6IJOVXiaJ65UmNFUjl_Sx7hyKBo6Rr4EJqKZ95reBHBVzVy6CfUjw2W1yG17FyVNpNCjP5rsw',i:60};(function(){if(!document.body)return;var l=window.location,o;try{o=new URL(l.origin).origin}catch(e){try{o=new URL(new URL(l.href).origin).origin}catch(e){o=''}}var u='/cdn-cgi/challenge-platform/scripts/precursor/main.js?ray=a5f12482af9501cd',s=document.createElement('script');s.src=o?new URL(u,o).href:u;document.head.appendChild(s);})();</script></body>
+<script>window.__CF$cv$params={r:'a5f12482af9501cd',t:'MTc5NTQ0NzA2Ng==',u:'01a208fc0f2976c2bbb4aaee9915b625',ut:'1naj.O1m0LzN_U_V7_KoRhLztcYe_Glxhes6Hs39fV4-1795447066-1.2.1.1-NGkeUFEBao2EQNZNIqSXFOneIE_2SBNK9Z6IJOVXiaJ65UmNFUjl_Sx7hyKBo6Rr4EJqKZ95reBHBVzVy6CfUjw2W1yG17FyVNpNCjP5rsw',i:60};(function(){if(!document.body)return;var l=window.location,o;try{o=new URL(l.origin).origin}catch(e){try{o=new URL(new URL(l.href).origin).origin}catch(e){o=''}}var u='/cdn-cgi/challenge-platform/scripts/precursor/main.js?ray=a5f12482af9501cd',s=document.createElement('script');s.src=o?new URL(u,o).href:u;document.head.appendChild(s);})();</script><script>window.__CF$cv$params={r:'a5f5e0648b6ce18d',t:'MTc5NTQ5NjcwNA==',u:'01a20bf17cbd71c8aea60dc9e06d1976',ut:'R9ASLRHicDfboRrejtCwgD5_0CxqN9_ga5U2QmpTyME-1795496705-1.2.1.1-GTjHL0h3O7OCHMqa3x9n1jGM7G.s6vBN9ulN.yzrV8i5IlUPl8oJsgj4l4NYnHWvTV8ygzqGlB2eg3Oh4UkOc.4FPCxhW18SYBBGpMUaAfA',i:60};(function(){if(!document.body)return;var l=window.location,o;try{o=new URL(l.origin).origin}catch(e){try{o=new URL(new URL(l.href).origin).origin}catch(e){o=''}}var u='/cdn-cgi/challenge-platform/scripts/precursor/main.js?ray=a5f5e0648b6ce18d',s=document.createElement('script');s.src=o?new URL(u,o).href:u;document.head.appendChild(s);})();</script></body>
 </html>
