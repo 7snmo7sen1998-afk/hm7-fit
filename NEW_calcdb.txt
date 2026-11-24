@@ -1,1 +1,0 @@
-function calcDB(){return myRegion()==='en'?CAL100_EN:CAL100;}
