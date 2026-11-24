@@ -1,0 +1,62 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function isAdmin() {
+      return request.auth != null && (
+        request.auth.token.email == 'hmohsen282@gmail.com' ||
+        request.auth.token.email == '7snmo7sen1998@gmail.com'
+      );
+    }
+    function isOwner(uid) {
+      return request.auth != null && request.auth.uid == uid;
+    }
+
+    // حسابات المشتركين — المالك يقرأ/يكتب حسابه، الأدمن كل حاجة
+    match /users/{uid} {
+      allow get, create, update: if isOwner(uid) || isAdmin();
+      allow list, delete: if isAdmin();
+      // نسخة بيانات التمرين الخاصة بكل مستخدم
+      match /data/{doc} {
+        allow read, create, update, delete: if isOwner(uid) || isAdmin();
+      }
+    }
+
+    // الأكواد — أي مسجل يقرأ كود ويخصم استخدام، والأدمن يدير
+    match /coupons/{code} {
+      allow get, update: if request.auth != null;
+      allow list, create, delete: if isAdmin();
+    }
+
+    // رسالة الكابتن الجماعية — قراءة للمسجلين، كتابة للأدمن
+    match /annc/{doc} {
+      allow get: if request.auth != null;
+      allow list, create, update, delete: if isAdmin();
+    }
+
+    // المسوقين (أفلييت) — الأدمن يدير، والمسجل يقرأ
+    match /affils/{code} {
+      allow get: if request.auth != null;
+      allow list, create, update, delete: if isAdmin();
+    }
+
+    // سجل العمولات — المسجل يسجل عملية، والأدمن يقرأ
+    match /refs/{id} {
+      allow create: if request.auth != null;
+      allow get, list, update, delete: if isAdmin();
+    }
+
+    // آراء المشتركين — المسجل يضيف ويقرأ، والأدمن يدير
+    match /reviews/{id} {
+      allow get, list, create: if request.auth != null;
+      allow update, delete: if isAdmin();
+    }
+
+    // طلبات دفع PayPal — المسجل يسجل طلبه، والأدمن يقرأ ويفعّل
+    match /payreq/{id} {
+      allow create: if request.auth != null;
+      allow get, list, update: if isAdmin();
+      allow delete: if false;
+    }
+  }
+}
