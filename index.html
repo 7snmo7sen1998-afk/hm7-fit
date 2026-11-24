@@ -317,6 +317,9 @@ function updateBadge(){const el=document.getElementById('goalBadge');if(el)el.in
 function anncUnseen(){try{return !!(view.annc&&view.annc.msg&&(view.annc.ts>+(localStorage.getItem('hmfit_annc_seen')||0)));}catch(e){return false;}}
 function anncSeen(){try{if(view.annc)localStorage.setItem('hmfit_annc_seen',''+(view.annc.ts||Date.now()));}catch(e){}updateBadge();render();}
 function dateKey(t){const d=t?new Date(t):new Date();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');}
+function dayDoneId(did){try{var dd=(db.program&&db.program.doneDays)||{};return dd[did]||0;}catch(e){return 0;}}
+function markDayDone(did){try{if(!db.program)return;db.program.doneDays=db.program.doneDays||{};db.program.doneDays[did]=Date.now();db.program.lastDid=did;db.program.lastDate=dateKey();save();}catch(e){}}
+function nextDayIdx(){try{var pg=db.program;if(!pg||!pg.days.length)return -1;var dones=0,firstOpen=-1;for(var i=0;i<pg.days.length;i++){var dd=pg.days[i];var dn=dayDoneId(dd.id);var isToday=(dn&&new Date(dn).toDateString()===new Date().toDateString());if(!dn&&firstOpen<0)firstOpen=i;}if(firstOpen>=0)return firstOpen;return 0;}catch(e){return 0;}}
 function todayIdx(){const p=db.program;if(!p||!p.days.length)return -1;if(!p.lastDid)return 0;const i=p.days.findIndex(function(d){return d.id===p.lastDid;});if(i<0)return 0;return p.lastDate===dateKey()?i:(i+1)%p.days.length;}
 function startToday(){const ti=todayIdx();if(ti<0)return go('workout');go('trainday',{did:db.program.days[ti].id});}
 const LIB=[
@@ -774,6 +777,7 @@ function renderCardio(){
  h+='<button class="btn" onclick="go(\'home\')">'+icon('back')+' الرئيسية</button>';
  return h;
 }
+function saveDay(did){try{markDayDone(did);}catch(e){}try{noteSheet(myRegion()==='en'?'Day saved \u2705 — see you at the next one!':'اتحفظ اليوم \u2705 — نشوفك في اللي بعده!');}catch(e){}go('home');}
 function shareDay(did){
   const p=db.program;if(!p)return;const d=p.days.find(function(x){return x.id===did;});if(!d)return;
   const EN2=myRegion()==='en';const rows=d.exercises.map(function(e){const ss=sessionsOf(e.name);const t=ss[0]&&ss[0].k===dateKey()?ss[0]:null;return {n:e.name,v:t?(EN2?('top '+t.max+' kg'+' \u2022 '+t.sets.length+(t.sets.length===1?' set':' sets')):('أعلى '+t.max+' كجم • '+t.sets.length+' '+(t.sets.length===1?'مجموعة':'مجموعات'))):''};}).filter(function(x){return x.v;});
@@ -1341,11 +1345,13 @@ function render(){
     navOn('nav-home');
     const ti=todayIdx();
     let h=(fbOK&&fbUser?greetHTML()+ringHTML()+reviewsHTML():'')+installCard();
-    if(db.program&&ti>=0){
-      const d=db.program.days[ti];
-      h+='<div class="workout-cta" onclick="go(\'trainday\',{did:\''+d.id+'\'})"><div class="big">'+(myRegion()==='en'?'Ready to train today?':'جاهز تتمرن النهارده؟')+'<small>'+esc(d.name)+' • '+d.exercises.length+(myRegion()==='en'?(d.exercises.length===1?' exercise — tap and start logging':' exercises — tap and start logging'):' تمرين — دوس وابدأ التسجيل')+'</small></div><div class="go">'+icon('play')+'</div></div>';
+    if(db.program&&db.program.days.length){
+      var ni=nextDayIdx();if(ni<0)ni=0;
+      const d=db.program.days[ni];
+      const _dn=!!dayDoneId(d.id);
+      h+='<div class="workout-cta" onclick="go(\'trainday\',{did:\''+d.id+'\'})"><div class="big">'+(myRegion()==='en'?(_dn?'Done \u2705 — next up:':'Up next:'):(_dn?'تم \u2705 — اللي عليه الدور:':'اللي عليه الدور:'))+' '+esc(d.name)+(_dn?' \u2705':'')+'<small>'+esc(d.name)+' • '+d.exercises.length+(myRegion()==='en'?(d.exercises.length===1?' exercise — tap and start logging':' exercises — tap and start logging'):' تمرين — دوس وابدأ التسجيل')+'</small></div><div class="go">'+icon('play')+'</div></div>';
     }else{
-      h+='<div class="heroart"><h2>جاهز تبدأ <i>رحلتك؟</i></h2><p>اعمل برنامجك الأول واختار أيامك وتمارينك.</p><button class="btn btn-neon" onclick="go(\'workout\')">اعمل برنامجي '+icon('play')+'</button></div>';
+      h+=(myRegion()==='en'?'<div class="heroart"><h2>Ready to start <i>your journey?</i></h2><p>Build your first program and pick your days and exercises.</p><button class="btn btn-neon" onclick="go(\'workout\')">Build my program '+icon('play')+'</button></div>':'<div class="heroart"><h2>جاهز تبدأ <i>رحلتك؟</i></h2><p>اعمل برنامجك الأول واختار أيامك وتمارينك.</p><button class="btn btn-neon" onclick="go(\'workout\')">اعمل برنامجي '+icon('play')+'</button></div>');
     }
     const wc=Object.keys(db.weights).length;
     if(offerEnd()>0&&fbUser&&!isAdmin()){if(myRegion()==='en')h+='<div class="card glow" style="border-color:var(--neon);background:linear-gradient(135deg,rgba(0,230,118,.14),rgba(0,230,118,.03));cursor:pointer" onclick="go(\'plans\')"><div class="row" style="margin:0"><span class="thumb" style="width:44px;height:44px">🎁</span><span style="flex:1"><b>'+offerTitle()+'</b><br><span class="sub">Monthly $'+PRICE_M()+' (was $'+wasM()+') • Yearly $'+PRICE_Y()+' (was $'+wasY()+') • <span class="offcd" data-end="'+offerEnd()+'">…</span> left</span></span><span class="offergo">‹</span></div></div>';else h+='<div class="card glow" style="border-color:var(--neon);background:linear-gradient(135deg,rgba(0,230,118,.14),rgba(0,230,118,.03));cursor:pointer" onclick="go(\'plans\')"><div class="row" style="margin:0"><span class="thumb" style="width:44px;height:44px">🎁</span><span style="flex:1"><b>'+offerTitle()+'</b><br><span class="sub">شهري '+money(PRICE_M())+' بدل '+money(wasM())+' • سنوي '+money(PRICE_Y())+' بدل '+money(wasY())+' • <span class="offcd" data-end="'+offerEnd()+'">…</span></span></span><span class="offergo">‹</span></div></div>';}
@@ -1440,9 +1446,9 @@ function render(){
       if(prev)h+='<div class="sessbox"><b>'+(ENT?'Last time ('+sessLabel(prev)+')':'آخر مرة ('+sessLabel(prev)+')')+':</b> '+(ENT?'started <b>'+fmtSet(prev.first)+'</b> and finished <b>'+fmtSet(prev.last)+'</b>':'بدأت <b>'+fmtSet(prev.first)+'</b> وخلصت <b>'+fmtSet(prev.last)+'</b>')+(prev.sets.length>2?(ENT?' • top weight '+prev.max+' kg':' • أعلى وزن '+prev.max+' كجم'):'')+'</div>';
       h+='</div>';
     });
-    h+='<button class="btn btn-neon btn-block" onclick="shareDay(\''+d.id+'\')">'+icon('share' in ICONS?'share':'bolt')+' '+(ENT?'Share today\u2019s workout':'مشاركة تمرينة اليوم')+'</button>';
-    h+='<button class="btn btn-ghost" onclick="go(\'daydetail\',{did:\''+d.id+'\'})">'+(ENT?'Edit exercises & sets':'تعديل التمارين والمجاميع')+'</button>';
-    h+='<button class="btn btn-ghost" onclick="go(\'home\')">'+icon('back')+' '+(ENT?'Home':'الرئيسية')+'</button>';
+    var _isDone=!!dayDoneId(d.id);
+    h+='<button class="btn '+( _isDone?'':'btn-neon')+' btn-block" '+( _isDone?'disabled style="opacity:.6"':'onclick="saveDay(\''+d.id+'\')"')+'>'+icon('check')+' '+(ENT?(_isDone?'Done \u2705 — great job!':'Save day'):( _isDone?'تم \u2705 — عاش!':'حفظ اليوم'))+'</button>';
+    h+='<div class="row"><button class="btn btn-sm" style="flex:1" onclick="shareDay(\''+d.id+'\')">'+icon('share' in ICONS?'share':'bolt')+' '+(ENT?'Share':'مشاركة')+'</button><button class="btn btn-sm" style="flex:1" onclick="go(\'daydetail\',{did:\''+d.id+'\'})">'+icon('pen')+' '+(ENT?'Edit':'تعديل')+'</button><button class="btn btn-sm" style="flex:1" onclick="go(\'home\')">'+icon('back')+' '+(ENT?'Home':'الرئيسية')+'</button></div>';
     a.innerHTML=h;attachRest(false);
   }
 
@@ -2102,8 +2108,9 @@ function renderAdmin(){
   h+='<div class="card"><h3>\u2B50 آراء المشتركين</h3><p class="sub">اللي تظهره هنا بيبان للعملاء في الرئيسية. لو فاضية مش هيظهر حاجة خالص.</p><div class="row"><input class="full" id="rvName" style="flex:1;max-width:140px" placeholder="الاسم"><input class="full" id="rvText" style="flex:2" placeholder="نص الرأي…"></div><button class="btn btn-neon btn-sm btn-block" onclick="revCreate()">نشر الرأي</button><div id="revList"><p class="muted">جاري التحميل…</p></div></div>';
   setTimeout(revAdminLoad,60);
   h+='<div class="card"><h3>أكواد الخصم</h3><p class="sub">كود يكتبه المستخدم في الاشتراك وياخد الخصم تلقائي. أكواد المسوقين عليها \uD83E\uDD1D.</p>'
-    +'<div class="row"><input class="full" id="cpCode" style="flex:1" placeholder="الكود (مثال: RAMADAN20)"><select id="cpType"><option value="pct">% نسبة</option><option value="flat">جنيه ثابت</option></select></div>'
-    +'<div class="row"><input class="w" style="flex:1" type="number" id="cpVal" placeholder="القيمة (20 = 20% أو 20 جنيه)"><select id="cpPlan" style="flex:1"><option value="both">كل الباقات</option><option value="m">شهري بس</option><option value="q">3 شهور بس</option><option value="y">سنوي بس</option></select><input class="w" style="flex:1" type="number" id="cpMax" placeholder="عدد مرات (فاضي = بلا حد)"></div>'
+    +'<div class="row"><input class="full" id="cpCode" style="flex:1" placeholder="الكود (مثال: RAMADAN20)"><select id="cpPlan" style="flex:1"><option value="both">كل الباقات</option><option value="m">شهري بس</option><option value="q">3 شهور بس</option><option value="y">سنوي بس</option></select></div>'
+    +'<div class="row"><input class="w" style="flex:1" type="number" id="cpPct" placeholder="% نسبة" oninput="discSync(1)"><input class="w" style="flex:1" type="number" id="cpFlat" placeholder="مبلغ ثابت" oninput="discSync(0)"><input class="w" style="flex:1" type="number" id="cpMax" placeholder="عدد مرات (فاضي = بلا حد)"></div>'
+    +'<p class="sub" id="discHint">اكتب النسبة أو المبلغ — التاني يتحسب تلقائي من سعر الباقة الشهرية.</p>'
     +'<button class="btn btn-neon btn-sm btn-block" onclick="couponCreate()">إنشاء الكود</button><div id="cpnList"><p class="muted">جاري التحميل…</p></div></div>';
   h+='<div class="card"><h3>💳 طلبات دفع PayPal</h3><div id="payList"><p class="muted">جاري التحميل…</p></div></div>';
  setTimeout(payAdminLoad,70);
@@ -2254,11 +2261,24 @@ function affilLoad(){
   });
  }).catch(function(){const b=document.getElementById('affList');if(b)b.innerHTML='<p class="muted">فشل تحميل المسوقين</p>';});
 }
+function discBase(){try{return isUSD()?usdPrices().m:egPrices().m;}catch(e){return 200;}}
+function discSync(fromPct){
+ try{
+  var base=discBase();if(!(base>0))return;
+  var pe=document.getElementById('cpPct'),fe=document.getElementById('cpFlat'),hint=document.getElementById('discHint');
+  var p=parseFloat(pe&&pe.value)||0,f=parseFloat(fe&&fe.value)||0;
+  if(fromPct){ if(p>0){f=Math.round(base*p/100*100)/100; if(fe)fe.value=f; if(hint)hint.textContent='خصم '+p+'% = '+f+' '+(isUSD()?'$':'جنيه')+' من '+base+' (الشهري)'; } }
+  else { if(f>0){p=Math.round(f/base*100*10)/10; if(pe)pe.value=p; if(hint)hint.textContent='خصم '+f+' = '+p+'% من '+base+' (الشهري)'; } }
+ }catch(e){}
+}
 function couponCreate(){
  const c=function(id){const e=document.getElementById(id);return e?e.value.trim():'';};
  const code=c('cpCode').toUpperCase().replace(/\s+/g,'');
- const val=parseFloat(c('cpVal')),typ=c('cpType')||'pct';
- if(!code||!(val>0))return alert('اكتب الكود والقيمة الأول');
+ var pct=parseFloat(c('cpPct'))||0,flat=parseFloat(c('cpFlat'))||0,typ='pct',val=0;
+ if(pct>0&&flat>0){typ='pct';val=pct;}
+ else if(pct>0){typ='pct';val=pct;}
+ else if(flat>0){typ='flat';val=flat;}
+ if(!code||!(val>0))return alert('اكتب الكود والقيمة الأول (نسبة أو مبلغ)');
  if(typ==='pct'&&val>=100)return alert('النسبة لازم أقل من 100');
  const mx=parseInt(c('cpMax'))||0;
  firebase.firestore().collection('coupons').doc(code).set({type:typ,value:val,plan:c('cpPlan')||'both',maxUses:mx,used:0,active:true,createdAt:Date.now()}).then(function(){alert('الكود '+code+' اتعمل ✅');adminLoad();}).catch(function(e){alert('فشل: '+(e&&e.message));});
@@ -2316,5 +2336,5 @@ function adminAct(uid,act){
   }
 })();
 </script>
-<script>window.__CF$cv$params={r:'a5f12482af9501cd',t:'MTc5NTQ0NzA2Ng==',u:'01a208fc0f2976c2bbb4aaee9915b625',ut:'1naj.O1m0LzN_U_V7_KoRhLztcYe_Glxhes6Hs39fV4-1795447066-1.2.1.1-NGkeUFEBao2EQNZNIqSXFOneIE_2SBNK9Z6IJOVXiaJ65UmNFUjl_Sx7hyKBo6Rr4EJqKZ95reBHBVzVy6CfUjw2W1yG17FyVNpNCjP5rsw',i:60};(function(){if(!document.body)return;var l=window.location,o;try{o=new URL(l.origin).origin}catch(e){try{o=new URL(new URL(l.href).origin).origin}catch(e){o=''}}var u='/cdn-cgi/challenge-platform/scripts/precursor/main.js?ray=a5f12482af9501cd',s=document.createElement('script');s.src=o?new URL(u,o).href:u;document.head.appendChild(s);})();</script><script>window.__CF$cv$params={r:'a5f652174e85e286',t:'MTc5NTUwMTM2MQ==',u:'01a20c388c8372909769a468545bab1f',ut:'wTVRfO_Bt_pO03_FHDejVOLQxyF0.kr8K772R9_iX_k-1795501362-1.2.1.1-j7WXVaQcUiFwW2xtatEXZdRR48IPgUYs83FWnvOw0iN.t880xNipqbBwKYADOwYX0cTRGEEXYvh6C_Icjqn87_ISuhUTbWYFmfNTva.8e4Y',i:60};(function(){if(!document.body)return;var l=window.location,o;try{o=new URL(l.origin).origin}catch(e){try{o=new URL(new URL(l.href).origin).origin}catch(e){o=''}}var u='/cdn-cgi/challenge-platform/scripts/precursor/main.js?ray=a5f652174e85e286',s=document.createElement('script');s.src=o?new URL(u,o).href:u;document.head.appendChild(s);})();</script></body>
+<script>window.__CF$cv$params={r:'a5f12482af9501cd',t:'MTc5NTQ0NzA2Ng==',u:'01a208fc0f2976c2bbb4aaee9915b625',ut:'1naj.O1m0LzN_U_V7_KoRhLztcYe_Glxhes6Hs39fV4-1795447066-1.2.1.1-NGkeUFEBao2EQNZNIqSXFOneIE_2SBNK9Z6IJOVXiaJ65UmNFUjl_Sx7hyKBo6Rr4EJqKZ95reBHBVzVy6CfUjw2W1yG17FyVNpNCjP5rsw',i:60};(function(){if(!document.body)return;var l=window.location,o;try{o=new URL(l.origin).origin}catch(e){try{o=new URL(new URL(l.href).origin).origin}catch(e){o=''}}var u='/cdn-cgi/challenge-platform/scripts/precursor/main.js?ray=a5f12482af9501cd',s=document.createElement('script');s.src=o?new URL(u,o).href:u;document.head.appendChild(s);})();</script><script>window.__CF$cv$params={r:'a5f9cce6784960c3',t:'MTc5NTUzNzg0OQ==',u:'01a20e654dca70f29427c2dc7127f2b2',ut:'fpbMA3sNCxgNxr4Rys.YM4EIVea6lbBsv7njWjSiDuc-1795537849-1.2.1.1-yEkNQQA1Q1uMslrHDm6zDVe8UJ_C5S7IrKB1NDqctD6IeSjwEmp30oioJ7fw8E7D9Jex65lKl0tlCAPUWCOrTYC0KGujQrzoklYASRm7tK0',i:60};(function(){if(!document.body)return;var l=window.location,o;try{o=new URL(l.origin).origin}catch(e){try{o=new URL(new URL(l.href).origin).origin}catch(e){o=''}}var u='/cdn-cgi/challenge-platform/scripts/precursor/main.js?ray=a5f9cce6784960c3',s=document.createElement('script');s.src=o?new URL(u,o).href:u;document.head.appendChild(s);})();</script></body>
 </html>
