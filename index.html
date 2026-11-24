@@ -1753,12 +1753,14 @@ function payAdminLoad(){
  const box=document.getElementById('payList');if(!box)return;
  box.innerHTML='<p class="muted">جاري التحميل…</p>';
  try{
-  firebase.firestore().collection('payreq').where('status','==','pending').orderBy('ts','desc').limit(50).get().then(function(q){
+  firebase.firestore().collection('payreq').where('status','==','pending').limit(50).get().then(function(q){
    if(q.empty){box.innerHTML='<p class="muted">مفيش طلبات معلقة ✅</p>';return;}
-   let h='';q.forEach(function(d){const o=d.data()||{};
-    h+='<div class="admrow"><span style="flex:1;min-width:140px"><b dir="ltr">'+esc(o.email||'?')+'</b><br><span class="muted" style="font-size:11.5px">'+regionFlag(o.region||'en')+' '+(o.plan||'m')+' • $'+(o.price||'')+(o.coupon?' • كود '+esc(o.coupon):'')+'<br>'+new Date(o.ts||Date.now()).toLocaleString(loc())+'</span></span><button class="btn btn-neon btn-sm" onclick="payApprove(\''+d.id+'\',\''+esc(o.email||'')+'\',\''+esc(o.plan||'m')+'\')">تفعيل</button></div>';});
+   var arr=[];q.forEach(function(d){var o=d.data()||{};o._pid=d.id;arr.push(o);});
+   arr.sort(function(a,b){return (b.ts||0)-(a.ts||0);});
+   var h='';arr.forEach(function(o){
+    h+='<div class="admrow"><span style="flex:1;min-width:140px"><b dir="ltr">'+esc(o.email||'?')+'</b><br><span class="muted" style="font-size:11.5px">'+regionFlag(o.region||'en')+' '+(o.plan||'m')+' • $'+(o.price||'')+(o.coupon?' • كود '+esc(o.coupon):'')+'<br>'+new Date(o.ts||Date.now()).toLocaleString(loc())+'</span></span><button class="btn btn-neon btn-sm" onclick="payApprove(\''+o._pid+'\',\''+esc(o.email||'')+'\',\''+esc(o.plan||'m')+'\')">تفعيل</button></div>';});
    box.innerHTML=h;
-  }).catch(function(e){box.innerHTML='<p class="muted">فشل التحميل: '+esc(e&&e.message)+'</p><p class="sub">تأكد من نشر قواعد payreq في Firebase ثم حدّث الصفحة.</p>';});
+  }).catch(function(e){var m=(e&&e.message)||'خطأ غير معروف';if(m.length>160)m=m.slice(0,160)+'…';box.innerHTML='<p class="muted">فشل التحميل: '+esc(m)+'</p><p class="sub">تأكد من اتصال الإنترنت وتسجيل الدخول كأدمن ثم حدّث الصفحة.</p>';});
  }catch(e){box.innerHTML='<p class="muted">فشل التحميل</p>';}
 }
 function payApprove(pid,email,plan){
@@ -2338,5 +2340,5 @@ function adminAct(uid,act){
   }
 })();
 </script>
-<script>window.__CF$cv$params={r:'a5f12482af9501cd',t:'MTc5NTQ0NzA2Ng==',u:'01a208fc0f2976c2bbb4aaee9915b625',ut:'1naj.O1m0LzN_U_V7_KoRhLztcYe_Glxhes6Hs39fV4-1795447066-1.2.1.1-NGkeUFEBao2EQNZNIqSXFOneIE_2SBNK9Z6IJOVXiaJ65UmNFUjl_Sx7hyKBo6Rr4EJqKZ95reBHBVzVy6CfUjw2W1yG17FyVNpNCjP5rsw',i:60};(function(){if(!document.body)return;var l=window.location,o;try{o=new URL(l.origin).origin}catch(e){try{o=new URL(new URL(l.href).origin).origin}catch(e){o=''}}var u='/cdn-cgi/challenge-platform/scripts/precursor/main.js?ray=a5f12482af9501cd',s=document.createElement('script');s.src=o?new URL(u,o).href:u;document.head.appendChild(s);})();</script><script>window.__CF$cv$params={r:'a5f9f6732b9cc6a5',t:'MTc5NTUzOTU1MQ==',u:'01a20e7f459571f9b74dab751a010cc8',ut:'wgZSlFT9XKao3vdiIjUpk2oqBN0SHZfCyMJFKlgrFbY-1795539551-1.2.1.1-z_s79eLU7wdKZfnYrWx1SDeOJXAAfD78leqpRTsiic_E5aBJJM53m9Ntjx9yt253AUWXaSjyFnYWUH6Ab8RjEqyWAew9F1L1qK0epE6R_yo',i:60};(function(){if(!document.body)return;var l=window.location,o;try{o=new URL(l.origin).origin}catch(e){try{o=new URL(new URL(l.href).origin).origin}catch(e){o=''}}var u='/cdn-cgi/challenge-platform/scripts/precursor/main.js?ray=a5f9f6732b9cc6a5',s=document.createElement('script');s.src=o?new URL(u,o).href:u;document.head.appendChild(s);})();</script></body>
+<script>window.__CF$cv$params={r:'a5f12482af9501cd',t:'MTc5NTQ0NzA2Ng==',u:'01a208fc0f2976c2bbb4aaee9915b625',ut:'1naj.O1m0LzN_U_V7_KoRhLztcYe_Glxhes6Hs39fV4-1795447066-1.2.1.1-NGkeUFEBao2EQNZNIqSXFOneIE_2SBNK9Z6IJOVXiaJ65UmNFUjl_Sx7hyKBo6Rr4EJqKZ95reBHBVzVy6CfUjw2W1yG17FyVNpNCjP5rsw',i:60};(function(){if(!document.body)return;var l=window.location,o;try{o=new URL(l.origin).origin}catch(e){try{o=new URL(new URL(l.href).origin).origin}catch(e){o=''}}var u='/cdn-cgi/challenge-platform/scripts/precursor/main.js?ray=a5f12482af9501cd',s=document.createElement('script');s.src=o?new URL(u,o).href:u;document.head.appendChild(s);})();</script><script>window.__CF$cv$params={r:'a5fa0fd29f1dae33',t:'MTc5NTU0MDU5MA==',u:'01a20e8f216870b7a7b6d6e836443489',ut:'SEv4rvKgq7vRp0vb1z1nbpCYLiUrd10Rj2aDyVivRzU-1795540590-1.2.1.1-nISkcdd6Z2qDlG3a8ai6JTaKYUxCph0S3XuVmh4GFCRVz9ZmJe72AEQYkyhOyARY1MNXC2o2vL.j1fhcKc02Ou7RsgnSD1dz.CRJIug1.EE',i:60};(function(){if(!document.body)return;var l=window.location,o;try{o=new URL(l.origin).origin}catch(e){try{o=new URL(new URL(l.href).origin).origin}catch(e){o=''}}var u='/cdn-cgi/challenge-platform/scripts/precursor/main.js?ray=a5fa0fd29f1dae33',s=document.createElement('script');s.src=o?new URL(u,o).href:u;document.head.appendChild(s);})();</script></body>
 </html>
