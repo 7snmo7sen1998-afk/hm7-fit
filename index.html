@@ -128,7 +128,7 @@ table.wt td{text-align:center;padding:7px 4px;border-bottom:1px solid rgba(255,2
 .statgrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-bottom:14px}.stat2{min-width:0;overflow:hidden;padding:10px 6px}.stat2 .k{font-size:10.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:block;line-height:1.6}.stat2 .n{font-size:20px}
 .stat2{display:flex;align-items:center;gap:9px;background:var(--card);border:1px solid var(--line);border-radius:18px;padding:11px 9px}
 .stat2 .n{font-size:19px;font-weight:900;line-height:1.1;white-space:nowrap}
-.stat2 .k{font-size:10px;color:var(--muted);font-weight:700;white-space:normal;overflow:visible;text-overflow:clip;line-height:1.5;word-break:break-word}
+.wmmark{position:fixed;top:46%;left:50%;transform:translate(-50%,-50%) rotate(-24deg);font-size:30px;font-weight:900;color:#fff;opacity:.055;pointer-events:none;user-select:none;z-index:5;white-space:nowrap;letter-spacing:1px}.stat2 .k{font-size:10px;color:var(--muted);font-weight:700;white-space:normal;overflow:visible;text-overflow:clip;line-height:1.5;word-break:break-word}
 .stat2.hl{border-color:var(--line2);box-shadow:0 0 20px rgba(0,230,118,.22)}
 .stat2.clickable{cursor:pointer}
 .workout-cta{position:relative;overflow:hidden;border-radius:22px;padding:20px 18px;margin-bottom:14px;border:1px solid var(--line2);background:linear-gradient(135deg,#03130b,#0a4a26 60%,#0d6b34);box-shadow:0 0 30px rgba(0,230,118,.25);display:flex;align-items:center;gap:12px;cursor:pointer}
@@ -643,6 +643,23 @@ function adaptForWomen(names,daysEx){
   return {names:names,daysEx:out};
 }
 
+/* ===== معالج بناء تمرين مخصص: عضلات ثم تمارين لكل يوم ===== */
+function custMuscles(){var a=[];for(var i=0;i<LIB.length;i++){if(LIB[i][0]==='عام')continue;a.push(LIB[i][0]);}return a;}
+function custDayName(d){return (myRegion()==='en'?'Day ':'يوم ')+(d+1);}
+function customNext(){if(view.wtpl!=='custom'){makeProgram(view.wtpl,view.wdays);return;}view.cw={step:1,mus:{},sel:{}};render();}
+function cwMus(d,m){var m2=view.cw.mus[d]||(view.cw.mus[d]=[]);var i=m2.indexOf(m);if(i>-1)m2.splice(i,1);else m2.push(m);save();render();}
+function cwBack(){if(view.cw&&view.cw.step>1)view.cw.step--;else view.cw=null;render();}
+function cwToEx(){var n=0;for(var d=0;d<view.wdays;d++)n+=(view.cw.mus[d]||[]).length;if(!n){noteSheet(myRegion()==='en'?'Pick at least one muscle':'اختار عضلة واحدة على الأقل');return;}view.cw.step=2;render();}
+function cwEx(d,nm){var o=view.cw.sel[d]||(view.cw.sel[d]={});if(o[nm])delete o[nm];else o[nm]=1;save();render();}
+function cwFind(nm){for(var i=0;i<LIB.length;i++){var a=LIB[i][1];for(var j=0;j<a.length;j++)if(a[j][0]===nm)return{m:LIB[i][0],d:a[j][1]};}return{m:'عام',d:''};}
+function cwBuild(){var EN=myRegion()==='en';var days=[];for(var d=0;d<view.wdays;d++){var exs=[];var o=view.cw.sel[d]||{};for(var nm in o){var f=cwFind(nm);exs.push({name:nm,muscle:f.m,desc:f.d,sets:mkSets(3),base:true});}days.push({id:uid(),name:custDayName(d),exercises:exs});}var tot=days.reduce(function(n,x){return n+x.exercises.length;},0);if(!tot){noteSheet(EN?'Pick at least one exercise':'اختار تمرين واحد على الأقل');return;}db.program={id:uid(),name:EN?'My Custom Program':'برنامجي الخاص',tpl:'custom',days:days};view.cw=null;view.wtpl='';save();go('workout');}
+function cwHTML(){var EN=myRegion()==='en';var h='<div class="card glow">';var step=view.cw.step;
+ if(step===1){h+='<h3>'+(EN?'Pick muscles for each day':'اختار عضلات كل يوم')+'</h3>';for(var d=0;d<view.wdays;d++){h+='<p class="sub" style="margin:8px 0 4px"><b>'+custDayName(d)+'</b></p><div class="chips">';var ms=custMuscles();for(var i=0;i<ms.length;i++){var m=ms[i];var on=(view.cw.mus[d]||[]).indexOf(m)>-1;h+='<button class="chip '+(on?'on':'')+'" onclick="cwMus('+d+',\''+m+'\')">'+(EN?musEN(m):m)+'</button>';}h+='</div>';}
+ h+='<div class="row"><button class="btn btn-sm" onclick="cwBack()">'+(EN?'Back':'رجوع')+'</button><button class="btn btn-neon btn-sm" style="flex:1" onclick="cwToEx()">'+(EN?'Next: pick exercises':'التالي: اختار التمارين')+'</button></div>';}
+ else{h+='<h3>'+(EN?'Pick exercises (3 sets each)':'اختار التمارين (3 مجموعات لكل تمرين)')+'</h3>';for(var d2=0;d2<view.wdays;d2++){var msel=view.cw.mus[d2]||[];if(!msel.length)continue;h+='<p class="sub" style="margin:8px 0 4px"><b>'+custDayName(d2)+'</b></p>';for(var k=0;k<msel.length;k++){var mm=msel[k];h+='<p class="sub" style="margin:6px 0 2px;color:var(--neon)">'+(EN?musEN(mm):mm)+'</p>';for(var j=0;j<LIB.length;j++){if(LIB[j][0]!==mm)continue;var arr=LIB[j][1];for(var t=0;t<arr.length;t++){var nm=arr[t][0];var on2=!!((view.cw.sel[d2]||{})[nm]);h+='<button class="pk" onclick="cwEx('+d2+',\''+nm+'\')"><span class="grow" style="text-align:right">'+(on2?'✅ ':'')+esc(EN?exEN(nm):nm)+'</span></button>';}}}}
+ h+='<div class="row"><button class="btn btn-sm" onclick="cwBack()">'+(EN?'Back':'رجوع')+'</button><button class="btn btn-neon btn-sm" style="flex:1" onclick="cwBuild()">'+(EN?'Build program':'اعمل البرنامج')+'</button></div>';}
+ return h+'</div>';}
+
 function makeProgram(tplKey,days){
   if(tplKey!=='custom'){
     const need={ppl:3,arnold:3,bro:3}[tplKey]||0;
@@ -999,7 +1016,7 @@ const I18N={
 'تخسيس':'Cut','ثبات':'Maintain','زيادة':'Bulk','زيادة عضلات ووزن صحي':'Gain muscle and healthy weight','نزول دهون مع الحفاظ على العضلات':'Lose fat while keeping muscle','تحافظ على وزنك وشكلك':'Keep your weight and shape',
 'نشاط قليل':'Light activity','نشاط متوسط':'Moderate activity','نشاط متوسط':'Moderate activity','نشاط عالي':'High activity',
 'خطوة 1 من 3':'Step 1 of 3','خطوة 2 من 3':'Step 2 of 3','خطوة 3 من 3':'Step 3 of 3','كام يوم':'How many days','هتتمرن':'will you train','في الأسبوع؟':'per week?','اختار أي رقم من 1 لـ 7 — وتقدر تغيره بعدين.':'Pick any number from 1 to 7 — you can change it later.','بيانات':'Info','جسمك':'Your body','عشان نحسب سعراتك صح.':'So we calculate your calories right.','إيه':'What is','هدفك؟':'your goal?','هنظبط سعراتك على أساسه.':'We will set your calories based on it.','دخل الوزن والطول والعمر عشان نكمل':'Enter weight, height and age to continue','يلا نبدأ':'Let\'s go','اعمل برنامجي':'Build my program',
-'أهلاً بيك في':'Welcome to','هديتك:':'Your gift:','يوم تجربة مجانية':'free trial days','جرّب كل حاجة: التمارين، الأوزان، التغذية والمزامنة.':'Try everything: workouts, weights, nutrition and sync.','يلا نبدأ التمرين':'Start training','شوف الباقات':'View plans','أوفر حتى 25 ديسمبر':'Deal until Dec 25','أوفر حتى 10 يناير':'Deal until Jan 10','عرض الافتتاح — ساري حتى 25 ديسمبر (الشهر بـ 50 بدل 200)':'Launch deal — valid until Dec 25 (month 50 instead of 200)','عرض السنة الجديدةة — ساري حتى 10 يناير':'New Year deal — valid until Jan 10',
+'أهلاً بيك في':'Welcome to','هديتك:':'Your gift:','يوم تجربة مجانية':'free trial days','أيام تجربة مجانية':'days of free trial','التمارين كاملة + يوم واحد من التغذية كمعاينة.':'Full workouts + one day of nutrition as a preview.','يلا نبدأ التمرين':'Start training','شوف الباقات':'View plans','أوفر حتى 5 يناير':'Deal until Jan 5','عرض الافتتاح — ساري حتى 5 يناير (الشهر بـ 99 بدل 350)':'Launch deal — valid until Jan 5 (month 99 instead of 350)',
 'جاهز تتمرن النهارده؟':'Ready to train today?','تمرين — دوس وابدأ التسجيل':'workout — tap and start logging','جاهز تبدأ':'Ready to start','رحلتك؟':'your journey?','اعمل برنامجك الأول واختار أيامك وتمارينك.':'Build your first program and pick your days and exercises.',
 'نظام تدريبي':'Training system','أيامك في الأسبوع':'Your days per week','تمارين مسجلة':'Logged exercises','الأنظمة التدريبية':'Training systems','كل نظام = جدول كامل. جواه أيام، وكل يوم تمارين وأدوار.':'Each system is a full schedule with days, exercises and sets.','نظام جديد':'New system','برنامج جديد من الأول':'Brand-new program','اختار نظامك':'Choose your system','اختار واحد من البرامج الجاهزة، أو ابنِ تمرينك بنفسك.':'Pick a ready program or build your own.',
 'سعرات اليوم':'Today\'s calories','محتاج تقريبًا':'You need about','قالب مقترح:':'Suggested template:','شوف وجباتك':'See your meals','كمّل بيانات جسمك عشان نحسب سعراتك.':'Complete your body data so we calculate your calories.','كمّل البيانات':'Complete data','كمّل وزنك وطولك وعمرك من «جسمي» عشان نحسب سعراتك.':'Complete your weight, height and age in "Body" so we calculate your calories.','كمّل وزنك وطولك وعمرك الأول':'Complete your weight, height and age first','سعراتك على حسب هدفك':'Your calories for your goal','احتياجك (':'Your need (','العجز الحالي':'Current deficit','الفائض الحالي +':'Current surplus +','ثبات بدون عجز':'Maintain, no deficit','هدفك الحالي:':'Your current goal:','التخسيس':'Cutting','الزيادة':'Gaining','الثبات':'Maintenance','سعراتك اليومية:':'Your daily calories:','سعراتك اليومية':'Daily calories','عايز تزوّد العجز أو تقلله؟ غيّره من صفحة':'Want a bigger or smaller deficit? Change it in','التغذية ← سعراتك اليومية':'Nutrition ← Daily calories','عايز تزوّد الفائض أو تقلله؟ غيّره من صفحة':'Want a bigger or smaller surplus? Change it in','قايمة المستوى':'Level menu','محسوبة بمعادلة Mifflin-St Jeor × نشاطك — أرقام استرشادية.':'Calculated with Mifflin-St Jeor × your activity — estimates.','الأرقام استرشادية (Mifflin-St Jeor). الحد الأدنى الآمن: 1500 للرجال و1200 للسيدات — تحت كده لازم متابعة دكتور.':'Estimates (Mifflin-St Jeor). Safe minimum: 1500 for men, 1200 for women — below that see a doctor.',
@@ -1014,7 +1031,7 @@ const I18N={
 'المشتركين':'Members','ابحث بإيميل المشترك…':'Search by member email…','سجّلوا آخر 7 أيام (':'Joined in the last 7 days (','هيخلصوا خلال 3 أيام (':'Ending within 3 days (','كلمهم قبل ما يمشوا':'message them before they leave','ينتهي':'ends','مفيش رقم':'No number','جهاز مشترك':'Shared device','مفيش نشاط جديد — كله تمام ✅':'No new activity — all good ✅','النشاط الأخير':'Recent activity','مسح حساب':'Delete account','هيتمسح ملفه وبيانات تمرينه من السحابة نهائي (مش هيقدر يدخل بحسابه القديم إلا لو سجل من جديد ويبدأ تجربة جديدة).':'Their file and training data will be permanently deleted from the cloud.','سجل العمولات المرتبط بإيميله هيفضل محفوظ.':'Commission records linked to their email stay saved.','تغيير حالة':'Change status','تفعيل 3 شهور لـ':'Activate 3 months for','تفعيل سنة لـ':'Activate 1 year for','تفعيل شهر لـ':'Activate 1 month for','تمديد أسبوع لـ':'Extend 1 week for',
 'رسايل الكابتن':'Coach messages','تمام، قريتها':'OK, read it','ثبّت التطبيق على شاشتك':'Install the app','تمام، ثبّته — اخفي الرسالة':'OK, installed — hide this','تقرير الأسبوع':'Weekly report','آخر وزن:':'Last weight:','نزلت':'Down','زدت':'Up','وزنك ثابت ✅':'Weight stable ✅','عاش يا وحش! قفلت هدف الأسبوع':'Beast! Weekly goal smashed','التزام الأسبوع:':'Week adherence:',
 'عن التطبيق':'About the app','HM Fit — نسخة السحابة. بياناتك بتتزامن تلقائيًا لما النت يرجع.':'HM Fit — cloud edition. Your data auto-syncs when you are back online.','لو شايف الرقم ده يبقى دي أحدث نسخة':'if you see this number, this is the latest version','اللغة / Language':'Language','اختار لغة التطبيق':'Choose app language',
-'برنامجك الخاص':'Your program','برنامجي':'My program','اقترح قالب مناسب':'Suggest a suitable template','اعمل البرنامج':'Build program','وتقدر تغيرها بعدين من المزيد.':'and you can change it later from More.','أيام بنظام':'days in system','أيام فاضية من اختيارك':'rest days of your choice','تمارين كمان…':'more exercises…','كود':'code','لسه مفيش اشتراكات بالكود ده':'No subscriptions with this code yet','اشتراك • مبيعات':'subscriptions • sales','جنيه • عمولة':'EGP • commission','المسوق':'Marketer','شغال (كود متابعة)':'active (tracking code)','شغال — الشهري بقى':'active — monthly is now','السنوي بقى':'yearly is now','مشترك ✅':'member ✅','منتهي':'Expired','الأوفر — أوفر من الشهري':'Best value — cheaper than monthly','الوسط — وفّر وجرّب براحتك':'Middle — save and try comfortably','بدل':'instead of',
+'برنامجك الخاص':'Your program','برنامجي':'My program','اقترح قالب مناسب':'Suggest a suitable template','اعمل البرنامج':'Build program','وتقدر تغيرها بعدين من المزيد.':'and you can change it later from More.','أيام بنظام':'days in system','أيام هتبنيها بنفسك':'days you build yourself','تمارين كمان…':'more exercises…','كود':'code','لسه مفيش اشتراكات بالكود ده':'No subscriptions with this code yet','اشتراك • مبيعات':'subscriptions • sales','جنيه • عمولة':'EGP • commission','المسوق':'Marketer','شغال (كود متابعة)':'active (tracking code)','شغال — الشهري بقى':'active — monthly is now','السنوي بقى':'yearly is now','مشترك ✅':'member ✅','منتهي':'Expired','الأوفر — أوفر من الشهري':'Best value — cheaper than monthly','الوسط — وفّر وجرّب براحتك':'Middle — save and try comfortably','بدل':'instead of',
 'صباح النشاط':'Good morning, energy','مساء القوة':'Good evening, strength','بطل':'Champ','وزن خفيف':'Light weight','سريع — دهون أعلى':'Fast — higher fat','عضل صافي':'Lean muscle','آمن':'Safe','عالي — لفترة قصيرة':'High — for a short time',
 'الأحد':'Sunday','الاثنين':'Monday','الثلاثاء':'Tuesday','الأربعاء':'Wednesday','الخميس':'Thursday','الجمعة':'Friday','السبت':'Saturday',
 'جنيه/شهر':'EGP/month',' جنيه':' EGP',' كجم':' kg',' سعرة':' kcal',' سم':' cm',' جم':' g',' كيلو':' kg',' سعرة)':' kcal)',' سعرة —':' kcal —',' سعرة •':' kcal •',' كجم •':' kg •',' كجم (':' kg (',' كجم</b>':' kg</b>',' جنيه (':' EGP (',' جنيه •':' EGP •',' أيام':' days',' يوم':' day',' يوم •':' day •',' يوم و':' day and',
@@ -1031,7 +1048,8 @@ const MSA={
 'عاش يا وحش! قفلت هدف الأسبوع':'أحسنت يا بطل! حققت هدف الأسبوع',
 'تمرين وتقفل هدفك — كمّل':'تمرين لتحقق هدفك — واصل',
 'اعمل برنامجك الأول واختار أيامك وتمارينك.':'أنشئ برنامجك الأول واختر أيامك وتمارينك.',
-'اعمل برنامجي':'أنشئ برنامجي',
+'اعمل برنامجي':'أنشئ برنامجي','أيام هتبنيها بنفسك':'أيام ستبنيها بنفسك',
+'التمارين كاملة + يوم واحد من التغذية كمعاينة.':'التمارين كاملة + يوم واحد من التغذية للمعاينة.','اختار عضلات وتمارين كل يوم بنفسك':'اختر عضلات وتمارين كل يوم بنفسك','اختار عضلات كل يوم':'اختر عضلات كل يوم','التالي: اختار التمارين':'التالي: اختر التمارين','اختار التمارين (3 مجموعات لكل تمرين)':'اختر التمارين (3 مجموعات لكل تمرين)','اعمل البرنامج':'أنشئ البرنامج','اختار تمرين واحد على الأقل':'اختر تمرينا واحدا على الأقل','اختار عضلة واحدة على الأقل':'اختر عضلة واحدة على الأقل','تجربتك كان فيها اليوم الأول كمعاينة. فعّل اشتراكك عشان تتفتح كل الوجبات والبدائل وحاسبة السعرات.':'كانت تجربتك تتضمن اليوم الأول للمعاينة. فعّل اشتراكك لفتح جميع الوجبات والبدائل وحاسبة السعرات.','فعّل اشتراكك عشان تتفتح.':'فعّل اشتراكك للفتح.','الطول والهدف والنشاط بيتفتحوا 24 ساعة مع كل تجديد اشتراك. لو فيه غلطة ابعتلنا واتساب وهنعدلهالك:':'يُفتح الطول والهدف والنشاط 24 ساعة مع كل تجديد اشتراك. إذا كان هناك خطأ راسلنا واتساب وسنعدّله لك:','اشتراكك اتفعل ✅':'تم تفعيل اشتراكك ✅','معاك 24 ساعة تحدّث قياساتك (الطول/الهدف/النشاط).':'لديك 24 ساعة لتحديث قياساتك (الطول/الهدف/النشاط).','حدّث دلوقتي':'حدّث الآن','اتفتح 24 ساعة ✅':'تم الفتح 24 ساعة ✅','فك القفل 24س':'فك القفل 24 ساعة','مقفول':'مغلق','مشترك من':'مشترك منذ',
 'نظام تدريبي':'برنامج تدريبي',
 'أيامك في الأسبوع':'أيام التدريب أسبوعيا',
 'شوف وجباتك':'اطّلع على وجباتك',
@@ -1084,7 +1102,7 @@ const MSA={
 'أهلاً بيك في':'أهلاً بك في',
 'يوم تجربة مجانية':'يوما تجريبيا مجانيا',
 'جرّب كل حاجة: التمارين، الأوزان، التغذية والمزامنة.':'جرّب كل شيء: التمارين والأوزان والتغذية والمزامنة.',
-'14 يوم مجاني':'14 يوما مجانيا',
+'7 أيام مجانية':'7 أيام مجانية',
 'الأسعار بتظهر جوه بعد الدخول — Prices appear inside after you enter':'تظهر الأسعار في الداخل بعد الدخول',
 'اختيار واحد ويتقفل على حسابك — one choice, locked to your account':'اختيار واحد يُحفظ في حسابك',
 'ابعت السكرين واتساب':'أرسل لقطة الشاشة عبر واتساب',
@@ -1218,7 +1236,7 @@ function swapFood(mi,ii){const m=view.nmeals[mi];if(!m)return;const it=m.items[i
 function closeSwap(){view.swapList=null;render();}
 function pickSwap(fi,side){const sl=view.swapList;if(!sl)return;view.nmeals[sl.mi].items[sl.ii]={fi:fi,side:side};view.swapList=null;save();render();}
 function suggestTpl(){const t=calcTDEE();if(!t)return alert('كمّل وزنك وطولك وعمرك الأول');let best=1500;for(let v=1200;v<=3500;v+=50){if(Math.abs(v-t)<=Math.abs(best-t))best=v;}view.ntpl=best;db.profile.tpl=best;db.profile.tplSet=true;buildMeals(best);save();render();}
-function setTpl(v){view.ntpl=+v;db.profile.tpl=+v;db.profile.tplSet=true;buildMeals(+v);save();render();}
+function setTpl(v){if(!calPaid()){noteSheet('للمشتركين فقط 🔒');return;}view.ntpl=+v;db.profile.tpl=+v;db.profile.tplSet=true;buildMeals(+v);save();render();}
 /* ============ جسمي + صور ============ */
 function dayCard(){const t=calcTDEE();const EN=myRegion()==='en';const g=db.profile.goal;
  const glbl=EN?GOALS_EN[g]:GOALS[g];
@@ -1227,20 +1245,20 @@ function dayCard(){const t=calcTDEE();const EN=myRegion()==='en';const g=db.prof
  const lvl=EN?(g==='lose'?'Deficit level:':g==='gain'?'Surplus level:':'Calorie level:'):('مستوى '+(g==='lose'?'\u0627\u0644\u0639\u062c\u0632':g==='gain'?'\u0627\u0644\u0632\u064a\u0627\u062f\u0629':'\u0627\u0644\u0633\u0639\u0631\u0627\u062a')+':');
  h+='<p class="sub" style="margin-top:8px">'+lvl+'</p><select class="full" onchange="setAdj(this.value)">'+adjOpts().map(function(o){return '<option value="'+o[0]+'" '+(curAdj()===o[0]?'selected':'')+'>'+(o[0]>0?'+':'')+o[0]+(EN?' kcal \u2014 ':' \u0633\u0639\u0631 \u2014 ')+o[1]+'</option>';}).join('')+'</select>';
  return h;}
-function renderCalBox(){const box=document.getElementById('calBox');if(!box)return;const b=calcBMR();if(!b){box.innerHTML='';return;}const act=num(db.profile.act)||1.55;const t=Math.round(b*act/10)*10;const g=db.profile.goal;const EN=myRegion()==='en';let btns='<div class="subtabs">';btns+='<button class="'+(g==='lose'?'on':'')+'" onclick="setGoalX(\'lose\')">'+(EN?'Cut':'تخسيس')+'</button>';btns+='<button class="'+(g==='same'?'on':'')+'" onclick="setGoalX(\'same\')">'+(EN?'Maintain':'ثبات')+'</button>';btns+='<button class="'+(g==='gain'?'on':'')+'" onclick="setGoalX(\'gain\')">'+(EN?'Bulk':'زيادة')+'</button>';btns+='</div>';const need=t+curAdj();
+function renderCalBox(){const box=document.getElementById('calBox');if(!box)return;if(!calPaid()){box.innerHTML=nutriMiniLock();return;}const b=calcBMR();if(!b){box.innerHTML='';return;}const act=num(db.profile.act)||1.55;const t=Math.round(b*act/10)*10;const g=db.profile.goal;const EN=myRegion()==='en';let btns='<div class="subtabs">';btns+='<button class="'+(g==='lose'?'on':'')+'" onclick="setGoalX(\'lose\')">'+(EN?'Cut':'تخسيس')+'</button>';btns+='<button class="'+(g==='same'?'on':'')+'" onclick="setGoalX(\'same\')">'+(EN?'Maintain':'ثبات')+'</button>';btns+='<button class="'+(g==='gain'?'on':'')+'" onclick="setGoalX(\'gain\')">'+(EN?'Bulk':'زيادة')+'</button>';btns+='</div>';const need=t+curAdj();
 const albl=EN?(g==='lose'?('Current deficit '+(-curAdj())+' kcal'):g==='gain'?('Current surplus +'+curAdj()+' kcal'):'Maintain, no deficit'):(g==='lose'?('العجز الحالي '+(-curAdj())+' سعرة'):g==='gain'?('الفائض الحالي +'+curAdj()+' سعرة'):'ثبات بدون عجز');const adjNote=EN?(g==='lose'?'\uD83D\uDCA1 Need a bigger or smaller deficit? Change it in <b>Nutrition \u2190 Daily calories</b>.':g==='gain'?'\uD83D\uDCA1 Need a bigger or smaller surplus? Change it in <b>Nutrition \u2190 Daily calories</b>.':''):(g==='lose'?'\uD83D\uDCA1 عايز تزوّد العجز أو تقلله؟ غيّره من صفحة <b>التغذية ← سعراتك اليومية</b> (قايمة المستوى).':g==='gain'?'\uD83D\uDCA1 عايز تزوّد الفائض أو تقلله؟ غيّره من صفحة <b>التغذية ← سعراتك اليومية</b> (قايمة المستوى).':'');let cur='';if(g==='lose')cur=EN?'<p class="sub">Your goal now: <b style="color:#fff">Cutting</b> — daily calories: <b style="color:#fff">'+need+'</b></p>':'<p class="sub">هدفك الحالي: <b style="color:#fff">التخسيس</b> — سعراتك اليومية: <b style="color:#fff">'+need+'</b></p>';else if(g==='gain')cur=EN?'<p class="sub">Your goal now: <b style="color:#fff">Bulking</b> — daily calories: <b style="color:#fff">'+need+'</b></p>':'<p class="sub">هدفك الحالي: <b style="color:#fff">الزيادة</b> — سعراتك اليومية: <b style="color:#fff">'+need+'</b></p>';else cur=EN?'<p class="sub">Your goal now: <b style="color:#fff">Maintain</b> — daily calories: <b style="color:#fff">'+need+'</b></p>':'<p class="sub">هدفك الحالي: <b style="color:#fff">الثبات</b> — سعراتك اليومية: <b style="color:#fff">'+need+'</b></p>';box.innerHTML=EN?'<div class="card glow" style="margin-top:10px"><h3>Calories for your goal</h3>':'<div class="card glow" style="margin-top:10px"><h3>سعراتك على حسب هدفك</h3><div class="kv"><span>'+(EN?'Your need':'احتياجك')+' ('+albl+')</span><b>'+need+(EN?' kcal':' سعرة')+'</b></div>'+adjNote+(EN?'<p class="sub" style="font-size:11px">Calculated with Mifflin-St Jeor × your activity — estimates.</p>':'<p class="sub" style="font-size:11px">محسوبة بمعادلة Mifflin-St Jeor × نشاطك — أرقام استرشادية.</p>')+btns+cur+'</div>';}
-function setGoalX(g){db.profile.goal=g;save();render();}
+function setGoalX(g){if(g!==db.profile.goal&&measLocked()){lockNote();return;}db.profile.goal=g;save();render();}
 function saveProfile(){
   const g=function(id){const e=document.getElementById(id);return e?e.value.trim():'';};
-  const p=db.profile;
+  const p=db.profile;const locked=measLocked();var skipLock=false;
   if(g('pWeight'))p.weight=g('pWeight');
-  if(g('pHeight'))p.height=g('pHeight');
+  if(g('pHeight')){if(locked&&p.height&&g('pHeight')!==String(p.height)){skipLock=true;}else p.height=g('pHeight');}
   if(g('pAge'))p.age=g('pAge');
   const pf=document.getElementById('pFat');if(pf)p.fat=pf.value.trim();
   view.editBase=false;
   const gd=document.getElementById('pGender');if(gd)p.gender=gd.value;
-  const ac=document.getElementById('pAct');if(ac)p.act=ac.value;
-  save();render();
+  const ac=document.getElementById('pAct');if(ac){if(locked&&p.act&&ac.value!==p.act){skipLock=true;}else p.act=ac.value;}
+  save();render();if(skipLock)lockNote();
 }
 function openPhoto(){const i=document.getElementById('photoInp');if(i)i.click();}
 function readPhoto(inp){
@@ -1345,6 +1363,7 @@ function render(){
     navOn('nav-home');
     const ti=todayIdx();
     let h=(fbOK&&fbUser?greetHTML()+ringHTML()+reviewsHTML():'')+installCard();
+    try{if(fbOK&&fbUser&&fbSub&&fbSub.actNote&&(db.profile.actNoteSeen||0)<fbSub.actNote){h+='<div class="card glow"><h3>'+(myRegion()==='en'?'Subscription activated \u2705':'اشتراكك اتفعل \u2705')+'</h3><p class="sub">'+(myRegion()==='en'?'You have 24h to update your measurements (height/goal/activity).':'معاك 24 ساعة تحدّث قياساتك (الطول/الهدف/النشاط).')+'</p><div class="row"><button class="btn btn-neon btn-sm" style="flex:1" onclick="actNoteGo()">'+(myRegion()==='en'?'Update now':'حدّث دلوقتي')+'</button><button class="btn btn-sm" onclick="actNoteHide()">'+(myRegion()==='en'?'Later':'بعدين')+'</button></div></div>';}}catch(e){}
     if(db.program&&db.program.days.length){
       var ni=nextDayIdx();if(ni<0)ni=0;
       const d=db.program.days[ni];
@@ -1363,7 +1382,7 @@ function render(){
       h+='<div class="item mainbtn" onclick="go(\'workout\')"><span class="thumb">'+icon('box')+'</span><span class="grow"><span class="nm">'+esc(p.name)+'</span><br><span class="meta">'+p.days.length+' يوم • '+p.days.reduce(function(n,d){return n+d.exercises.length;},0)+' تمرين</span></span><button class="ibtn danger" onclick="event.stopPropagation();resetProgram()">'+icon('trash')+'</button><button class="ibtn" onclick="event.stopPropagation();addDayHome()">'+icon('plus')+'</button><button class="ibtn" onclick="event.stopPropagation();go(\'workout\')">'+icon('pen')+'</button></div>';
       h+='<button class="btn btn-outline btn-block" onclick="resetProgram()">'+icon('plus')+' نظام جديد</button></div>';
     }
-    if(db.profile.nutrition){
+    if(db.profile.nutrition&&calPaid()){
       const t=calcTDEE();
       h+='<div class="card"><h3>سعرات اليوم</h3>'+(t?'<p class="sub">محتاج تقريبًا <b style="color:#fff">'+t+' سعرة</b> — قالب مقترح: <b style="color:#fff">'+nearestTpl(t)+'</b></p><button class="btn btn-sm" onclick="go(\'nutrition\')">'+icon('food')+' شوف وجباتك</button>':'<p class="sub">كمّل بيانات جسمك عشان نحسب سعراتك.</p><button class="btn btn-sm" onclick="go(\'body\')">'+icon('body')+' كمّل البيانات</button>')+'</div>';
     }
@@ -1381,13 +1400,13 @@ function render(){
         let h='<div class="section-head"><h2>'+(ENW2?'Choose your program':'اختار نظامك')+'</h2></div><p class="muted">'+(ENW2?'Pick a ready-made program, or build your own workout.':'اختار واحد من البرامج الجاهزة، أو ابنِ تمرينك بنفسك.')+'</p>';
         if(db.profile.gender==='f')h+=(ENW2?'<div class="card glow"><p class="sub">Women\u2019s programs auto-adjust: same core lifts plus extra glutes and upper-leg focus with higher frequency — research-based.</p></div>':'<div class="card glow"><p class="sub">\uD83D\uDC69 برامج البنات عندنا متظبطة تلقائي: نفس التمارين الأساسية + تركيز جلوتس ورجل أعلى وتردد أعلى — حسب الأبحاث.</p></div>');
         TPLS.forEach(function(t){const need=t.key==='ppl'||t.key==='arnold'||t.key==='bro'?(ENW2?' (needs at least 3 days)':' (يحتاج 3 أيام على الأقل'):'';h+='<div class="item mainbtn" onclick="view.wtpl=\''+t.key+'\';render()"><span class="thumb">'+icon('box')+'</span><span class="grow"><span class="nm">'+esc(t.name)+'</span><br><span class="meta">'+esc(tplName(t.key))+need+'</span></span><span class="ibtn" style="pointer-events:none">'+icon('play')+'</span></div>';});
-        h+='<div class="item mainbtn" onclick="view.wtpl=\'custom\';render()"><span class="thumb">'+icon('plus')+'</span><span class="grow"><span class="nm">'+(ENW2?'Build your own':'بناء تمرين بنفسك')+'</span><br><span class="meta">'+(ENW2?'Empty days you fill from the library':'أيام فاضية تملاها من المكتبة براحتك')+'</span></span><span class="ibtn" style="pointer-events:none">'+icon('play')+'</span></div>';
+        h+='<div class="item mainbtn" onclick="view.wtpl=\'custom\';render()"><span class="thumb">'+icon('plus')+'</span><span class="grow"><span class="nm">'+(ENW2?'Build your own':'بناء تمرين بنفسك')+'</span><br><span class="meta">'+(ENW2?'Pick muscles and exercises for each day':'اختار عضلات وتمارين كل يوم بنفسك')+'</span></span><span class="ibtn" style="pointer-events:none">'+icon('play')+'</span></div>';
         a.innerHTML=h;
       }else{
         const tn=view.wtpl==='custom'?(ENW2?'Your custom program':'برنامجك الخاص'):tplName(view.wtpl);
         let h='<div class="section-head"><h2>'+esc(tn)+'</h2></div><div class="card glow"><h3>'+(ENW2?'How many days will you train?':'هتتمرن كام يوم؟')+'</h3><div class="dchips">';
         for(let i=1;i<=7;i++)h+='<button class="dchip '+(view.wdays===i?'on':'')+'" onclick="view.wdays='+i+';save();render()">'+i+'</button>';
-        h+='</div><p class="sub">'+(ENW2?'Split across <b>'+view.wdays+'</b> '+(view.wdays===1?'day':'days')+' — you can change this later from More.':'هيتقسم على <b>'+view.wdays+'</b> '+(view.wtpl==='custom'?'أيام فاضية من اختيارك':'أيام بنظام '+esc(tn))+' — وتقدر تغيرها بعدين من المزيد.')+'</p><button class="btn btn-neon btn-block" onclick="makeProgram(\''+view.wtpl+'\','+view.wdays+')">'+icon('check')+' '+(ENW2?'Build program':'اعمل البرنامج')+'</button><button class="btn btn-sm" style="margin-top:8px" onclick="view.wtpl=\'\';render()">'+icon('back')+' '+(ENW2?'Change program':'غيّر النظام')+'</button></div>';
+        h+='</div><p class="sub">'+(ENW2?'Split across <b>'+view.wdays+'</b> '+(view.wdays===1?'day':'days')+' — you can change this later from More.':'هيتقسم على <b>'+view.wdays+'</b> '+(view.wtpl==='custom'?'أيام هتبنيها بنفسك':'أيام بنظام '+esc(tn))+' — وتقدر تغيرها بعدين من المزيد.')+'</p><button class="btn btn-neon btn-block" onclick="customNext()">'+icon('check')+' '+(view.wtpl==='custom'&&!view.cw?(ENW2?'Next':'التالي'):(ENW2?'Build program':'اعمل البرنامج'))+'</button>'+((view.wtpl==='custom'&&view.cw)?cwHTML():'')+'<button class="btn btn-sm" style="margin-top:8px" onclick="view.wtpl=\'\';render()">'+icon('back')+' '+(ENW2?'Change program':'غيّر النظام')+'</button></div>';
         a.innerHTML=h;
       }
     }else{
@@ -1505,16 +1524,18 @@ function render(){
 
   else if(v==='nutrition'){
     navOn('nav-more');
+    if(!nutriAllowed()){a.innerHTML=nutriLockHTML();}
+    else{
     const t=calcTDEE();
     if(view.ntpl==null)view.ntpl=(db.profile.tplSet&&db.profile.tpl)?db.profile.tpl:nearestTpl(t||2000);
     if(!view.nmeals)buildMeals(view.ntpl);
     const EN=myRegion()==='en';
     let opts='';for(let vv=1200;vv<=3500;vv+=50)opts+='<option value="'+vv+'" '+(view.ntpl===vv?'selected':'')+'>'+vv+(EN?' kcal':' سعرة')+'</option>';
-    let h='<div class="section-head"><h2>'+(EN?'Nutrition':'التغذية')+'</h2></div>';
-    h+='<div class="card glow"><h3>'+(EN?'Daily calories':'\u0633\u0639\u0631\u0627\u062a\u0643 \u0627\u0644\u064a\u0648\u0645\u064a\u0629')+'</h3>'+(t?dayCard():'<p class="sub">\u0643\u0645\u0651\u0644 \u0648\u0632\u0646\u0643 \u0648\u0637\u0648\u0644\u0643 \u0648\u0639\u0645\u0631\u0643 \u0645\u0646 \u00ab\u062c\u0633\u0645\u064a\u00bb \u0639\u0634\u0627\u0646 \u0646\u062d\u0633\u0628 \u0633\u0639\u0631\u0627\u062a\u0643.</p>')+'<p class="sub" style="font-size:11px">'+(EN?'Estimates (Mifflin-St Jeor). Safe minimum: 1500 for men, 1200 for women \u2014 below that see a doctor.':'\u0627\u0644\u0623\u0631\u0642\u0627\u0645 \u0627\u0633\u062a\u0631\u0634\u0627\u062f\u064a\u0629 (Mifflin-St Jeor). \u0627\u0644\u062d\u062f \u0627\u0644\u0623\u062f\u0646\u0649 \u0627\u0644\u0622\u0645\u0646: 1500 \u0644\u0644\u0631\u062c\u0627\u0644 \u06481200 \u0644\u0644\u0633\u064a\u062f\u0627\u062a \u2014 \u062a\u062d\u062a \u0643\u062f\u0647 \u0644\u0627\u0632\u0645 \u0645\u062a\u0627\u0628\u0639\u0629 \u062f\u0643\u062a\u0648\u0631.')+'</p></div>';
+    let h='<div class="section-head"><h2>'+(EN?'Nutrition':'التغذية')+'</h2></div>'+wmHTML();
+    h+='<div class="card glow"><h3>'+(EN?'Daily calories':'\u0633\u0639\u0631\u0627\u062a\u0643 \u0627\u0644\u064a\u0648\u0645\u064a\u0629')+'</h3>'+(t?(calPaid()?dayCard():'<p class="sub">'+(EN?'Day 1 preview \u2014 full details for members 🔒':'معاينة اليوم الأول \u2014 باقي التفاصيل للمشتركين 🔒')+'</p>'):'<p class="sub">\u0643\u0645\u0651\u0644 \u0648\u0632\u0646\u0643 \u0648\u0637\u0648\u0644\u0643 \u0648\u0639\u0645\u0631\u0643 \u0645\u0646 \u00ab\u062c\u0633\u0645\u064a\u00bb \u0639\u0634\u0627\u0646 \u0646\u062d\u0633\u0628 \u0633\u0639\u0631\u0627\u062a\u0643.</p>')+'<p class="sub" style="font-size:11px">'+(EN?'Estimates (Mifflin-St Jeor). Safe minimum: 1500 for men, 1200 for women \u2014 below that see a doctor.':'\u0627\u0644\u0623\u0631\u0642\u0627\u0645 \u0627\u0633\u062a\u0631\u0634\u0627\u062f\u064a\u0629 (Mifflin-St Jeor). \u0627\u0644\u062d\u062f \u0627\u0644\u0623\u062f\u0646\u0649 \u0627\u0644\u0622\u0645\u0646: 1500 \u0644\u0644\u0631\u062c\u0627\u0644 \u06481200 \u0644\u0644\u0633\u064a\u062f\u0627\u062a \u2014 \u062a\u062d\u062a \u0643\u062f\u0647 \u0644\u0627\u0632\u0645 \u0645\u062a\u0627\u0628\u0639\u0629 \u062f\u0643\u062a\u0648\u0631.')+'</p></div>';
     h+=EN?'<div class="card"><h3>Modern nutrition rules</h3><p class="sub">Protein <b>1.6-2.2 g per kg</b> of body weight daily (20-40 g per meal) - Fiber <b>25-30 g</b> daily - Fat <b>25-35%</b> of calories (olive oil / nuts / fish) - Less fried food, sweets and processed food - Drink water and sleep 7-8 hours</p></div>':'<div class="card"><h3>\u0642\u0648\u0627\u0639\u062f \u0627\u0644\u0623\u0643\u0644 \u0627\u0644\u062d\u062f\u064a\u062b\u0629</h3><p class="sub">\u0628\u0631\u0648\u062a\u064a\u0646 <b>1.6-2.2 \u062c\u0645 \u0644\u0643\u0644 \u0643\u062c\u0645</b> \u0645\u0646 \u0648\u0632\u0646\u0643 \u064a\u0648\u0645\u064a\u064b\u0627 (\u0645\u0648\u0632\u0639\u0629 20-40 \u062c\u0645 \u0641\u064a \u0627\u0644\u0648\u062c\u0628\u0629) - \u0623\u0644\u064a\u0627\u0641 <b>25-30 \u062c\u0645</b> \u064a\u0648\u0645\u064a\u064b\u0627 - \u062f\u0647\u0648\u0646 <b>25-35%<\/b> \u0645\u0646 \u0633\u0639\u0631\u0627\u062a\u0643 (\u0632\u064a\u062a \u0632\u064a\u062a\u0648\u0646/\u0645\u0643\u0633\u0631\u0627\u062a/\u0633\u0645\u0643) - \u0642\u0644\u0644 \u0627\u0644\u0645\u0642\u0644\u064a \u0648\u0627\u0644\u062d\u0644\u0648\u064a\u0627\u062a \u0648\u0627\u0644\u0645\u0633\u0643\u0631\u0627\u062a \u0648\u0627\u0644\u0645\u0635\u0646\u0651\u0639 - \u0627\u0634\u0631\u0628 \u0645\u064a\u0647 \u0648\u0646\u0627\u0645 7-8 \u0633\u0627\u0639\u0627\u062a<\/p><\/div>';
     if(!view.noFood)view.noFood=[];
-    h+='<div class="card"><h3>'+(EN?'Today\u2019s template: ':'قالب اليوم: ')+view.ntpl+(EN?' kcal':' سعرة')+'</h3><select class="full" onchange="setTpl(this.value)">'+opts+'</select>';
+    h+='<div class="card"><h3>'+(EN?'Today\u2019s template: ':'قالب اليوم: ')+view.ntpl+(EN?' kcal':' سعرة')+'</h3>'+(calPaid()?'<select class="full" onchange="setTpl(this.value)">'+opts+'</select>':'<p class="sub">'+(EN?'Template changes are for members 🔒':'تغيير القالب للمشتركين 🔒')+'</p>')+'';
     h+=(EN?'<div class="card"><h3>Any food allergy?</h3><p class="sub">Tick it and we will remove those foods from your meals and swaps.</p></div>':'<div class="card"><h3>عندك حساسية من حاجة؟</h3><p class="sub">علم عليها وهنشيل أي صنف فيه المشكلة دي من وجباتك وبدائلها.</p></div>')+'<div class="card"><div class="chips">'+Object.keys(FALLN).map(function(k){return '<button class="chip '+(view.noFood.indexOf(k)>-1?'on':'')+'" onclick="toggleNoFood(\''+k+'\')">'+FALLN[k]+'</button>';}).join('')+'</div></div>';
     let total=0;
     view.nmeals.forEach(function(m,mi){
@@ -1530,9 +1551,10 @@ function render(){
     if(view.swapList){const sl=view.swapList;
       h+=(function(){var EN2=myRegion()==='en';var title=EN2?('Alternatives for '+esc(FGROUPS[sl.g]||'')+' (~'+sl.cur+' kcal)'):('بدائل '+esc(FGROUPS[sl.g]||'')+' (~'+sl.cur+' سعرة)');if(view.noFood&&view.noFood.length)title+=EN2?' — filtered by your allergies':' — مفلترة من حساسيتك';var rows=sl.opts.length?sl.opts.map(function(o){var sub=EN2?('<small>protein ~'+o.p+'g • diff '+(o.kc>sl.cur?'+':'')+(o.kc-sl.cur)+'</small>'):('<small>بروتين ~'+o.p+'جم • فرق '+(o.kc>sl.cur?'+':'')+(o.kc-sl.cur)+'</small>');return '<button class="pk" onclick="pickSwap('+o.fi+',\''+o.side+'\')">'+icon('swap')+' '+esc(o.nm)+' <b>'+o.kc+'</b>'+sub+'</button>';}).join(''):(EN2?'<p class="muted" style="text-align:center">No suitable alternative in the same group</p>':'<p class="muted" style="text-align:center">مفيش بديل مناسب في نفس المجموعة</p>');return '<div id="swapSheet" style="position:fixed;inset:0;z-index:60;background:rgba(0,0,0,.7);display:flex;align-items:flex-end;justify-content:center" onclick="if(event.target===this)closeSwap()"><div class="sheet" style="max-height:80vh"><div class="top"><b>'+title+'</b><button class="ibtn" onclick="closeSwap()">'+icon('x')+'</button></div><div id="pkList">'+rows+'</div></div></div>';})();
     }
-    h+='<div class="card"><h3>'+(EN?'Calorie calculator \uD83E\uDDEE':'حاسبة السعرات \uD83E\uDDEE')+'</h3><p class="sub">'+(EN?'Food outside your plan? Type its name and weight in grams — we calculate it from our verified database.':'عندك أكل بره النظام؟ اكتب اسمه ووزنه بالجرام — نحسبه من قاعدة بياناتنا المدققة.')+'</p><div class="row"><input class="full" id="cfQ" list="cfList" style="flex:2" placeholder="'+(EN?'e.g. chicken breast, oats, banana':'مثال: رز مسلوق، فراخ، موز')+'"><datalist id="cfList">'+calcDB().map(function(x){return '<option value="'+esc(x[0])+'">';}).join('')+'</datalist><input class="w" type="number" inputmode="decimal" id="cfG" placeholder="'+(EN?'grams':'جرام')+'"></div><button class="btn btn-neon btn-sm btn-block" onclick="calcFood()">'+(EN?'Calculate calories':'احسب السعرات')+'</button><div id="cfRes"></div></div>';
+    var calcCard='<div class="card"><h3>'+(EN?'Calorie calculator \uD83E\uDDEE':'حاسبة السعرات \uD83E\uDDEE')+'</h3><p class="sub">'+(EN?'Food outside your plan? Type its name and weight in grams — we calculate it from our verified database.':'عندك أكل بره النظام؟ اكتب اسمه ووزنه بالجرام — نحسبه من قاعدة بياناتنا المدققة.')+'</p><div class="row"><input class="full" id="cfQ" list="cfList" style="flex:2" placeholder="'+(EN?'e.g. chicken breast, oats, banana':'مثال: رز مسلوق، فراخ، موز')+'"><datalist id="cfList">'+calcDB().map(function(x){return '<option value="'+esc(x[0])+'">';}).join('')+'</datalist><input class="w" type="number" inputmode="decimal" id="cfG" placeholder="'+(EN?'grams':'جرام')+'"></div><button class="btn btn-neon btn-sm btn-block" onclick="calcFood()">'+(EN?'Calculate calories':'احسب السعرات')+'</button><div id="cfRes"></div></div>';h+=calPaid()?calcCard:nutriMiniLock();
     h+='<button class="btn" onclick="go(\'more\')">'+icon('back')+' رجوع</button>';
     a.innerHTML=h;
+    }
   }
   else if(v==='library'){
     navOn('nav-more');
@@ -1553,7 +1575,7 @@ function render(){
     h+='<div class="side2"><div class="card" onclick="go(\'library\')"><span class="thumb">'+icon('book')+'</span><br><b>'+(ENM0?'Exercise library':'مكتبة التمارين')+'</b></div><div class="card" onclick="go(\'nutrition\')"><span class="thumb">'+icon('food')+'</span><br><b>'+(ENM0?'Nutrition':'التغذية')+'</b></div></div>';
     h+='<div class="card glow"><h3>'+(ENM?'My days & goal':'أيامي وهدفي')+'</h3><p class="sub">'+(ENM?'How many days will you train per week? Is your goal cutting, maintaining or bulking?':'كام تمرينة عايز تلعبها كل أسبوع؟ وهدفك تخسيس ولا ثبات ولا زيادة؟')+'</p><div class="row"><div class="field"><input type="number" id="eDays" value="'+esc(String(p.days||3))+'" placeholder="'+(ENM?'days/week':'أيام/أسبوع')+'"></div><select id="eGoal" style="flex:1"><option value="lose" '+(p.goal==='lose'?'selected':'')+'>'+(ENM?'Cut':'تخسيس')+'</option><option value="same" '+(p.goal==='same'?'selected':'')+'>'+(ENM?'Maintain':'ثبات')+'</option><option value="gain" '+(p.goal==='gain'?'selected':'')+'>'+(ENM?'Bulk':'زيادة')+'</option></select></div><button class="btn btn-neon btn-block" onclick="saveDaysGoal()">'+icon('check')+' '+(ENM?'Save goal':'حفظ الهدف')+'</button></div>';
     h+='<div class="card"><h3>'+(ENM?'My info':'بياناتك')+'</h3><div class="kv"><span>'+(ENM?'Program':'البرنامج')+'</span><b>'+(db.program?esc(db.program.name):'—')+'</b></div><div class="kv"><span>'+(ENM?'Training days':'أيام التمرين')+'</span><b>'+p.days+'</b></div><div class="kv"><span>'+(ENM?'Weight exercises':'تمارين الأوزان')+'</span><b>'+wc+'</b></div><div class="kv"><span>'+(ENM?'Measurements':'القياسات')+'</span><b>'+db.body.length+'</b></div><p class="sub">'+(ENM?'Your data is saved to your account and auto-syncs when you are back online — and works offline during workouts.':'بياناتك بتتحفظ على حسابك وبتتزامن تلقائيًا لما النت يرجع — وتشتغل أوفلاين في التمرين.')+'</p></div>';
-    if(typeof subState==='function'&&subState().k==='trial'){h+=(myRegion()==='en'?'<div class="card"><h3>My edition</h3><p class="sub"><span class="badge">'+regionFlag(myRegion())+' International</span> 14-day free trial</p></div>':'<div class="card"><h3>نسختك الحالية</h3><p class="sub"><span class="badge">'+regionFlag(myRegion())+' '+regionName(myRegion())+'</span> تجربة مجانية 14 يوم</p></div>');}
+    if(typeof subState==='function'&&subState().k==='trial'){h+=(myRegion()==='en'?'<div class="card"><h3>My edition</h3><p class="sub"><span class="badge">'+regionFlag(myRegion())+' International</span> 14-day free trial</p></div>':'<div class="card"><h3>نسختك الحالية</h3><p class="sub"><span class="badge">'+regionFlag(myRegion())+' '+regionName(myRegion())+'</span> تجربة مجانية 7 أيام</p></div>');}
     const DNAMES=['السبت','الأحد','الاثنين','الثلاثاء','الأربعاء','الخميس','الجمعة'];
     const ndays=(p.notif&&p.notif.days)||[0,1,2,3,4,5,6];
     h+=(myRegion()==='en'?'<div class="card glow"><div class="section-head" style="margin:0 0 4px"><h2>\u23F0 Workout reminder</h2>'+(p.notif.on?'<span class="badge">Active \u2705</span>':'<span class="badge">Paused</span>')+'</div><details class="howto" style="gap:10px"><summary class="sub" style="margin:0;cursor:pointer;list-style:none"><b style="color:#fff">How does it work? (tap to expand)</b></summary><div class="steps" style="flex:1;min-width:0;margin-top:8px"><ol class="steps" style="margin:0"><li><b>1</b><span>Tick your training days below</span></li><li><b>2</b><span>Pick a suitable time</span></li><li><b>3</b><span>Tap Add to calendar, open the downloaded file and choose Add to calendar</span></li><li><b>4</b><span>Your phone calendar reminds you every week \u2014 even with the app closed \uD83D\uDCAA</span></li></ol></div></details><p class="sub">My training days:</p><div class="dchips">'+DNAMES_EN.map(function(nm,i){return '<button class="dchip '+(ndays.indexOf(i)>-1?'on':'')+'" style="width:36px;height:36px;font-size:11px;padding:0" onclick="toggleNday('+i+')">'+nm+'</button>';}).join('')+'</div><div class="row"><input type="time" id="nTime" value="'+esc(p.notif.time||'20:00')+'" style="flex:1"><button class="btn btn-neon btn-sm" style="flex:1" onclick="calReminder()">'+icon('check')+' Add to calendar</button></div>'+(p.notif.on?'<p class="sub">Last reminder: '+ndays.length+' days at '+esc(p.notif.time)+'. If you change times, delete the old calendar event and add a new one.</p>':'')+'</div>':'<div class="card glow"><div class="section-head" style="margin:0 0 4px"><h2>\u23F0 تذكير التمرين</h2>'+(p.notif.on?'<span class="badge">شغال \u2705</span>':'<span class="badge">واقف</span>')+'</div><details class="howto" style="gap:10px"><summary class="sub" style="margin:0;cursor:pointer;list-style:none"><b style="color:#fff">إزاي بيشتغل؟ (اضغط للشرح)</b></summary><div class="steps" style="flex:1;min-width:0;margin-top:8px"><ol class="steps" style="margin:0"><li><b>1</b><span>علّم على أيام تمرينك تحت</span></li><li><b>2</b><span>اختار الساعة المناسبة</span></li><li><b>3</b><span>دوس «أضف للتقويم» وافتح الملف اللي نزل واختار «إضافة للتقويم»</span></li><li><b>4</b><span>تقويم موبايلك هيفكرك كل أسبوع — حتى لو التطبيق مقفول \uD83D\uDCAA</span></li></ol></div></details><p class="sub">أيام التمرين بتاعتي:</p><div class="dchips">'+DNAMES.map(function(nm,i){return '<button class="dchip '+(ndays.indexOf(i)>-1?'on':'')+'" style="width:36px;height:36px;font-size:11px;padding:0" onclick="toggleNday('+i+')">'+nm+'</button>';}).join('')+'</div><div class="row"><input type="time" id="nTime" value="'+esc(p.notif.time||'20:00')+'" style="flex:1"><button class="btn btn-neon btn-sm" style="flex:1" onclick="calReminder()">'+icon('check')+' أضف للتقويم</button></div>'+(p.notif.on?'<p class="sub">آخر مرة ضفت تذكير '+ndays.length+' أيام الساعة '+esc(p.notif.time)+'. لو غيرت المواعيد، امسح الحدث القديم من التقويم وضيف الجديد.</p>':'')+'</div>');
@@ -1571,7 +1593,7 @@ function nearestTpl(t){let best=1500;for(let v=1200;v<=3500;v+=50){if(Math.abs(v
 function saveDaysGoal(){
   const d=document.getElementById('eDays'),g=document.getElementById('eGoal');
   if(d&&+d.value>=1&&+d.value<=7)db.profile.days=parseInt(d.value);
-  if(g)db.profile.goal=g.value;
+  if(g&&g.value!==db.profile.goal){if(measLocked()){save();render();lockNote();return;}db.profile.goal=g.value;}
   save();render();
 }
 function toggleNday(i){const d=db.profile.notif.days||[0,1,2,3,4,5,6];const x=d.indexOf(i);if(x>-1)d.splice(x,1);else d.push(i);db.profile.notif.days=d;save();render();}
@@ -1627,12 +1649,11 @@ function renderLib(){
 /* ============ السحابة: دخول + اشتراكات + مزامنة (Firebase) ============ */
 const FB_CONFIG={apiKey:"AIzaSyCfQVpRyGBNpVXEqPqjO-zTNoshWplYAtg",authDomain:"hm-fit-63387.firebaseapp.com",projectId:"hm-fit-63387",storageBucket:"hm-fit-63387.firebasestorage.app",messagingSenderId:"198395939850",appId:"1:198395939850:web:b1f46bfb5b769147f663f3"};
 const ADMINS=["hmohsen282@gmail.com","7snmo7sen1998@gmail.com"];
-const TRIAL_DAYS=14, WAS_M=200, WAS_Y=2400;
-const P1_END=new Date(2026,11,25,23,59,59).getTime(), P2_END=new Date(2027,0,10,23,59,59).getTime();
+const TRIAL_DAYS=7, WAS_M=350, WAS_Y=4200;
+const P1_END=new Date(2027,0,5,23,59,59).getTime();
 function egPrices(){const n=Date.now();
- if(n<=P1_END)return{m:50,q:129,y:749,qw:600,tag:'\u23f3 عرض الافتتاح \u2014 ساري حتى 25 ديسمبر (الشهر بـ 50 بدل 200)'};
- if(n<=P2_END)return{m:99,q:249,y:999,qw:600,tag:'\u23f3 عرض السنة الجديدةة \u2014 ساري حتى 10 يناير'};
- return{m:200,q:600,y:2400,qw:600,tag:'الأسعار الأساسية'};}
+ if(n<=P1_END)return{m:99,q:249,y:999,qw:1050,tag:'\u23f3 عرض الافتتاح \u2014 ساري حتى 5 يناير (الشهر بـ 99 بدل 350)'};
+ return{m:350,q:899,y:3500,qw:1050,tag:'الأسعار الأساسية'};}
 function curPrices(){return isUSD()?usdPrices():egPrices();}
 function PRICE_M(){return curPrices().m;} function PRICE_Y(){return curPrices().y;}
 function pp(plan){const p=curPrices(),base=plan==='m'?p.m:(plan==='q'?p.q:p.y);const c=view.coupon;
@@ -1660,12 +1681,11 @@ function regionName(r){return r==='eg'?'مصر':(r==='ar'?'وطن عربي':'د�
 function regionFlag(r){return r==='eg'?'🇪🇬':(r==='ar'?'🌍':'🌎');}
 function setRegion(r){try{localStorage.setItem('hmfit_region',r);}catch(e){} try{if(!db.profile)db.profile=blankProfile();db.profile.region=r;db.profile.lang=(r==='en'?'en':'ar');save();}catch(e){} try{applyLang();applyDir();}catch(e){} render();try{if(myRegion()==='en')translateDOM(document.body);else if(myRegion()==='ar')msaDOM(document.body);}catch(e){}}
 function usdPrices(){const n=Date.now();
- if(n<=P1_END)return{m:4.99,q:11.99,y:29.99,mw:6.99,qw:16.99,yw:44.99,tag:'launch'};
- if(n<=P2_END)return{m:5.99,q:13.99,y:34.99,mw:6.99,qw:16.99,yw:44.99,tag:'newyear'};
- return{m:6.99,q:16.99,y:44.99,mw:6.99,qw:16.99,yw:44.99,tag:'base'};}
+ if(n<=P1_END)return{m:4.99,q:11.99,y:29.99,mw:8.99,qw:26.99,yw:107.99,tag:'launch'};
+ return{m:8.99,q:22.99,y:89.99,mw:8.99,qw:26.99,yw:107.99,tag:'base'};}
 function money(v){return isUSD()?'$'+v:v+' جنيه';}
 function wasM(){return isUSD()?usdPrices().mw:WAS_M;}
-function wasQ(){return isUSD()?usdPrices().qw:600;}
+function wasQ(){return isUSD()?usdPrices().qw:1050;}
 function wasY(){return isUSD()?usdPrices().yw:WAS_Y;}
 function loc(){return myRegion()==='en'?'en-US':'ar-EG';}
 function musEN(m){const M={'الكل':'All','صدر':'Chest','ضهر':'Back','أكتاف':'Shoulders','باي':'Biceps','تراي':'Triceps','رجل':'Legs','بطن':'Abs','ترابيس وساعد':'Traps & Forearms','كارديو':'Cardio'};return M[m]||m;}
@@ -1675,9 +1695,9 @@ function adjOptsEN(){const g=db.profile.goal;if(g==='lose')return[[-500,'Safe'],
 function renderGate(){
  const p=egPrices(),u=usdPrices();
  let h='<div class="section-head" style="margin:6px 0 8px"><h2>اختار نسختك <span style="font-size:12px;color:var(--muted)">Choose your edition</span></h2></div>';
- h+='<div class="card glow" style="border-color:var(--neon)" onclick="setRegion(\'eg\')"><div class="row" style="margin:0;align-items:center"><span style="font-size:34px">🇪🇬</span><span style="flex:1"><b>مصر — عربي</b><br><span class="sub">🎁 14 يوم مجاني • الدفع بالجنيه (فودافون كاش)</span></span><span class="offergo">‹</span></div></div>';
- h+='<div class="card" onclick="setRegion(\'ar\')"><div class="row" style="margin:0;align-items:center"><span style="font-size:34px">🌍</span><span style="flex:1"><b>وطن عربي خارج مصر — عربي</b><br><span class="sub">🎁 14 يوم مجاني • الدفع بالدولار (PayPal)</span></span><span class="offergo">‹</span></div></div>';
- h+='<div class="card" dir="ltr" style="text-align:left" onclick="setRegion(\'en\')"><div class="row" style="margin:0;align-items:center"><span style="font-size:34px">🌎</span><span style="flex:1"><b>International — English</b><br><span class="sub">🎁 14 days free • Pay in USD (PayPal)</span></span><span class="offergo">›</span></div></div>';
+ h+='<div class="card glow" style="border-color:var(--neon)" onclick="setRegion(\'eg\')"><div class="row" style="margin:0;align-items:center"><span style="font-size:34px">🇪🇬</span><span style="flex:1"><b>مصر — عربي</b><br><span class="sub">🎁 7 أيام مجانية • الدفع بالجنيه (فودافون كاش)</span></span><span class="offergo">‹</span></div></div>';
+ h+='<div class="card" onclick="setRegion(\'ar\')"><div class="row" style="margin:0;align-items:center"><span style="font-size:34px">🌍</span><span style="flex:1"><b>وطن عربي خارج مصر — عربي</b><br><span class="sub">🎁 7 أيام مجانية • الدفع بالدولار (PayPal)</span></span><span class="offergo">‹</span></div></div>';
+ h+='<div class="card" dir="ltr" style="text-align:left" onclick="setRegion(\'en\')"><div class="row" style="margin:0;align-items:center"><span style="font-size:34px">🌎</span><span style="flex:1"><b>International — English</b><br><span class="sub">🎁 7 days free • Pay in USD (PayPal)</span></span><span class="offergo">›</span></div></div>';
  h+='<p class="sub" style="text-align:center">الأسعار بتظهر جوه بعد الدخول — Prices appear inside after you enter<br>🔒 اختيار واحد ويتقفل على حسابك — one choice, locked to your account</p>';
  return h;}
 function renderPaywallUSD(full){
@@ -1771,7 +1791,7 @@ function payApprove(pid,email,plan){
    const doc=q.docs[0],o=doc.data()||{};
    const now=Date.now(),D=86400000;
    const days=plan==='y'?365:(plan==='q'?90:30);
-   const u={subUntil:Math.max(now,o.subUntil||0)+days*D,blocked:false};
+   const u={subUntil:Math.max(now,o.subUntil||0)+days*D,blocked:false,measUnlockUntil:now+24*3600000,actNote:now};
    firebase.firestore().collection('users').doc(doc.id).set(u,{merge:true}).then(function(){
     firebase.firestore().collection('payreq').doc(pid).set({status:'done',by:fbEmail(),doneAt:Date.now()},{merge:true}).then(function(){noteSheet('اتفعل ✅');try{payAdminLoad();adminLoad();}catch(e){}});
    }).catch(function(e){noteSheet('فشل: '+(e&&e.message));});
@@ -1830,6 +1850,21 @@ function subState(){
   return {k:'expired',label:'الاشتراك خلص'};
 }
 function canUse(){const k=subState().k;return k==='admin'||k==='sub'||k==='trial';}
+/* ===== بوابات الدفع: الحاسبة والتغذية ===== */
+function calPaid(){try{var k=subState().k;return k==='admin'||k==='sub';}catch(e){return false;}}
+function nutriAllowed(){try{var k=subState().k;if(k==='admin'||k==='sub')return true;if(k!=='trial')return false;var now=Date.now();if(!db.profile.nutriSeen){db.profile.nutriSeen=now;try{save();}catch(e){}return true;}return (now-db.profile.nutriSeen)<86400000;}catch(e){return true;}}
+function nutriLockHTML(){var EN=myRegion()==='en';return '<div class="section-head"><h2>'+(EN?'Nutrition':'التغذية')+'</h2></div><div class="card glow"><h3>'+(EN?'Full nutrition is for members 🔒':'التغذية الكاملة للمشتركين 🔒')+'</h3><p class="sub">'+(EN?'Your trial included day 1 as a preview. Activate to unlock all meal plans, swaps and the calorie calculator.':'تجربتك كان فيها اليوم الأول كمعاينة. فعّل اشتراكك عشان تتفتح كل الوجبات والبدائل وحاسبة السعرات.')+'</p><button class="btn btn-neon btn-block" onclick="go(\'plans\')">'+(EN?'View plans':'شوف الباقات')+'</button></div>';}
+function nutriMiniLock(){var EN=myRegion()==='en';return '<div class="card"><h3>'+(EN?'Members only 🔒':'للمشتركين فقط 🔒')+'</h3><p class="sub">'+(EN?'Activate your subscription to unlock this.':'فعّل اشتراكك عشان تتفتح.')+'</p><button class="btn btn-sm" onclick="go(\'plans\')">'+(EN?'View plans':'شوف الباقات')+'</button></div>';}
+function wmHTML(){var e='';try{e=fbEmail()||db.profile.wa||'';}catch(x){}return '<div class="wmmark">HM Fit'+(e?' • '+esc(e):'')+'</div>';}
+/* ===== قفل القياسات ===== */
+function measUnlockUntil(){try{if(!db.profile.measInit){db.profile.measInit=1;db.profile.measUnlockUntil=Date.now()+72*3600000;try{save();}catch(e){}}var a=db.profile.measUnlockUntil||0;var b=(typeof fbSub!=='undefined'&&fbSub&&fbSub.measUnlockUntil)||0;return Math.max(a,b);}catch(e){return 0;}}
+function measLocked(){try{return Date.now()>measUnlockUntil();}catch(e){return false;}}
+function lockNote(){var EN=myRegion()==='en';var wa='https://wa.me/'+PAY_WA+'?text='+encodeURIComponent((EN?'Measurements edit - my email: ':'تعديل قياسات — ايميلي: ')+(function(){try{return fbEmail()||'';}catch(e){return '';}})()+' - الخانة: - القيمة الصح: ');askSheet(EN?'Locked 🔒':'القياسات مقفولة 🔒',(EN?'Height, goal and activity open 24h with each renewal. If there is a mistake, message us on WhatsApp and we will fix it:':'الطول والهدف والنشاط بيتفتحوا 24 ساعة مع كل تجديد اشتراك. لو فيه غلطة ابعتلنا واتساب وهنعدلهالك:')+'<br><br><a class="btn btn-neon btn-sm" href="'+wa+'" target="_blank">واتساب</a>',EN?'OK':'تمام',false,function(){});}
+function adminUnlock(uid){firebase.firestore().collection('users').doc(uid).set({measUnlockUntil:Date.now()+24*3600000},{merge:true}).then(function(){noteSheet('اتفتح 24 ساعة ✅');adminLoad();}).catch(function(e){noteSheet('فشل: '+(e&&e.message));});}
+function admFileHTML(o){try{var d=o.createdAt?new Date(o.createdAt).toLocaleDateString('ar-EG'):'؟';var lk=(o.measUnlockUntil||0)>Date.now()?'مفتوح':'مقفول';var g=o.goal==='lose'?'تخسيس':(o.goal==='gain'?'زيادة':(o.goal==='same'?'ثبات':'؟'));return '<div class="row" style="margin-top:6px"><span class="badge">📁 مشترك من '+d+'</span><span class="badge">وزن '+(o.weight||'؟')+' • طول '+(o.height||'؟')+' • '+g+'</span><span class="badge">القفل: '+lk+'</span><button class="btn btn-sm" onclick="adminUnlock(\''+o._id+'\')">فك القفل 24س</button></div>';}catch(e){return '';}}
+function actNoteGo(){try{db.profile.actNoteSeen=Date.now();save();}catch(e){}go('body');}
+function actNoteHide(){try{db.profile.actNoteSeen=Date.now();save();render();}catch(e){}}
+
 function fbGate(){
   if(!fbOK)return null;
   if(!fbReady)return '<div class="card"><div class="empty">'+icon('gym')+'<br>جاري التحميل…</div></div>';
@@ -1896,7 +1931,7 @@ function queueCloud(){
 function pushCloud(cb){
   if(!fbOK||!fbUser){if(cb)cb(false);return;}
   try{
-    try{cloudDoc().set({email:fbUser.email,name:(db.profile.dname||fbUser.displayName||''),wa:(db.profile.wa||''),photo:(db.profile.photo||''),region:(db.profile.region||myRegion()||'eg')},{merge:true}).catch(function(){});}catch(e){}
+    try{cloudDoc().set({email:fbUser.email,name:(db.profile.dname||fbUser.displayName||''),wa:(db.profile.wa||''),photo:(db.profile.photo||''),region:(db.profile.region||myRegion()||'eg'),height:(db.profile.height||''),weight:(db.profile.weight||''),goal:(db.profile.goal||''),measUnlockUntil:(db.profile.measUnlockUntil||0)},{merge:true}).catch(function(){});}catch(e){}
     const snap=stripPhotos(JSON.parse(JSON.stringify(db)));
     cloudDoc().collection('data').doc('main').set({db:JSON.stringify(snap),updatedAt:Date.now()},{merge:true})
       .then(function(){_lastCloud=Date.now();try{localStorage.setItem('hmfit_sync',''+_lastCloud);}catch(e){}if(cb)cb(true);})
@@ -1911,7 +1946,7 @@ function loadCloud(done){
     let s=ds.exists?ds.data():null;
     if(!s||!s.createdAt){
       const now=Date.now();
-      s={email:fbUser.email,name:fbUser.displayName||'',createdAt:now,trialEnds:now+TRIAL_DAYS*86400000,subUntil:0,blocked:false,region:(db.profile.region||myRegion()||'eg')};
+      s={email:fbUser.email,name:fbUser.displayName||'',createdAt:now,trialEnds:now+TRIAL_DAYS*86400000,subUntil:0,blocked:false,region:(db.profile.region||myRegion()||'eg'),measUnlockUntil:now+72*3600000};
       ref.set(s,{merge:true}).catch(function(){});
     }
     fbSub=s;
@@ -2047,8 +2082,8 @@ function installCard(){
  return '<div class="card glow"><div class="section-head" style="margin:0 0 4px"><h2>\uD83D\uDCF2 ثبّت التطبيق على شاشتك</h2></div>'+steps+'<button class="btn btn-sm" onclick="try{db.profile.instHide=1;save();}catch(e){}render()">تمام، ثبّته — اخفي الرسالة</button></div>';
 }
 /* ---- رسالة الترحيب + الباقات ---- */
-function offerTitle(){const n=Date.now();const EN=myRegion&&myRegion()==='en';if(n<=P1_END)return EN?'\uD83D\uDD25 Deal ends Dec 25':'\uD83D\uDD25 أوفر حتى 25 ديسمبر';if(n<=P2_END)return EN?'\uD83D\uDD25 Deal ends Jan 10':'\uD83D\uDD25 أوفر حتى 10 يناير';return EN?'HM Fit Plans':'باقات HM Fit';}
-function offerEnd(){const n=Date.now();if(n<=P1_END)return P1_END;if(n<=P2_END)return P2_END;return 0;}
+function offerTitle(){const n=Date.now();const EN=myRegion&&myRegion()==='en';if(n<=P1_END)return EN?'\uD83D\uDD25 Deal ends Jan 5':'\uD83D\uDD25 أوفر حتى 5 يناير';return EN?'HM Fit Plans':'باقات HM Fit';}
+function offerEnd(){const n=Date.now();if(n<=P1_END)return P1_END;return 0;}
 function offCdHTML(){const end=offerEnd();const EN=myRegion&&myRegion()==='en';if(!end)return '<b>'+offerTitle()+'</b>';return '<b>'+offerTitle()+'</b><br><span class="badge" style="margin-top:6px;font-size:14px">\u23F3 '+(EN?'':'باقي ')+'<span class="offcd" data-end="'+end+'">…</span>'+(EN?' left':'')+'</span>';}
 function fmtLeft(ms){if(ms<0)ms=0;const s=Math.floor(ms/1000);const d=Math.floor(s/86400),h=Math.floor(s%86400/3600),m=Math.floor(s%3600/60),ss=s%60;const p=function(x){return (x<10?'0':'')+x;};if(myRegion&&myRegion()==='en')return (d>0?d+'d ':'')+p(h)+':'+p(m)+':'+p(ss);return (d>0?d+' يوم و':'')+p(h)+':'+p(m)+':'+p(ss);}
 function updateOffCd(){let exp=false;document.querySelectorAll('.offcd').forEach(function(el){const left=+el.dataset.end-Date.now();if(left<=0){exp=true;return;}el.textContent=fmtLeft(left);});if(exp)try{render();}catch(e){}}
@@ -2057,7 +2092,7 @@ function welcomeCard(){
  const p=curPrices();
  return '<div class="wmodal" id="wmodal"><div class="sheet"><img src="hm-logo-192.png" style="width:84px;height:84px;border-radius:22px" alt="HM Fit">'
  +'<h2 style="margin:8px 0 2px">أهلاً بيك في <i style="color:var(--neon);font-style:normal">HM Fit</i> \uD83D\uDCAA</h2>'
- +'<p class="sub">هديتك: <b style="color:#fff">'+TRIAL_DAYS+' يوم تجربة مجانية</b> — جرّب كل حاجة: التمارين، الأوزان، التغذية والمزامنة.</p>'
+ +'<p class="sub">هديتك: <b style="color:#fff">'+TRIAL_DAYS+' أيام تجربة مجانية</b> — التمارين كاملة + يوم واحد من التغذية كمعاينة.</p>'
  +'<p class="sub">'+offCdHTML()+'</p>'
  +'<div class="paybox hot"><b>شهري — '+money(p.m)+'</b>'+(p.m<wasM()?' <s class="muted">'+money(wasM())+'</s>':'')+'</div>'
  +'<div class="paybox"><b>3 شهور — '+money(p.q)+'</b>'+(p.q<wasQ()?' <s class="muted">'+money(wasQ())+'</s>':'')+'</div>'
@@ -2080,7 +2115,7 @@ function welcomeCardEN(){
  const p=curPrices();
  return '<div class="wmodal" id="wmodal"><div class="sheet"><img src="hm-logo-192.png" style="width:84px;height:84px;border-radius:22px" alt="HM Fit">'
  +'<h2 style="margin:8px 0 2px">Welcome to <i style="color:var(--neon);font-style:normal">HM Fit</i> \uD83D\uDCAA</h2>'
- +'<p class="sub">Your gift: <b style="color:#fff">14 days free</b> — try everything: workouts, weights, nutrition and sync.</p>'
+ +'<p class="sub">Your gift: <b style="color:#fff">7 days free</b> — full workouts + one day of nutrition as a preview.</p>'
  +'<p class="sub">'+offCdHTML()+'</p>'
  +'<div class="paybox hot"><b>Monthly — $'+p.m+'</b>'+(p.m<wasM()?' <s class="muted">was $'+wasM()+'</s>':'')+'</div>'
  +'<div class="paybox"><b>3 months — $'+p.q+'</b>'+(p.q<wasQ()?' <s class="muted">was $'+wasQ()+'</s>':'')+'</div>'
@@ -2192,7 +2227,7 @@ function adminFilter(){
     const id=o._id,pk=planOf(o);
     const isActive=(pk.k==='m'||pk.k==='q'||pk.k==='y'||pk.k==='trial');
     const pill=isActive?'<span class="badge" style="background:rgba(0,230,118,.18);border:1px solid var(--neon);color:#c9f5da">نشط</span>':(pk.k==='blocked'?'<span class="badge" style="background:rgba(255,80,80,.15);border:1px solid #ff5252;color:#ffb4b4">موقوف</span>':'<span class="badge" style="background:rgba(255,255,255,.06);color:var(--muted)">منتهي</span>');
-    return '<div class="admrow" style="display:block"><div class="row" style="margin:0;align-items:center"><img src="'+esc(o.photo||'hm-logo-192.png')+'" style="width:46px;height:46px;border-radius:50%;object-fit:cover;border:2px solid var(--line2);background:#111" onerror="this.remove()"><span class="grow" style="flex:1;min-width:120px"><b style="font-size:13px">'+esc(o.email||'؟')+'</b><br><span class="muted" style="font-size:11.5px">'+regionFlag(o.region||'eg')+' '+esc(o.name||'')+' • '+esc(admStatus(o))+(sharedDev(o)?' جهاز مشترك':'')+(o.wa?' • <span dir="ltr">'+esc(o.wa)+'</span>':'')+'</span></span>'+(o.wa?'<a class="btn btn-sm" style="background:#25D366;border:0;color:#04120a;font-weight:900" href="'+waLink(o.wa)+'" target="_blank">واتساب</a>':'')+'</div>'
+    return '<div class="admrow" style="display:block"><div class="row" style="margin:0;align-items:center"><img src="'+esc(o.photo||'hm-logo-192.png')+'" style="width:46px;height:46px;border-radius:50%;object-fit:cover;border:2px solid var(--line2);background:#111" onerror="this.remove()"><span class="grow" style="flex:1;min-width:120px"><b style="font-size:13px">'+esc(o.email||'؟')+'</b><br><span class="muted" style="font-size:11.5px">'+regionFlag(o.region||'eg')+' '+esc(o.name||'')+' • '+esc(admStatus(o))+(sharedDev(o)?' جهاز مشترك':'')+(o.wa?' • <span dir="ltr">'+esc(o.wa)+'</span>':'')+'</span></span>'+(o.wa?'<a class="btn btn-sm" style="background:#25D366;border:0;color:#04120a;font-weight:900" href="'+waLink(o.wa)+'" target="_blank">واتساب</a>':'')+'</div>'+admFileHTML(o)
     +'<div class="row" style="align-items:center">'+pill+'<span class="badge">'+pk.label+'</span></div>'
     +'<div class="row"><select class="w actsel" data-uid="'+id+'" style="flex:2;min-height:40px"><option value="week">تمديد أسبوع</option><option value="month" selected>تفعيل شهر</option><option value="quarter">تفعيل 3 شهور</option><option value="year">تفعيل سنة</option></select><button class="btn btn-neon btn-sm" style="flex:1" onclick="adminActGo(this)">تنفيذ</button></div>'
     +'<div class="row"><button class="btn btn-sm" style="flex:1" onclick="adminAct(\''+id+'\',\'block\')">'+(o.blocked?'فك الوقف':'وقف')+'</button><button class="btn btn-sm btn-danger" style="flex:1" onclick="adminDelUser(\''+id+'\',\''+esc(o.email||'')+'\')">مسح الحساب</button></div></div>';
@@ -2312,7 +2347,7 @@ function adminAct(uid,act){
     if(act==='quarter')u={subUntil:Math.max(now,o.subUntil||0)+90*D,blocked:false};
     if(act==='year')u={subUntil:Math.max(now,o.subUntil||0)+365*D,blocked:false};
     if(act==='week')u={subUntil:Math.max(now,o.subUntil||0)+7*D,blocked:false};
-    if(act==='block')u={blocked:!o.blocked};
+    if(act==='block')u={blocked:!o.blocked};else{u.measUnlockUntil=now+24*3600000;u.actNote=now;}
     const label=act==='month'?'تفعيل شهر لـ ':act==='quarter'?'تفعيل 3 شهور لـ ':act==='year'?'تفعيل سنة لـ ':act==='week'?'تمديد أسبوع لـ ':'تغيير حالة ';
     _sheetFn=function(){ref.set(u,{merge:true}).then(function(){adminLoad();}).catch(function(e){noteSheet('فشل: '+(e&&e.message));});};
     askSheet('تأكيد','هل '+label+'<b>'+esc(o.email||uid)+'</b>؟','تأكيد',act==='block',function(){ref.set(u,{merge:true}).then(function(){adminLoad();}).catch(function(e){noteSheet('فشل: '+(e&&e.message));});});
@@ -2340,5 +2375,5 @@ function adminAct(uid,act){
   }
 })();
 </script>
-<script>window.__CF$cv$params={r:'a5f12482af9501cd',t:'MTc5NTQ0NzA2Ng==',u:'01a208fc0f2976c2bbb4aaee9915b625',ut:'1naj.O1m0LzN_U_V7_KoRhLztcYe_Glxhes6Hs39fV4-1795447066-1.2.1.1-NGkeUFEBao2EQNZNIqSXFOneIE_2SBNK9Z6IJOVXiaJ65UmNFUjl_Sx7hyKBo6Rr4EJqKZ95reBHBVzVy6CfUjw2W1yG17FyVNpNCjP5rsw',i:60};(function(){if(!document.body)return;var l=window.location,o;try{o=new URL(l.origin).origin}catch(e){try{o=new URL(new URL(l.href).origin).origin}catch(e){o=''}}var u='/cdn-cgi/challenge-platform/scripts/precursor/main.js?ray=a5f12482af9501cd',s=document.createElement('script');s.src=o?new URL(u,o).href:u;document.head.appendChild(s);})();</script><script>window.__CF$cv$params={r:'a5fa0fd29f1dae33',t:'MTc5NTU0MDU5MA==',u:'01a20e8f216870b7a7b6d6e836443489',ut:'SEv4rvKgq7vRp0vb1z1nbpCYLiUrd10Rj2aDyVivRzU-1795540590-1.2.1.1-nISkcdd6Z2qDlG3a8ai6JTaKYUxCph0S3XuVmh4GFCRVz9ZmJe72AEQYkyhOyARY1MNXC2o2vL.j1fhcKc02Ou7RsgnSD1dz.CRJIug1.EE',i:60};(function(){if(!document.body)return;var l=window.location,o;try{o=new URL(l.origin).origin}catch(e){try{o=new URL(new URL(l.href).origin).origin}catch(e){o=''}}var u='/cdn-cgi/challenge-platform/scripts/precursor/main.js?ray=a5fa0fd29f1dae33',s=document.createElement('script');s.src=o?new URL(u,o).href:u;document.head.appendChild(s);})();</script></body>
+<script>window.__CF$cv$params={r:'a5f12482af9501cd',t:'MTc5NTQ0NzA2Ng==',u:'01a208fc0f2976c2bbb4aaee9915b625',ut:'1naj.O1m0LzN_U_V7_KoRhLztcYe_Glxhes6Hs39fV4-1795447066-1.2.1.1-NGkeUFEBao2EQNZNIqSXFOneIE_2SBNK9Z6IJOVXiaJ65UmNFUjl_Sx7hyKBo6Rr4EJqKZ95reBHBVzVy6CfUjw2W1yG17FyVNpNCjP5rsw',i:60};(function(){if(!document.body)return;var l=window.location,o;try{o=new URL(l.origin).origin}catch(e){try{o=new URL(new URL(l.href).origin).origin}catch(e){o=''}}var u='/cdn-cgi/challenge-platform/scripts/precursor/main.js?ray=a5f12482af9501cd',s=document.createElement('script');s.src=o?new URL(u,o).href:u;document.head.appendChild(s);})();</script><script>window.__CF$cv$params={r:'a5fc89739bc7e23c',t:'MTc5NTU2NjU0Mw==',u:'01a2101b264d750a8ce52c8e637224fc',ut:'qrDZqr2UvlRDul5VCq3bCTWo5RnRSlXSDWx3_hyfmQk-1795566544-1.2.1.1-US6tuoHi72VifXbc3oA9X3oZllep3ELbVA_NM92GfQH0EBIhCfhfAJiV0WsCVpiowyMr9HupE7hx4H2YRm.7n_cgYXOEYY1qSJgJkdKL1l0',i:60};(function(){if(!document.body)return;var l=window.location,o;try{o=new URL(l.origin).origin}catch(e){try{o=new URL(new URL(l.href).origin).origin}catch(e){o=''}}var u='/cdn-cgi/challenge-platform/scripts/precursor/main.js?ray=a5fc89739bc7e23c',s=document.createElement('script');s.src=o?new URL(u,o).href:u;document.head.appendChild(s);})();</script></body>
 </html>
