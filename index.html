@@ -316,7 +316,7 @@ function go(name,extra){view.name=name;if(extra)for(const k in extra)view[k]=ext
 function updateBadge(){const el=document.getElementById('goalBadge');if(el)el.innerHTML=icon('bolt')+' '+(GOALS[db.profile.goal]||'');
  try{const nm=document.getElementById('nav-more');if(nm){nm.innerHTML=nm.innerHTML.replace(/<span class="adot"><\/span>/g,'');if(anncUnseen()&&view.name!=='more')nm.innerHTML+='<span class="adot"></span>';}}catch(e){}}
 function anncUnseen(){try{return !!(view.annc&&view.annc.msg&&(view.annc.ts>+(localStorage.getItem('hmfit_annc_seen')||0)));}catch(e){return false;}}
-function anncSeen(){try{if(view.annc)localStorage.setItem('hmfit_annc_seen',''+(view.annc.ts||Date.now()));}catch(e){}updateBadge();render();}
+function anncSeen(){try{if(view.annc){localStorage.setItem('hmfit_annc_seen',''+(view.annc.ts||Date.now()));try{if(fbOK&&fbUser)firebase.firestore().collection('anncReads').add({ts:view.annc.ts||0,email:fbUser.email||'',uid:fbUser.uid,at:Date.now()});}catch(e){}}}catch(e){}updateBadge();render();}
 function dateKey(t){const d=t?new Date(t):new Date();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');}
 function dayDoneId(did){try{var dd=(db.program&&db.program.doneDays)||{};return dd[did]||0;}catch(e){return 0;}}
 function markDayDone(did){try{if(!db.program)return;db.program.doneDays=db.program.doneDays||{};db.program.doneDays[did]=Date.now();db.program.lastDid=did;db.program.lastDate=dateKey();save();}catch(e){}}
@@ -1820,6 +1820,7 @@ function fbInit(){
   if(!fbOK){fbReady=true;render();return;}
   try{
     firebase.auth().onAuthStateChanged(function(u){onFbUser(u);});
+    try{firebase.auth().getRedirectResult().then(function(r){if(r&&r.user)onFbUser(r.user);}).catch(function(){});}catch(e){}
     if(navigator.onLine===false){fbReady=true;render();}
     setTimeout(function(){if(!fbReady){fbReady=true;render();}},6000);
   }catch(e){fbReady=true;render();}
@@ -1843,8 +1844,12 @@ function onFbUser(u){
 function googleLogin(){
   if(!fbOK)return alert('مفيش إنترنت — الدخول بجوجل محتاج نت أول مرة');
   try{
-    const p=new firebase.auth.GoogleAuthProvider();
-    firebase.auth().signInWithPopup(p).catch(function(e){alert('الدخول فشل: '+(e&&e.message));});
+    var p=new firebase.auth.GoogleAuthProvider();
+    firebase.auth().signInWithPopup(p).catch(function(e){
+      var m=''+((e&&e.code)||'');
+      if(m.indexOf('popup')>-1||m.indexOf('blocked')>-1||m.indexOf('closed')>-1){try{firebase.auth().signInWithRedirect(p);}catch(x){alert('الدخول فشل: '+(e&&e.message));}return;}
+      alert('الدخول فشل: '+(e&&e.message));
+    });
   }catch(e){alert('الدخول فشل');}
 }
 function fbLogout(){if(!fbOK)return;askSheet('تسجيل خروج؟','هتخرج من حسابك على الجهاز ده. بياناتك محفوظة في السحابة وهرجع لما تدخل تاني.','خروج',false,function(){doFbLogout();});}
@@ -2148,8 +2153,8 @@ function plansCardEN(){
 function renderAdmin(){
   if(!isAdmin())return '<div class="card"><div class="empty">ل للأدمن بس.</div></div>';
   let h='<div class="section-head"><h2>لوحة الأدمن</h2><span class="badge">تحكم كامل</span></div>';
-  h+='<div class="card"><h3>رسالة جماعية \uD83D\uDCE9</h3><div class="row"><textarea class="full" id="anncIn" rows="1" style="flex:1;text-align:right;min-height:44px" placeholder="اكتب رسالة لكل المشتركين…"></textarea></div><div class="row"><button class="btn btn-neon btn-sm" style="flex:1" onclick="sendAnnc()">إرسال</button><button class="btn btn-sm" onclick="clearAnnc()">مسح</button></div><div id="anncCur"><p class="muted">جاري التحميل…</p></div></div>';
-  setTimeout(anncAdminLoad,50);
+  h+='<div class="card"><h3>رسالة جماعية \uD83D\uDCE9</h3><div class="row"><textarea class="full" id="anncIn" rows="1" style="flex:1;text-align:right;min-height:44px" placeholder="اكتب رسالة لكل المشتركين…"></textarea></div><div class="row"><button class="btn btn-neon btn-sm" style="flex:1" onclick="sendAnnc()">إرسال</button><button class="btn btn-sm" onclick="clearAnnc()">مسح</button></div><div id="anncCur"><p class="muted">جاري التحميل…</p></div><div id="anncReads"><p class="muted"></p></div></div>';
+  setTimeout(anncAdminLoad,50);setTimeout(anncReadsLoad,60);
   h+='<div class="card"><h3>\uD83E\uDD1D المسوقين (أفلييت)</h3><p class="sub">كود لكل مسوق: خصم للمشتري + عمولة تتحسب تلقائي.</p>'
     +'<div class="row"><input class="full" id="afName" style="flex:1" placeholder="اسم المسوق (مثال: كوتش أشرف)"><input class="full" id="afCode" style="flex:1;max-width:130px" placeholder="الكود"></div>'
     +'<div class="row"><select id="afPlan" style="flex:1" onchange="afSync(1)"><option value="m">شهري بس</option><option value="q">3 شهور بس</option><option value="y">سنوي بس</option></select></div><div class="row"><input class="w" style="flex:1" type="number" id="afDisc" value="0" placeholder="خصم % (حد أقصى 20)" oninput="afSync(1)"><input class="w" style="flex:1" type="number" id="afFlat" placeholder="خصم بالجنيه" oninput="afSync(0)"></div><div class="row"><input class="w" style="flex:1" type="number" id="afRate" value="15" placeholder="عمولة % (حد أقصى 30)" oninput="afSync(1)"><input class="w" style="flex:1" type="number" id="afAmt" placeholder="عمولة بالجنيه" oninput="afSync(0)"></div><p class="sub" id="afHint"></p><div class="row"><button class="btn btn-neon btn-sm" style="flex:1" onclick="affilCreate()">إضافة مسوق</button></div><div id="affList"><p class="muted">جاري التحميل…</p></div></div>';
@@ -2257,6 +2262,7 @@ function doSendAnnc(){
 function clearAnnc(){
  firebase.firestore().collection('annc').doc('live').delete().then(function(){noteSheet('اتمسحت');anncAdminLoad();}).catch(function(e){noteSheet('فشل: '+(e&&e.message));});
 }
+function anncReadsLoad(){var box=document.getElementById('anncReads');if(!box)return;try{firebase.firestore().collection('anncReads').orderBy('at','desc').limit(200).get().then(function(q){var n=0,last=0,seen={};q.forEach(function(d){var o=d.data()||{};if(o.uid&&!seen[o.uid]){seen[o.uid]=1;n++;}if(o.at>last)last=o.at;});box.innerHTML='<p class="sub">👁️ شافها '+n+' مشترك'+(last?' • آخر قراءة '+new Date(last).toLocaleDateString('ar-EG'):'')+'</p>';}).catch(function(){box.innerHTML='';});}catch(e){box.innerHTML='';}}
 function anncAdminLoad(){
  const box=document.getElementById('anncCur');if(!box)return;
  firebase.firestore().collection('annc').doc('live').get().then(function(d){
@@ -2392,5 +2398,5 @@ function adminAct(uid,act){
   }
 })();
 </script>
-<script>window.__CF$cv$params={r:'a5f12482af9501cd',t:'MTc5NTQ0NzA2Ng==',u:'01a208fc0f2976c2bbb4aaee9915b625',ut:'1naj.O1m0LzN_U_V7_KoRhLztcYe_Glxhes6Hs39fV4-1795447066-1.2.1.1-NGkeUFEBao2EQNZNIqSXFOneIE_2SBNK9Z6IJOVXiaJ65UmNFUjl_Sx7hyKBo6Rr4EJqKZ95reBHBVzVy6CfUjw2W1yG17FyVNpNCjP5rsw',i:60};(function(){if(!document.body)return;var l=window.location,o;try{o=new URL(l.origin).origin}catch(e){try{o=new URL(new URL(l.href).origin).origin}catch(e){o=''}}var u='/cdn-cgi/challenge-platform/scripts/precursor/main.js?ray=a5f12482af9501cd',s=document.createElement('script');s.src=o?new URL(u,o).href:u;document.head.appendChild(s);})();</script><script>window.__CF$cv$params={r:'a5fd81dffddaace6',t:'MTc5NTU3NjcxOQ==',u:'01a210b669b3759d9ffe159bc4f159f4',ut:'x7f55hpYy6059K7Z5THbiGDJec6GlC_Lc_9_TxEqXU8-1795576719-1.2.1.1-tjWFix_gI4Je9w4SSw4LpIofMbod6iGQK95lVYx7ioFxooV5YKwVdUT0a_X2rMmUEKsJ03lKGZbRSaYSr001FYwXFhJahQrV69ccsHsO3eQ',i:60};(function(){if(!document.body)return;var l=window.location,o;try{o=new URL(l.origin).origin}catch(e){try{o=new URL(new URL(l.href).origin).origin}catch(e){o=''}}var u='/cdn-cgi/challenge-platform/scripts/precursor/main.js?ray=a5fd81dffddaace6',s=document.createElement('script');s.src=o?new URL(u,o).href:u;document.head.appendChild(s);})();</script></body>
+<script>window.__CF$cv$params={r:'a5f12482af9501cd',t:'MTc5NTQ0NzA2Ng==',u:'01a208fc0f2976c2bbb4aaee9915b625',ut:'1naj.O1m0LzN_U_V7_KoRhLztcYe_Glxhes6Hs39fV4-1795447066-1.2.1.1-NGkeUFEBao2EQNZNIqSXFOneIE_2SBNK9Z6IJOVXiaJ65UmNFUjl_Sx7hyKBo6Rr4EJqKZ95reBHBVzVy6CfUjw2W1yG17FyVNpNCjP5rsw',i:60};(function(){if(!document.body)return;var l=window.location,o;try{o=new URL(l.origin).origin}catch(e){try{o=new URL(new URL(l.href).origin).origin}catch(e){o=''}}var u='/cdn-cgi/challenge-platform/scripts/precursor/main.js?ray=a5f12482af9501cd',s=document.createElement('script');s.src=o?new URL(u,o).href:u;document.head.appendChild(s);})();</script><script>window.__CF$cv$params={r:'a5fddb34cf96e1f0',t:'MTc5NTU4MDM3OA==',u:'01a210ee3ec37185b9e666c2d3c80288',ut:'MVArc0ChSpaBQJ9Qv5hr37S8J7kDn.hjAuUbnA1KQUI-1795580378-1.2.1.1-MC8KBh2GNUUnlM7T_F9GS9y862wY7W_sPC6OQjGTcIGuey9NQicefxqj.BpMFUZ1F5IgnQHosBLFj6P.pbUyQr.6fL84CiM53Urt2UmwdUI',i:60};(function(){if(!document.body)return;var l=window.location,o;try{o=new URL(l.origin).origin}catch(e){try{o=new URL(new URL(l.href).origin).origin}catch(e){o=''}}var u='/cdn-cgi/challenge-platform/scripts/precursor/main.js?ray=a5fddb34cf96e1f0',s=document.createElement('script');s.src=o?new URL(u,o).href:u;document.head.appendChild(s);})();</script></body>
 </html>
