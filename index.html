@@ -530,7 +530,7 @@ const SWAPS={
 'باي كابل':['باي هامر','باي دمبل بالتبادل','باي تركيز'],
 'باي تركيز':['باي بريتشر','باي مقعد مائل','باي كابل'],
 'باي مقعد مائل':['باي دمبل بالتبادل','باي تركيز','باي كابل'],
-'تراي حبل':['تراي بار كابل','تراي جهاز','تراي خلف الرأس بالكابل'],
+'تراي حبل':['تراي بار كابل','تراي جهاز','تراي خلف الرأس بالكابل','كيك باك','ديبس مقعد'],
 'تراي بار كابل':['تراي حبل','تراي جهاز','كيك باك','تراي خلف الرأس بالكابل'],
 'تراي جهاز':['تراي حبل','تراي بار كابل'],
 'تراي خلف الرأس دمبل':['سكال كراشر','تراي حبل'],
@@ -544,7 +544,7 @@ const SWAPS={
 'ليج بريس':['هاك سكوات','سكوات بار','لانجز دمبل'],
 'لانجز دمبل':['بلغاري سبليت سكوات','ليج بريس','هاك سكوات'],
 'بلغاري سبليت سكوات':['لانجز دمبل','هاك سكوات','ليج بريس'],
-'ليج اكستنشن':['هاك سكوات','ليج بريس'],
+'ليج اكستنشن':['هاك سكوات','ليج بريس','بلغاري سبليت سكوات','لانجز دمبل'],
 'ليج كيرل جلوس':['ليج كيرل نائم','رومانيان ديدلفت'],
 'ليج كيرل نائم':['ليج كيرل جلوس','رومانيان ديدلفت'],
 'رومانيان ديدلفت':['ليج كيرل جلوس','هيب ثرست'],
@@ -1423,7 +1423,7 @@ function render(){
       let h='<div class="section-head"><h2>'+esc(db.program.name)+'</h2><span class="badge">'+esc(tplName(db.program.tpl))+'</span></div>';
       db.program.days.forEach(function(d,di){
         h+='<div class="card"><div class="row"><span class="thumb" style="width:40px;height:40px">'+icon('gym')+'</span><b style="flex:1">'+esc(d.name)+'</b><button class="ibtn" onclick="renameDay(\''+d.id+'\')">'+icon('pen')+'</button></div><p class="sub">'+d.exercises.length+' '+(ENW2?'exercises':'تمرين')+(di===todayIdx()?(ENW2?' • <b style="color:var(--neon2)">today\u2019s workout</b>':' • <b style="color:var(--neon2)">ده تمرين النهارده</b>'):'')+'</p>';
-        d.exercises.slice(0,4).forEach(function(e){h+='<div class="logline">• <b>'+esc(myRegion()==='en'?exEN(e.name):e.name)+'</b> <span class="muted">'+e.sets.map(function(s){return esc(s.w||'—')+'×'+esc(s.r||'—');}).join(' | ')+'</span></div>';});
+        d.exercises.slice(0,4).forEach(function(e){h+='<div class="logline">• <b>'+esc(myRegion()==='en'?exEN(e.name):e.name)+'</b></div>';});
         if(d.exercises.length>4)h+='<p class="muted">+ '+(d.exercises.length-4)+(ENW2?' more exercises…':' تمارين كمان…')+'</p>';
         h+='<div class="row"><button class="btn btn-neon btn-sm" style="flex:1" onclick="go(\'trainday\',{did:\''+d.id+'\'})">'+icon('play')+' '+(ENW2?'Train this day':'اتمرن اليوم ده')+'</button><button class="btn btn-ghost btn-sm" style="flex:1" onclick="go(\'daydetail\',{did:\''+d.id+'\'})">'+icon('pen')+' '+(ENW2?'Edit':'تعديل')+'</button></div></div>';
       });
@@ -1504,7 +1504,7 @@ function render(){
       if(!keys.length)h+='<div class="card"><div class="empty">'+icon('scale')+'<br>'+(ENW?'No weights logged yet.<br>Tap Workout and pick from the library or today\u2019s session.':'لسه مسجلتش أوزان.<br>دوس «تمرين» واختار من المكتبة أو من تمرين اليوم.')+'</div></div>';
       keys.forEach(function(n){
         const ss=sessionsOf(n),l=ss[0];
-        h+='<div class="item mainbtn" onclick="view.wex=\''+esc(n)+'\';render()"><span class="thumb">'+icon('scale')+'</span><span class="grow"><span class="nm" dir="ltr" style="text-align:right">'+esc(exEN(n))+'</span><br><span class="meta">'+(l?((ENW?'Last time ('+sessLabel(l)+'): top '+l.max+' kg • ':'آخر مرة ('+sessLabel(l)+'): أعلى '+l.max+' كجم • ')):'')+ss.length+' '+(ENW?(ss.length===1?'session':'sessions'):(ss.length===1?'جلسة':'جلسات'))+(prOf(n)>0?(ENW?' • best '+prOf(n)+' kg':' • أحسن '+prOf(n)+' كجم'):'')+'</span></span></div>';
+        h+='<div class="item mainbtn" onclick="view.wex=\''+esc(n)+'\';render()">'+exThumb(n)+'<span class="grow"><span class="nm" dir="ltr" style="text-align:right">'+esc(exEN(n))+'</span><br><span class="meta">'+(l?((ENW?'Last time ('+sessLabel(l)+'): top '+l.max+' kg • ':'آخر مرة ('+sessLabel(l)+'): أعلى '+l.max+' كجم • ')):'')+ss.length+' '+(ENW?(ss.length===1?'session':'sessions'):(ss.length===1?'جلسة':'جلسات'))+(prOf(n)>0?(ENW?' • best '+prOf(n)+' kg':' • أحسن '+prOf(n)+' كجم'):'')+'</span></span></div>';
       });
     }
     a.innerHTML=h;
@@ -1587,7 +1587,7 @@ function render(){
     try{anncRefresh();}catch(e){}
     h+=supCardHTML();
     h+='<div class="side2"><div class="card" onclick="go(\'library\')"><span class="thumb">'+icon('book')+'</span><br><b>'+(ENM0?'Exercise library':'مكتبة التمارين')+'</b></div><div class="card" onclick="go(\'nutrition\')"><span class="thumb">'+icon('food')+'</span><br><b>'+(ENM0?'Nutrition':'التغذية')+'</b></div></div>';
-    h+='<div class="side2"><div class="card" onclick="go(\'faq\')"><span class="thumb">❓</span><br><b>'+(ENM0?'FAQ — common questions':'أسئلة شائعة')+'</b></div>'+supCardMini()+ '</div>';
+    h+='<div class="card" onclick="go(\'faq\')"><div class="row" style="margin:0;align-items:center"><span class="thumb">❓</span><span style="flex:1"><b>'+(ENM0?'FAQ — common questions':'أسئلة شائعة')+'</b><br><span class="sub">'+(ENM0?'How to subscribe, nutrition, locked measurements…':'إزاي تشترك، التغذية، القياسات المقفولة…')+'</span></span><span class="offergo">‹</span></div></div>';
     h+='<div class="card glow"><h3>'+(ENM?'My days & goal':'أيامي وهدفي')+'</h3><p class="sub">'+(ENM?'How many days will you train per week? Is your goal cutting, maintaining or bulking?':'كام تمرينة عايز تلعبها كل أسبوع؟ وهدفك تخسيس ولا ثبات ولا زيادة؟')+'</p><div class="row"><div class="field"><input type="number" id="eDays" value="'+esc(String(p.days||3))+'" placeholder="'+(ENM?'days/week':'أيام/أسبوع')+'"></div><select id="eGoal" style="flex:1"><option value="lose" '+(p.goal==='lose'?'selected':'')+'>'+(ENM?'Cut':'تخسيس')+'</option><option value="same" '+(p.goal==='same'?'selected':'')+'>'+(ENM?'Maintain':'ثبات')+'</option><option value="gain" '+(p.goal==='gain'?'selected':'')+'>'+(ENM?'Bulk':'زيادة')+'</option></select></div><button class="btn btn-neon btn-block" onclick="saveDaysGoal()">'+icon('check')+' '+(ENM?'Save goal':'حفظ الهدف')+'</button></div>';
     h+='<div class="card"><h3>'+(ENM?'My info':'بياناتك')+'</h3><div class="kv"><span>'+(ENM?'Program':'البرنامج')+'</span><b>'+(db.program?esc(db.program.name):'—')+'</b></div><div class="kv"><span>'+(ENM?'Training days':'أيام التمرين')+'</span><b>'+p.days+'</b></div><div class="kv"><span>'+(ENM?'Weight exercises':'تمارين الأوزان')+'</span><b>'+wc+'</b></div><div class="kv"><span>'+(ENM?'Measurements':'القياسات')+'</span><b>'+db.body.length+'</b></div><p class="sub">'+(ENM?'Your data is saved to your account and auto-syncs when you are back online — and works offline during workouts.':'بياناتك بتتحفظ على حسابك وبتتزامن تلقائيًا لما النت يرجع — وتشتغل أوفلاين في التمرين.')+'</p></div>';
     if(typeof subState==='function'&&subState().k==='trial'){h+=(myRegion()==='en'?'<div class="card"><h3>My edition</h3><p class="sub"><span class="badge">'+regionFlag(myRegion())+' International</span> 7-day free trial</p></div>':'<div class="card"><h3>نسختك الحالية</h3><p class="sub"><span class="badge">'+regionFlag(myRegion())+' '+regionName(myRegion())+'</span> تجربة مجانية 7 أيام</p></div>');}
@@ -2457,5 +2457,5 @@ function startGo(i){if(i===0)goCoach();else if(i===1)go('body');else go('nutriti
   }
 })();
 </script>
-<script>window.__CF$cv$params={r:'a604bbfe4e9f9851',t:'MTc5NTY1MjUwMA==',u:'01a2153abce7768591e9c1183dfed4e2',ut:'oUjRYrdJUTJC.UfMQaqZmVd84aUf25IelaI4BVW2Ass-1795652500-1.2.1.1-vmtyB_PCiQjLgln0rKFJng1byaSl_a.Sa.UVDEXRX_ReNoaWsA2gQ2vaUD86mSu7QqBVGyvLIMOm5r1H5Phu08f9VpPzW6wqEce4tlFRBMI',i:60};(function(){if(!document.body)return;var l=window.location,o;try{o=new URL(l.origin).origin}catch(e){try{o=new URL(new URL(l.href).origin).origin}catch(e){o=''}}var u='/cdn-cgi/challenge-platform/scripts/precursor/main.js?ray=a604bbfe4e9f9851',s=document.createElement('script');s.src=o?new URL(u,o).href:u;document.head.appendChild(s);})();</script></body>
+<script>window.__CF$cv$params={r:'a604d544ddb62120',t:'MTc5NTY1MzUzNQ==',u:'01a2154a88b37277ba820f0ecd5e106e',ut:'7dS7tqwiUo1Esz3B0ruW902QwHokVkDGB8JeIsBA1Ls-1795653535-1.2.1.1-XFQeGczFnzTiM7DGL8d2snnaT.8Z2Mgdxq7DJv6XU7TcrgV1O3wp.3ZX5M69F8HRomu2RZebC7qqeGRG3p9FZ0QOx5xX5B_tbwz9tEI5kwo',i:60};(function(){if(!document.body)return;var l=window.location,o;try{o=new URL(l.origin).origin}catch(e){try{o=new URL(new URL(l.href).origin).origin}catch(e){o=''}}var u='/cdn-cgi/challenge-platform/scripts/precursor/main.js?ray=a604d544ddb62120',s=document.createElement('script');s.src=o?new URL(u,o).href:u;document.head.appendChild(s);})();</script></body>
 </html>
