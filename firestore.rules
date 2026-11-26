@@ -11,10 +11,33 @@ service cloud.firestore {
     function isOwner(uid) {
       return request.auth != null && request.auth.uid == uid;
     }
+    function signedIn() {
+      return request.auth != null;
+    }
+    function myEmail() {
+      return request.auth.token.email;
+    }
 
-    // حسابات المشتركين — المالك يقرأ/يكتب حسابه، الأدمن كل حاجة
+    // حقول الاشتراك — المالك ما يقدرش يعدّلها (الأدمن بس)
+    function subFields() {
+      return ['subUntil', 'blocked', 'trialEnds', 'measUnlockUntil', 'actNote'];
+    }
+    // صورة البروفايل — حد أقصى 300 KB (الصورة الطبيعية 256px ~ 40 KB)
+    function photoOk() {
+      return !('photo' in request.resource.data) || request.resource.data.photo.size() < 300000;
+    }
+
+    // حسابات المشتركين — المالك يقرأ حسابه ويعدّل بياناته العادية، الأدمن كل حاجة
     match /users/{uid} {
-      allow get, create, update: if isOwner(uid) || isAdmin();
+      allow get: if isOwner(uid) || isAdmin();
+      // إنشاء أول مرة (التجربة 7 أيام) — بدون اشتراك جاهز أو تجربة طويلة
+      allow create: if isAdmin() || (isOwner(uid) && photoOk()
+        && (!('subUntil' in request.resource.data) || request.resource.data.subUntil == 0)
+        && (!('blocked' in request.resource.data) || request.resource.data.blocked == false)
+        && (!('trialEnds' in request.resource.data) || request.resource.data.trialEnds <= request.time.toMillis() + 8 * 86400000)
+        && (!('measUnlockUntil' in request.resource.data) || request.resource.data.measUnlockUntil <= request.time.toMillis() + 73 * 3600000));
+      allow update: if isAdmin() || (isOwner(uid) && photoOk()
+        && !request.resource.data.diff(resource.data).affectedKeys().hasAny(subFields()));
       allow list, delete: if isAdmin();
       // نسخة بيانات التمرين الخاصة بكل مستخدم
       match /data/{doc} {
@@ -22,45 +45,53 @@ service cloud.firestore {
       }
     }
 
-    // الأكواد — أي مسجل يقرأ كود ويخصم استخدام، والأدمن يدير
+    // الأكواد — أي مسجل يقرأ كود، ويزوّد عداد الاستخدام +1 بس، والأدمن يدير
     match /coupons/{code} {
-      allow get, update: if request.auth != null;
+      allow get: if signedIn();
       allow list, create, delete: if isAdmin();
+      allow update: if isAdmin() || (signedIn()
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['used'])
+        && request.resource.data.used == resource.data.used + 1);
     }
 
     // رسالة الكابتن الجماعية — قراءة للمسجلين، كتابة للأدمن
     match /annc/{doc} {
-      allow get: if request.auth != null;
+      allow get: if signedIn();
       allow list, create, update, delete: if isAdmin();
     }
 
-    // قراءات الرسائل — العداد per-user (زر تمام قريتها)
+    // قراءات الرسائل — المسجل يسجل قراءته بس باسمه
     match /anncReads/{id} {
-      allow create, get: if request.auth != null;
+      allow create: if signedIn() && request.resource.data.uid == request.auth.uid;
+      allow get: if signedIn();
       allow list, update, delete: if isAdmin();
     }
 
     // المسوقين (أفلييت) — الأدمن يدير، والمسجل يقرأ
     match /affils/{code} {
-      allow get: if request.auth != null;
+      allow get: if signedIn();
       allow list, create, update, delete: if isAdmin();
     }
 
-    // سجل العمولات — المسجل يسجل عملية، والأدمن يقرأ
+    // سجل العمولات — المسجل يسجل عملية باسم إيميله هو بس، والكود لازم يكون موجود
     match /refs/{id} {
-      allow create: if request.auth != null;
+      allow create: if signedIn()
+        && request.resource.data.email == myEmail()
+        && exists(/databases/$(database)/documents/coupons/$(request.resource.data.code));
       allow get, list, update, delete: if isAdmin();
     }
 
-    // آراء المشتركين — المسجل يضيف ويقرأ، والأدمن يدير
+    // آراء المشتركين — القراءة للمسجلين، والنشر/الإخفاء/المسح للأدمن بس
     match /reviews/{id} {
-      allow get, list, create: if request.auth != null;
-      allow update, delete: if isAdmin();
+      allow get, list: if signedIn();
+      allow create, update, delete: if isAdmin();
     }
 
-    // طلبات دفع PayPal — المسجل يسجل طلبه، والأدمن يقرأ ويفعّل
+    // طلبات دفع PayPal — المسجل يسجل طلبه باسم إيميله بحالة "pending" بس، والأدمن يقرأ ويفعّل
     match /payreq/{id} {
-      allow create: if request.auth != null;
+      allow create: if signedIn()
+        && request.resource.data.email == myEmail()
+        && request.resource.data.status == 'pending';
       allow get, list, update: if isAdmin();
       allow delete: if false;
     }

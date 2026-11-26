@@ -28,7 +28,7 @@ self.addEventListener('fetch', function (e) {
   var isPage = e.request.mode === 'navigate' || /\/(index\.html)?(\?.*)?$/.test(new URL(url).pathname + new URL(url).search);
   if (isPage && new URL(url).origin === self.location.origin) {
     e.respondWith(fetch(e.request, { cache: 'no-cache' }).then(function (res) {
-      if (res && res.ok) { var cp = res.clone(); var cp2 = res.clone(); caches.open(CACHE).then(function (c) { c.put(e.request, cp); c.put('./index.html', './manifest.json', cp2); }); }
+      if (res && res.ok) { var cp = res.clone(); var cp2 = res.clone(); caches.open(CACHE).then(function (c) { c.put(e.request, cp); c.put('./index.html', cp2); }); }
       return res;
     }).catch(function () { return caches.match(e.request).then(function (hit) { return hit || caches.match('./index.html'); }); }));
     return;
