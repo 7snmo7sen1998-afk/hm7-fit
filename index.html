@@ -1652,12 +1652,7 @@ function calReminder(){
 }
 function exportData(){try{const blob=new Blob([JSON.stringify(db)],{type:'application/json'});const u=URL.createObjectURL(blob);const a=document.createElement('a');a.href=u;a.download='hm-fit-backup-'+new Date().toISOString().slice(0,10)+'.json';document.body.appendChild(a);a.click();setTimeout(function(){a.remove();URL.revokeObjectURL(u);},2000);db.profile.lastBackup=new Date().toLocaleString(loc());save();render();noteSheet(myRegion()==='en'?'Backup saved — send it to yourself on WhatsApp/Drive':'اتحفظت النسخة — ابعتها لنفسك واتساب/Drive');}catch(e){noteSheet('تعذر الحفظ');}}
 function importData(inp){try{const f=inp.files&&inp.files[0];if(!f)return;const r=new FileReader();r.onload=function(){try{const c=JSON.parse(r.result);if(c&&c.profile){db=c;save();render();noteSheet(myRegion()==='en'?'Backup restored':'اترجعت النسخة');}else noteSheet(myRegion()==='en'?'This file is not an HM Fit backup':'الملف ده مش نسخة HM Fit');}catch(e){noteSheet(myRegion()==='en'?'Cannot read file':'تعذر قراءة الملف');}};r.readAsText(f);}catch(e){}inp.value='';}
-function saveNotif(){/* قديم */
-  const t=document.getElementById('nTime');
-  db.profile.notif.on=!db.profile.notif.on;
-  if(t)db.profile.notif.time=t.value||'20:00';
-  save();render();
-}
+
 function wFromDay(did){
   const p=db.program;if(!p)return;
   const d=p.days.find(function(x){return x.id===did;});if(!d||!d.exercises.length)return alert('اليوم ده فاضي — ضيف تمارين الأول');
@@ -2134,7 +2129,8 @@ function offerTitle(){const n=Date.now();const EN=myRegion&&myRegion()==='en';if
 function offerEnd(){const n=Date.now();if(n<=P1_END)return P1_END;return 0;}
 function offCdHTML(){const end=offerEnd();const EN=myRegion&&myRegion()==='en';if(!end)return '<b>'+offerTitle()+'</b>';return '<b>'+offerTitle()+'</b><br><span class="badge" style="margin-top:6px;font-size:14px">\u23F3 '+(EN?'':'باقي ')+'<span class="offcd" data-end="'+end+'">…</span>'+(EN?' left':'')+'</span>';}
 function fmtLeft(ms){if(ms<0)ms=0;const s=Math.floor(ms/1000);const d=Math.floor(s/86400),h=Math.floor(s%86400/3600),m=Math.floor(s%3600/60),ss=s%60;const p=function(x){return (x<10?'0':'')+x;};if(myRegion&&myRegion()==='en')return (d>0?d+'d ':'')+p(h)+':'+p(m)+':'+p(ss);return (d>0?d+' يوم و':'')+p(h)+':'+p(m)+':'+p(ss);}
-function updateOffCd(){let exp=false;document.querySelectorAll('.offcd').forEach(function(el){const left=+el.dataset.end-Date.now();if(left<=0){exp=true;return;}el.textContent=fmtLeft(left);});if(exp)try{render();}catch(e){}}
+var _expDone=false;
+function updateOffCd(){if(_expDone)return;let exp=false;document.querySelectorAll('.offcd').forEach(function(el){const left=+el.dataset.end-Date.now();if(left<=0){exp=true;return;}el.textContent=fmtLeft(left);});if(exp){_expDone=true;try{render();}catch(e){}}}
 function welcomeCard(){
  if(myRegion()==='en')return welcomeCardEN();
  const p=curPrices();
