@@ -34,6 +34,12 @@ service cloud.firestore {
       allow list, create, update, delete: if isAdmin();
     }
 
+    // قراءات الرسائل — العداد per-user (زر تمام قريتها)
+    match /anncReads/{id} {
+      allow create, get: if request.auth != null;
+      allow list, update, delete: if isAdmin();
+    }
+
     // المسوقين (أفلييت) — الأدمن يدير، والمسجل يقرأ
     match /affils/{code} {
       allow get: if request.auth != null;
