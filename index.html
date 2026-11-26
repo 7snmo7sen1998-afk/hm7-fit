@@ -1370,7 +1370,8 @@ function obFinish(){db.profile.goal=view.obGoal;db.profile.onboarded=true;save()
 /* ============ العرض ============ */
 function navOn(id){document.querySelectorAll('nav button').forEach(function(b){b.classList.remove('active');});const el=document.getElementById(id);if(el)el.classList.add('active');
  try{const ab=document.getElementById('nav-admin');if(ab){if(isAdmin&&isAdmin()&&fbUser){ab.style.display='';if(!ab.dataset.done){ab.dataset.done='1';ab.innerHTML='<span class="ni">'+icon('gear')+'</span><span class="nl">الأدمن</span>';ab.onclick=function(){go('admin');};}}else ab.style.display='none';}}catch(e){}}
-function wFilter(){try{var q=(document.getElementById('wSearch')||{}).value||'';view.wq=q;var box=document.getElementById('wList');if(!box)return;var ks=Object.keys(db.weights||{}).filter(function(n){return !q||n.indexOf(q)>-1||exEN(n).toLowerCase().indexOf(q.toLowerCase())>-1;});var ENW=myRegion()==='en';box.innerHTML=ks.map(function(n){var ss=sessionsOf(n),l=ss[0];return '<div class="item mainbtn" onclick="view.wex=\''+esc(n)+'\';render()">'+exThumb(n)+'<span class="grow"><span class="nm" dir="ltr" style="text-align:right">'+esc(exEN(n))+'</span><br><span class="meta">'+(l?((ENW?'Last time ('+sessLabel(l)+'): top '+l.max+' kg • ':'آخر مرة ('+sessLabel(l)+'): أعلى '+l.max+' كجم • ')):'')+ss.length+' '+(ENW?(ss.length===1?'session':'sessions'):(ss.length===1?'جلسة':'جلسات'))+(prOf(n)>0?(ENW?' • best '+prOf(n)+' kg':' • أحسن '+prOf(n)+' كجم'):'')+'</span></span></div>';}).join('')||'<p class="muted" style="text-align:center">'+(ENW?'No matches':'مفيش نتائج')+'</p>';var inp=document.getElementById('wSearch');if(inp){inp.focus();try{inp.setSelectionRange(inp.value.length,inp.value.length);}catch(e){}}}catch(e){}}
+function wFilter2(){try{var _t=document.getElementById('wSearchTop');var q=_t?(_t.value||''):'';view.wq=q;var _o=document.getElementById('wSearch');if(_o)_o.value=q;wFilterGo(q);}catch(e){}}
+function wFilterGo(q){try{view.wq=q;var box=document.getElementById('wList');if(!box)return;var ks=Object.keys(db.weights||{}).filter(function(n){return !q||n.indexOf(q)>-1||exEN(n).toLowerCase().indexOf(q.toLowerCase())>-1;});var ENW=myRegion()==='en';box.innerHTML=ks.map(function(n){var ss=sessionsOf(n),l=ss[0];return '<div class="item mainbtn" onclick="view.wex=\''+esc(n)+'\';render()">'+exThumb(n)+'<span class="grow"><span class="nm" dir="ltr" style="text-align:right">'+esc(exEN(n))+'</span><br><span class="meta">'+(l?((ENW?'Last time ('+sessLabel(l)+'): top '+l.max+' kg • ':'آخر مرة ('+sessLabel(l)+'): أعلى '+l.max+' كجم • ')):'')+ss.length+' '+(ENW?(ss.length===1?'session':'sessions'):(ss.length===1?'جلسة':'جلسات'))+(prOf(n)>0?(ENW?' • best '+prOf(n)+' kg':' • أحسن '+prOf(n)+' كجم'):'')+'</span></span></div>';}).join('')||'<p class="muted" style="text-align:center">'+(ENW?'No matches':'مفيش نتائج')+'</p>';var inp=document.getElementById('wSearchTop')||document.getElementById('wSearch');if(inp){inp.focus();try{inp.setSelectionRange(inp.value.length,inp.value.length);}catch(e){}}}catch(e){}}
 
 function render(){
   updateBadge();
@@ -1501,7 +1502,9 @@ function render(){
   else if(v==='weights'){
     navOn('nav-weights');
     const ENW=myRegion()==='en';
+    if(view.wq==null)view.wq='';
     let h='<div class="section-head"><h2>'+(ENW?'My weights':'متابعة أوزاني')+'</h2><button class="btn btn-neon btn-sm" onclick="addWEx()">'+icon('plus')+' '+(ENW?'Exercise':'تمرين')+'</button></div>';
+    h+='<div class="card"><input class="full" id="wSearchTop" placeholder="'+(ENW?'Search exercises…':'ابحث عن تمرين…')+'" value="'+esc(view.wq)+'" oninput="view.wq=this.value;wFilter2()"></div>';
     const keys=Object.keys(db.weights);
     if(view.wex&&db.weights[view.wex]){
       const n=view.wex,ss=sessionsOf(n),last=(db.weights[n]||[])[0]||{w:'',r:''},pr=db.prs&&db.prs[n];
@@ -1519,8 +1522,7 @@ function render(){
     }else{
       view.wex=null;
       if(!keys.length)h+='<div class="card"><div class="empty">'+icon('scale')+'<br>'+(ENW?'No weights logged yet.<br>Tap Workout and pick from the library or today\u2019s session.':'لسه مسجلتش أوزان.<br>دوس «تمرين» واختار من المكتبة أو من تمرين اليوم.')+'</div></div>';
-      if(view.wq==null)view.wq='';
-      h+='<div class="card"><input class="full" id="wSearch" placeholder="'+(ENW?'Search exercises…':'ابحث عن تمرين…')+'" value="'+esc(view.wq)+'" oninput="view.wq=this.value;wFilter()"></div><div id="wList">';
+      h+='<div id="wList">';
       var _kf=keys.filter(function(n){return !view.wq||n.indexOf(view.wq)>-1||exEN(n).toLowerCase().indexOf(view.wq.toLowerCase())>-1;});
       _kf.forEach(function(n){
         const ss=sessionsOf(n),l=ss[0];
