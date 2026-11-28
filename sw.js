@@ -1,6 +1,19 @@
-/* HM Fit service worker — offline cache */
-const CACHE = 'hmfit-v2';
-const ASSETS = ['./', './index.html', './manifest.json', './hm-logo-192.png', './hm-logo-512.png', './hero-bg.jpg', './howto.jpg', './cardio-run.jpg', './ex/01.jpg', './ex/02.jpg', './ex/03.jpg', './ex/04.jpg', './ex/05.jpg', './ex/06.jpg', './ex/07.jpg', './ex/08.jpg', './ex/09.jpg', './ex/10.jpg', './ex/11.jpg', './ex/12.jpg', './ex/13.jpg', './ex/14.jpg', './ex/15.jpg', './ex/16.jpg', './ex/17.jpg', './ex/18.jpg', './ex/19.jpg', './ex/20.jpg', './ex/21.jpg', './ex/22.jpg', './ex/23.jpg', './ex/24.jpg', './ex/25.jpg', './ex/26.jpg', './ex/27.jpg', './ex/28.jpg', './ex/29.jpg', './ex/30.jpg', './ex/31.jpg', './ex/32.jpg', './ex/33.jpg', './ex/34.jpg', './ex/35.jpg', './ex/36.jpg', './ex/37.jpg', './ex/38.jpg', './ex/39.jpg', './ex/40.jpg', './ex/41.jpg', './ex/42.jpg', './ex/43.jpg', './ex/44.jpg', './ex/45.jpg', './ex/46.jpg', './ex/47.jpg', './ex/48.jpg', './ex/49.jpg', './ex/50.jpg', './ex/51.jpg', './ex/52.jpg', './ex/53.jpg', './ex/54.jpg', './ex/55.jpg', './ex/56.jpg', './ex/57.jpg', './ex/58.jpg', './ex/59.jpg', './ex/60.jpg', './ex/61.jpg', './ex/62.jpg', './ex/63.jpg', './ex/64.jpg', './ex/65.jpg', './ex/66.jpg', './ex/67.jpg', './ex/68.jpg', './ex/69.jpg', './ex/70.jpg', './ex/71.jpg', './ex/72.jpg', './ex/73.jpg', './ex/74.jpg', './ex/75.jpg', './ex/76.jpg', './ex/77.jpg', './ex/78.jpg', './ex/79.jpg', './ex/80.jpg', './ex/81.jpg', './ex/82.jpg', './ex/83.jpg', './ex/84.jpg', './ex/85.jpg', './ex/86.jpg', './ex/87.jpg', './ex/88.jpg', './ex/89.jpg', './ex/90.jpg', './ex/91.jpg', './ex/92.jpg', './ex/93.jpg', './ex/94.jpg', './ex/95.jpg', './ex/96.jpg', './ex/97.jpg'];
+/* HM Fit service worker — offline cache + push notifications */
+try {
+  importScripts('https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js', 'https://www.gstatic.com/firebasejs/10.12.2/firebase-messaging-compat.js');
+  firebase.initializeApp({ apiKey: 'AIzaSyA4ZzZSxvOro9cZpj8dH2Cp2MODyFV3Cj8', authDomain: 'hm-fit-15515.firebaseapp.com', projectId: 'hm-fit-15515', storageBucket: 'hm-fit-15515.firebasestorage.app', messagingSenderId: '486420299391', appId: '1:486420299391:web:082fb31fec3890f198494a' });
+  firebase.messaging(); // الإشعارات اللي فيها notification بتظهر تلقائيًا والتطبيق مقفول
+} catch (err) { /* لو مفيش نت وقت التثبيت، الكاش يفضل شغال */ }
+self.addEventListener('notificationclick', function (e) {
+  var link = (e.notification && e.notification.data && e.notification.data.FCM_MSG && e.notification.data.FCM_MSG.fcmOptions && e.notification.data.FCM_MSG.fcmOptions.link) || './';
+  e.notification.close();
+  e.waitUntil(self.clients.matchAll({ type: 'window', includeUncontrolled: true }).then(function (list) {
+    for (var i = 0; i < list.length; i++) { if ('focus' in list[i]) return list[i].focus(); }
+    return self.clients.openWindow ? self.clients.openWindow(link) : null;
+  }));
+});
+const CACHE = 'hmfit-1.0.1';
+const ASSETS = ['./', './index.html', './manifest.json', './hm-logo-192.png?v=2', './hm-logo-512.png?v=2', './hm-logo-maskable.png', './favicon.png', './apple-touch-icon.png', './terms.html', './privacy.html', './hero-bg.jpg', './howto.jpg', './cardio-run.jpg', './ex/01.jpg', './ex/02.jpg', './ex/03.jpg', './ex/04.jpg', './ex/05.jpg', './ex/06.jpg', './ex/07.jpg', './ex/08.jpg', './ex/09.jpg', './ex/10.jpg', './ex/11.jpg', './ex/12.jpg', './ex/13.jpg', './ex/14.jpg', './ex/15.jpg', './ex/16.jpg', './ex/17.jpg', './ex/18.jpg', './ex/19.jpg', './ex/20.jpg', './ex/21.jpg', './ex/22.jpg', './ex/23.jpg', './ex/24.jpg', './ex/25.jpg', './ex/26.jpg', './ex/27.jpg', './ex/28.jpg', './ex/29.jpg', './ex/30.jpg', './ex/31.jpg', './ex/32.jpg', './ex/33.jpg', './ex/34.jpg', './ex/35.jpg', './ex/36.jpg', './ex/37.jpg', './ex/38.jpg', './ex/39.jpg', './ex/40.jpg', './ex/41.jpg', './ex/42.jpg', './ex/43.jpg', './ex/44.jpg', './ex/45.jpg', './ex/46.jpg', './ex/47.jpg', './ex/48.jpg', './ex/49.jpg', './ex/50.jpg', './ex/51.jpg', './ex/52.jpg', './ex/53.jpg', './ex/54.jpg', './ex/55.jpg', './ex/56.jpg', './ex/57.jpg', './ex/58.jpg', './ex/59.jpg', './ex/60.jpg', './ex/61.jpg', './ex/62.jpg', './ex/63.jpg', './ex/64.jpg', './ex/65.jpg', './ex/66.jpg', './ex/67.jpg', './ex/68.jpg', './ex/69.jpg', './ex/70.jpg', './ex/71.jpg', './ex/72.jpg', './ex/73.jpg', './ex/74.jpg', './ex/75.jpg', './ex/76.jpg', './ex/77.jpg', './ex/78.jpg', './ex/79.jpg', './ex/80.jpg', './ex/81.jpg', './ex/82.jpg', './ex/83.jpg', './ex/84.jpg', './ex/85.jpg', './ex/86.jpg', './ex/87.jpg', './ex/88.jpg', './ex/89.jpg', './ex/90.jpg', './ex/91.jpg', './ex/92.jpg', './ex/93.jpg', './ex/94.jpg', './ex/95.jpg', './ex/96.jpg', './ex/97.jpg', './ex/98.jpg', './ex/99.jpg', './ex/100.jpg', './ex/101.jpg', './ex/102.jpg', './ex/103.jpg', './ex/104.jpg', './ex/105.jpg', './ex/106.jpg', './ex/107.jpg', './ex/108.jpg', './ex/109.jpg', './ex/110.jpg', './ex/111.jpg', './ex/112.jpg', './ex/113.jpg', './ex/114.jpg', './ex/115.jpg', './ex/116.jpg', './ex/117.jpg', './ex/118.jpg', './ex/119.jpg', './ex/120.jpg', './ex/121.jpg', './ex/122.jpg'];
 self.addEventListener('install', function (e) {
   e.waitUntil(caches.open(CACHE).then(function (c) { return c.addAll(ASSETS); }).then(function () { return self.skipWaiting(); }));
 });
@@ -12,6 +25,7 @@ self.addEventListener('activate', function (e) {
 self.addEventListener('fetch', function (e) {
   if (e.request.method !== 'GET') return;
   var url = e.request.url;
+  if (url.indexOf('/__/') !== -1) return; // صفحات دخول جوجل: من النت دايمًا
   if (url.indexOf('raw.githubusercontent.com/yuhonas/free-exercise-db') !== -1) {
     e.respondWith(caches.open('hmfit-img').then(function (c) {
       return c.match(e.request).then(function (hit) {
@@ -28,9 +42,13 @@ self.addEventListener('fetch', function (e) {
   var isPage = e.request.mode === 'navigate' || /\/(index\.html)?(\?.*)?$/.test(new URL(url).pathname + new URL(url).search);
   if (isPage && new URL(url).origin === self.location.origin) {
     e.respondWith(fetch(e.request, { cache: 'no-cache' }).then(function (res) {
-      if (res && res.ok) { var cp = res.clone(); var cp2 = res.clone(); caches.open(CACHE).then(function (c) { c.put(e.request, cp); c.put('./index.html', cp2); }); }
+      if (res && res.ok) {
+        var isMain = /\/(index\.html)?$/.test(new URL(url).pathname);
+        var cp = res.clone(); var cp2 = isMain ? res.clone() : null;
+        caches.open(CACHE).then(function (c) { return Promise.all([c.put(e.request, cp), cp2 ? c.put('./index.html', cp2) : null]); }).catch(function () {});
+      }
       return res;
-    }).catch(function () { return caches.match(e.request).then(function (hit) { return hit || caches.match('./index.html'); }); }));
+    }).catch(function () { return caches.match(e.request, { ignoreSearch: true }).then(function (hit) { return hit || caches.match('./index.html'); }); }));
     return;
   }
   e.respondWith(caches.match(e.request).then(function (hit) { return hit || fetch(e.request); }));
