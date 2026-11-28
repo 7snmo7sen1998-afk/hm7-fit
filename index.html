@@ -2,7 +2,7 @@
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://www.gstatic.com https://apis.google.com https://www.google.com https://www.recaptcha.net https://*.paypal.com https://*.paypalobjects.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com; img-src 'self' data: blob: https:; connect-src 'self' https://*.googleapis.com https://*.firebaseio.com wss://*.firebaseio.com https://www.gstatic.com https://*.paypal.com https://*.paypalobjects.com; frame-src 'self' https://*.firebaseapp.com https://accounts.google.com https://www.google.com https://www.recaptcha.net https://*.paypal.com https://*.venmo.com; worker-src 'self'; manifest-src 'self'; media-src 'self' blob: data:; object-src 'none'; base-uri 'self'; form-action 'self' https://*.paypal.com">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://www.gstatic.com https://apis.google.com https://www.google.com https://www.recaptcha.net https://*.paypal.com https://*.paypalobjects.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com; img-src 'self' data: blob: https:; connect-src 'self' https://*.googleapis.com https://*.firebaseio.com wss://*.firebaseio.com https://www.gstatic.com https://www.google.com https://www.recaptcha.net https://*.paypal.com https://*.paypalobjects.com; frame-src 'self' https://*.firebaseapp.com https://accounts.google.com https://www.google.com https://www.recaptcha.net https://*.paypal.com https://*.venmo.com; worker-src 'self'; manifest-src 'self'; media-src 'self' blob: data:; object-src 'none'; base-uri 'self'; form-action 'self' https://*.paypal.com">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#000000">
 <meta name="mobile-web-app-capable" content="yes">
@@ -16,6 +16,7 @@
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-check-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-messaging-compat.js"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -477,12 +478,14 @@ function openPicker(){
   pkRender();
 }
 const _lbCache={};
-function openLb(name){const t=document.getElementById('lbT'),im=document.getElementById('lbI'),dd=document.getElementById('lbD');if(t){if(myRegion()==='en'){t.innerHTML='<span dir="ltr">'+esc(exEN(name))+'</span>';}else t.textContent=name;}if(im){im.alt=name;const full=exSrc(name,true);im.src=full;if(full&&!_lbCache[full]){const f=new Image();f.onload=function(){_lbCache[full]=1;};f.src=full;}}if(dd)dd.textContent=(myRegion()==='en'?(EXDESC_EN[name]||''):(libDesc(name)||''));const x=document.getElementById('lbX');if(x){x.innerHTML=icon('x');x.onclick=closeLb;}document.getElementById('lb').style.display='flex';}
+function openLb(name){const t=document.getElementById('lbT'),im=document.getElementById('lbI'),dd=document.getElementById('lbD');if(t){if(myRegion()==='en'){t.innerHTML='<span dir="ltr">'+esc(exEN(name))+'</span>';}else t.textContent=name;}if(im){im.alt=name;const full=exSrc(name,true);im.src=full;if(full&&!_lbCache[full]){const f=new Image();f.onload=function(){_lbCache[full]=1;};f.src=full;}}if(dd)dd.textContent=(myRegion()==='en'?(EXDESC_EN[name]||''):arDesc(name,libDesc(name)));const x=document.getElementById('lbX');if(x){x.innerHTML=icon('x');x.onclick=closeLb;}document.getElementById('lb').style.display='flex';}
 function closeLb(){document.getElementById('lb').style.display='none';}
 const EXEN={"بنش مستوي بار":"Flat Barbell Bench Press","بنش مستوي دمبل":"Flat Dumbbell Bench Press","بنش منخفض":"Decline Bench Press","بنش جهاز":"Machine Chest Press","فلاي دمبل":"Dumbbell Fly","فلاي كابل":"Cable Fly","فلاي جهاز":"Machine Fly (Pec Deck)","كروس أوفر كابل":"Cable Crossover","ضغط صدر جهاز":"Seated Chest Press","متوازي للصدر":"Chest Dip","بول أوفر دمبل":"Dumbbell Pullover","العقلة":"Pull-Up","سحب علوي واسع":"Wide Lat Pulldown","سحب علوي ضيق":"Close-Grip Lat Pulldown","سحب أرضي كابل":"Seated Cable Row","رو بار منحني":"Bent-Over Barbell Row","رو دمبل":"One-Arm Dumbbell Row","تي بار رو":"T-Bar Row","تي بار جهاز":"Machine T-Bar Row","سحب أمامي بذراع مفرودة":"Straight-Arm Pulldown","ديدلفت":"Deadlift","هايبر اكستنشن":"Hyperextension","ضغط أكتاف دمبل":"Seated Dumbbell Shoulder Press","ضغط أكتاف بار قاعد":"Seated Barbell Overhead Press","ضغط أكتاف جهاز":"Machine Shoulder Press","رفرفة جانبي دمبل":"Dumbbell Lateral Raise","رفرفة جانبي كابل":"Cable Lateral Raise","رفرفة أمامي":"Front Raise","رفرفة خلفي منحني":"Bent-Over Rear Delt Fly","فيس بول":"Face Pull","أرنولد برس":"Arnold Press","سحب بار للذقن":"Upright Row","باي بار مستقيم":"Straight Bar Curl","باي دمبل بالتبادل":"Alternating Dumbbell Curl","باي هامر":"Hammer Curl","باي بريتشر":"Preacher Curl","باي تركيز":"Concentration Curl","باي مقعد مائل":"Incline Dumbbell Curl","تراي حبل":"Rope Pushdown","تراي بار كابل":"Straight-Bar Pushdown","تراي خلف الرأس دمبل":"Overhead Dumbbell Extension","تراي خلف الرأس بالكابل":"Overhead Cable Extension","سكال كراشر":"Skull Crusher","ضغط ضيق":"Close-Grip Bench Press","ديبس مقعد":"Bench Dip","كيك باك":"Triceps Kickback","تراي جهاز":"Machine Triceps Extension","سكوات بار":"Barbell Back Squat","سكوات أمامي":"Front Squat","هاك سكوات":"Hack Squat","ليج بريس":"Leg Press","ليج اكستنشن":"Leg Extension","ليج كيرل نائم":"Lying Leg Curl","ليج كيرل جلوس":"Seated Leg Curl","رومانيان ديدلفت":"Romanian Deadlift","لانجز دمبل":"Dumbbell Lunge","هيب ثرست":"Hip Thrust","سمانة واقف":"Standing Calf Raise","سمانة جلوس":"Seated Calf Raise","كرانش":"Crunch","رفع رجل معلق":"Hanging Leg Raise","بلانك":"Plank","كرانش كابل":"Cable Crunch","روسيان تويست":"Russian Twist","عجلة البطن":"Ab Wheel Rollout","رفع رجل أرضي":"Lying Leg Raise","سايد بلانك":"Side Plank","بنش عالي بار":"Incline Barbell Bench Press","بنش عالي دمبل":"Incline Dumbbell Bench Press","بوش أب":"Push-Up","باي بار متعرج":"EZ-Bar Curl","باي كابل":"Cable Curl","بلغاري سبليت سكوات":"Bulgarian Split Squat","رو جهاز":"Machine Row","بنش عالي جهاز":"Incline Machine Press","رفرفة خلفي جهاز":"Machine Rear Delt Fly","شراغز بار":"Barbell Shrug","شراغز دمبل":"Dumbbell Shrug","ساعد بار":"Barbell Wrist Curl","ساعد عكسي":"Reverse Wrist Curl","مشي على السير":"Treadmill Walk","جري":"Running","دراجة ثابتة":"Stationary Bike","إليبتكال":"Elliptical","حبل نط":"Jump Rope","تجديف":"Rowing Machine","تقريب جهاز":"Hip Adduction Machine","جامبنج جاكس":"Jumping Jacks","هاي نيز":"High Knees","قفز تبديلي":"Split Jacks","نوردك كيرل":"Nordic Curl","وود تشوبر":"Cable Woodchopper","فيس بول عالي":"High Pulley Face Pull","سوبرمان":"Superman Hold","سحب ترابيزة":"Inverted Table Row","بايك بوش أب":"Pike Push-Up","سحب معكوس ضيق":"Close-Grip Inverted Row"};
 Object.assign(EXEN,{'أبدكشن جهاز':'Hip Abduction Machine','كيك باك جلوتس كابل':'Cable Glute Kickback','جلوت بريدج':'Glute Bridge','ستيب أب دمبل':'Dumbbell Step-Up','سكوات سومو دمبل':'Dumbbell Sumo Squat','سحب كابل بين الرجلين':'Cable Pull-Through','سكوات سميث':'Smith Machine Squat','لانجز خلفي':'Dumbbell Reverse Lunge','ديد باج':'Dead Bug','سمانة على الليج بريس':'Leg Press Calf Raise','بالوف برس':'Pallof Press','سحب علوي بإيد واحدة':'Single-Arm Lat Pulldown','بنش عالي سميث':'Smith Machine Incline Press','فارمر ووك':'Farmer\'s Walk','رو دمبل على بنش مائل':'Chest-Supported Dumbbell Row','رفرفة جانبي جهاز':'Machine Lateral Raise','بوش أب بعمق':'Deficit Push-Up','باي كابل ورا الجسم':'Bayesian Cable Curl','هايبر اكستنشن جلوتس':'Glute-Focused 45° Back Extension','هيب ثرست سميث':'Smith Machine Hip Thrust','هيب ثرست رجل واحدة':'Single-Leg Hip Thrust','أبدكشن كابل واقف':'Standing Cable Hip Abduction','أبدكشن أستك':'Banded Hip Abduction','كيرتسي لانجز':'Curtsy Lunge','لانجز خلفي من على درجة':'Deficit Reverse Lunge'});
 function exEN(n){return EXEN[n]||n;}
 let EXDESC_EN={}; /* loaded from Firestore content/workout after sign-in */
+let EXDESC_GULF={}; /* formal Arabic descriptions for the Gulf edition */
+function arDesc(name,fb){return (myRegion()==='ar'&&EXDESC_GULF&&EXDESC_GULF[name])||fb||'';}
 function exShow(e){if(myRegion()==='en'){var m=(e.muscle&&e.muscle!=='عام')?' <span class="meta" style="font-size:11.5px;color:var(--muted)">'+esc(musEN(e.muscle))+'</span>':'';return '<span class="exname" dir="ltr" style="text-align:left">'+esc(exEN(e.name))+m+'</span>';}return '<span class="exname" dir="ltr" style="text-align:right">'+esc(exEN(e.name))+'<br><span class="meta" style="font-size:11.5px;color:var(--muted)" dir="rtl">'+esc(e.ar||e.name)+'</span></span>';}
 function exName(e){return (e.ar||e.name);}
 function exThumb(name){const u=exSrc(name,false);if(u)return '<img class="exthumb" loading="lazy" decoding="async" width="52" height="52" src="'+u+'" onerror="this.style.display=\'none\'" alt="" onclick="event.stopPropagation();openLb(\''+name.replace(/'/g,"\\'")+'\')">';var em={'تراي خلف الرأس بالكابل':'💪','تي بار جهاز':'🏋️','جامبنج جاكس':'🤸','هاي نيز':'🏃','قفز تبديلي':'⚡','نوردك كيرل':'🦵','وود تشوبر':'🪓','فيس بول عالي':'🎯','سوبرمان':'🐸','سحب ترابيزة':'🪑','بايك بوش أب':'🔺','سحب معكوس ضيق':'💪','أبدكشن جهاز':'🍑','كيك باك جلوتس كابل':'🍑','جلوت بريدج':'🍑','سحب كابل بين الرجلين':'🍑','ستيب أب دمبل':'🪜','سكوات سومو دمبل':'🏋️‍♀️','سكوات سميث':'🏋️','لانجز خلفي':'🦵','ديد باج':'🪲','سمانة على الليج بريس':'🦶','بالوف برس':'🧱','سحب علوي بإيد واحدة':'💪','بنش عالي سميث':'🏋️','فارمر ووك':'🧳','رو دمبل على بنش مائل':'🚣','رفرفة جانبي جهاز':'🎯','بوش أب بعمق':'🙌','باي كابل ورا الجسم':'💪','هايبر اكستنشن جلوتس':'🍑','هيب ثرست سميث':'🍑','هيب ثرست رجل واحدة':'🍑','أبدكشن كابل واقف':'🍑','أبدكشن أستك':'🍑','كيرتسي لانجز':'🦵','لانجز خلفي من على درجة':'🦵'};var glyph=em[name]||'🏋️';return '<span class="thumb exthumb fallback" style="font-size:26px;display:flex;align-items:center;justify-content:center;background:rgba(0,230,118,.08)">'+glyph+'</span>';}
@@ -706,7 +709,7 @@ function trPlan(split,days,level,gender,place){
  const perCap=(split==='bro'||split==='arnold')?10:8;
  const plan=seq.map(function(){return {};});
  TR_MUSCLES.forEach(function(m,mi){if(!freq[m]||!vol[m])return;const idx=[];dayMus.forEach(function(ms,i){if(ms.indexOf(m)>-1)idx.push(i);});
-  // البنات (نظام 5 أيام): يوم الجلوتس الجلوتس فيه الأغلبية، ويوم الكوادز الكوادز فيه الأغلبية
+  // البنات (نظام 5 أيام): اليوم اللي أغلبه جلوتس، واليوم اللي أغلبه كوادز
   const W=gender==='f'?idx.map(function(i){const k=seq[i][0];return (TR_DAY_W[k]&&TR_DAY_W[k][m])||1;}):null;
   if(W&&W.some(function(w){return w!==1;})){const tw=W.reduce(function(a,b){return a+b;},0);let left=vol[m];idx.forEach(function(i,k){const s=k===idx.length-1?left:Math.round(vol[m]*W[k]/tw);left-=s;plan[i][m]=Math.min(perCap,Math.max(0,s));});return;}
   const base=Math.floor(vol[m]/idx.length);let extra=vol[m]-base*idx.length;
@@ -921,7 +924,7 @@ function renderCardio(){
  h+='<p class="sub">'+(ENC?'Pick a duration and tap Start — the timer counts down and beeps when done. You can pause and resume, then rest with your own rest timer.':'اختار المدة ودوس ابدأ — التايمر هيعد تنازلي ويصفر لما تخلص، وتقدر توقفه مؤقتًا وتكمل. وبعدها خد راحتك بنفس مؤقت الراحة بتاعك.')+'</p>';
  cardioList().forEach(function(x,i){
   h+='<div class="card"><div class="row">'+exThumb(x.n)+'<span class="exname" dir="ltr" style="text-align:'+(ENC?'left':'right')+'">'+esc(exEN(x.n))+(ENC?'':'<br><span class="meta" style="font-size:11.5px;color:var(--muted)" dir="rtl">'+esc(x.n)+'</span>')+'</span></div>'
-  +'<p class="sub">'+esc(myRegion()==='en'?(EXDESC_EN[x.n]||''):(x.d||''))+'</p>'
+  +'<p class="sub">'+esc(myRegion()==='en'?(EXDESC_EN[x.n]||''):arDesc(x.n,x.d))+'</p>'
   +'<div class="row"><select class="w" style="flex:1;min-height:44px" id="cdur_'+i+'">'+cOpts(x.n)+'</select><button class="btn btn-neon btn-sm" style="flex:1" onclick="cardioStart('+i+')">'+icon('play')+(ENC?' Start':' ابدأ')+'</button></div>'
   +'<div class="row" id="ctxt_'+i+'"></div></div>';
  });
@@ -1009,7 +1012,7 @@ const I18N={
 'جاري التحميل…':'Loading…','مفيش نتائج':'No results','مفيش بديل مناسب في نفس المجموعة':'No suitable alternative in the same group','فشل التحميل:':'Load failed:','فشل التحميل':'Load failed','فشل تحميل الأكواد':'Failed to load codes','فشل تحميل المسوقين':'Failed to load marketers','فشل التصدير':'Export failed','مفيش مشتركين للتصدير':'No members to export','فشلت — افتح النت وحاول':'Failed — check internet and retry','تعذر الحفظ':'Could not save','عطل تقني:':'Error:','عطل في التشغيل:':'Startup error:','خد سكرين شوت وابعته':'take a screenshot and send it',
 'الصورة دي مش نافعة':'That image did not work','المتصفح ده مش بيدعم الصور':'This browser does not support images','القياس اتحفظ من غير الصورة لأن المساحة مليانة.':'Measurement saved without photo — storage is full.','مساحة التخزين على الجهاز اتملت ومش قادر أحفظ التعديل ده!':'Device storage is full and I cannot save this!',
 'دخول بجوجل':'Sign in with Google','تسجيل خروج؟':'Log out?','هتخرج من حسابك على الجهاز ده. بياناتك محفوظة في السحابة وهرجع لما تدخل تاني.':'You will log out on this device. Your data is safe in the cloud and returns when you sign in again.',
-'مش مسجل دخول.':'Not signed in.','وضع أوفلاين — المزامنة محتاجةة نت.':'Offline — sync needs internet.','لسه متمتش — افتح النت':'Not synced yet — go online','آخر مزامنة:':'Last sync:','مزامنة دلوقتي':'Sync now','اتزامنت ✓':'Synced ✓','اتحفظت على جهازك — وهتتزامن مع النت':'Saved on device — will sync when online','اتحفظت بياناتك ✅':'Saved ✅','اتمسح ✅':'Deleted ✅','اتمسحت':'Deleted','اتنشر ✅':'Published ✅','اتعمل ✅':'Done ✅','اتبعتت لكل المشتركين ✅':'Sent to all members ✅','اتصدّر':'Exported',
+'مش مسجل دخول.':'Not signed in.','وضع أوفلاين — المزامنة محتاجة نت.':'Offline — sync needs internet.','لسه متمتش — افتح النت':'Not synced yet — go online','آخر مزامنة:':'Last sync:','مزامنة دلوقتي':'Sync now','اتزامنت ✓':'Synced ✓','اتحفظت على جهازك — وهتتزامن مع النت':'Saved on device — will sync when online','اتحفظت بياناتك ✅':'Saved ✅','اتمسح ✅':'Deleted ✅','اتمسحت':'Deleted','اتنشر ✅':'Published ✅','اتعمل ✅':'Done ✅','اتبعتت لكل المشتركين ✅':'Sent to all members ✅','اتصدّر':'Exported',
 'الإيميل':'Email','الحالة':'Status','المزامنة':'Sync','حسابي والمزامنة':'My account & sync','بياناتي ✅':'My info ✅','بياناتي':'My info','تعديل التمارين والمجاميع':'Edit exercises & sets',
 'الوزن (كجم)':'Weight (kg)','الطول (سم)':'Height (cm)','العمر':'Age','ذكر':'Male','أنثى':'Female','الوزن':'Weight','الطول':'Length','الدهون':'Body fat','الدهون % (اختياري)':'Body fat % (optional)','القياسات':'Measurements','الصدر / الوسط':'Chest / Waist','الدراع / الفخد':'Arm / Thigh','العمر':'Age','النوع / النشاط':'Type / Activity','أيام التمرين':'Training days','تمارين الأوزان':'Weight exercises','حفظ القياس':'Save measurement','دخل أي قياس الأول':'Enter a measurement first','حذف القياس؟':'Delete measurement?','القياس ده هيتمسح نهائي.':'This measurement will be permanently deleted.','مسح نهائي':'Delete forever',
 'تخسيس':'Cut','ثبات':'Maintain','زيادة':'Bulk','زيادة عضلات ووزن صحي':'Gain muscle and healthy weight','نزول دهون مع الحفاظ على العضلات':'Lose fat while keeping muscle','تحافظ على وزنك وشكلك':'Keep your weight and shape',
@@ -1042,6 +1045,68 @@ const I18N={
 'وقت الراحة بين المجاميع':'Rest between sets','إخفاء':'Hide','إخفاء من الرئيسية':'Hide from Home','إظهار':'Show','إظهار في الرئيسية':'Show on Home','حذف':'Delete','سجّل مجموعة واحدة على الأقل النهارده الأول، وبعدين شارك تمرينتك.':'Log at least one set today first, then share your workout.','حذف التمرين؟':'Delete exercise?','هيتمسح من اليوم ده نهائي ومش هيرجع.':'will be permanently removed from this day.','برنامج جديد؟':'New program?','البرنامج الحالي هيتمسح وتبدأ من الأول. بيانات أوزانك المسجلة مش هتتمسح.':'The current program will be deleted and you start over. Your logged weights stay saved.','امسح وابدأ':'Delete and start','حذف المجموعة؟':'Delete set?','المجموعة دي هتتمسح من السجل نهائي.':'This set will be permanently deleted from the log.','تصفير أحسن وزن؟':'Reset best weight?','«أحسن وزن» للتمرين ده هيرجع يتحسب من جديد. السجل نفسه مش هيتمسح.':'Best weight for this exercise restarts. The log itself stays.','صفّر':'Reset','حذف القياس؟':'Delete measurement?','القياس ده هيتمسح نهائي.':'This measurement will be permanently deleted.','تسجيل خروج؟':'Log out?','هتخرج من حسابك على الجهاز ده. بياناتك محفوظة في السحابة وهرجع لما تدخل تاني.':'You will log out on this device. Your data is safe in the cloud and returns when you sign in again.','خروج':'Log out','كمّل كده':'Continue anyway','جلسات تقيلة':'Heavy sessions','Bro Split في 3 أيام بس = جلسات طويلة (20-30 مجموعة).<br>لو أول مرة جرّب Upper / Lower أخف.':'Bro Split on only 3 days means long sessions (20-30 sets).<br>If it is your first time, try the lighter Upper / Lower.','النظام ده في 3 أيام = جلسات طويلة (20-30 مجموعة).<br>لو طاقتك قليلة جرّب Full Body أو زوّد يوم.':'This split on 3 days means long sessions (20-30 sets).<br>If your energy is low, try Full Body or add a day.','غير معروف':'unknown','كارديو':'Cardio','تمارين هوائية بمؤقت • مشي، جري، نط والمزيد':'Timed cardio with timer • walk, run, jump and more','نظام تدريبي':'Training programs','أيامك في الأسبوع':'Days per week','تمارين مسجلة':'Logged exercises','لسه مسجلتش أوزان.':'No weights logged yet.','دوس «تمرين» واختار من المكتبة أو من تمرين اليوم.':'Tap "Workout" and pick from the library or today\'s session.','اليوم فاضي.':'Today is empty.','ضيف تمارين من المكتبة.':'Add exercises from the library.','(كجم)':'(kg)','(سم)':'(cm)','(اختياري)':'(optional)','ملاحظة (اختياري) — مثلا: كتف وجعني / كانت سهلة':'Note (optional) — e.g. shoulder hurt / it was easy','أيام/أسبوع':'days/week','العدات':'Reps','عدات':'reps','اسم المسوق (مثال: كوتش أشرف)':'Marketer name (e.g. Coach Ashraf)','الكود':'Code','الكود (مثال: RAMADAN20)':'Code (e.g. RAMADAN20)','القيمة (20 = 20% أو 20 جنيه)':'Value (20 = 20% or 20 EGP)','عدد مرات (فاضي = بلا حد)':'Uses (empty = unlimited)','الاسم':'Name','نص الرأي…':'Review text…','ابحث…':'Search…','اسمك (اختياري — يظهر في التحية)':'Your name (optional — shown in greeting)','WhatsApp / واتساب (e.g. +1..., +44..., 01...)':'WhatsApp (e.g. +1..., +44..., 01...)','Confirm number / أكّد الرقم':'Confirm number',
 };
 const MSA={
+'اشترك وكمّل من غير توقف 💪':'اشترك وواصل دون توقف 💪',
+'لسه في فترة التجربة — اشترك دلوقتي والاشتراك هيبدأ من يوم التفعيل:':'ما زلت في فترة التجربة — اشترك الآن وسيبدأ اشتراكك من يوم التفعيل:',
+'اشتراكك شغال — التجديد بيتضاف على المدة اللي فاضلة ليك:':'اشتراكك فعّال — التجديد يُضاف إلى المدة المتبقية لك:',
+'✅ اتمرنت النهارده':'✅ تمرّنت اليوم',
+'(مش من جوه واتساب)':'(وليس من داخل واتساب)',
+'2) دوس':'2) اضغط',
+'فوق ←':'في الأعلى ←',
+'من شاشتك — هتفتح ملء الشاشة وتشتغل أوفلاين':'من شاشتك — سيفتح بملء الشاشة ويعمل دون اتصال',
+'افتح اللينك':'افتح الرابط',
+'تمارين هوائية بمؤقت • مشي، جري، نط والمزيد':'تمارين هوائية بمؤقت • مشي، جري، قفز والمزيد',
+'ده تمرين النهارده':'هذا تمرين اليوم',
+'اتمرن اليوم ده':'تمرّن في هذا اليوم',
+'(النهارده)':'(اليوم)',
+'— تحت كده لازم متابعة دكتور.':'— أقل من ذلك يلزم متابعة الطبيب.',
+'الماكروز اليومية بتاعتك':'الماكروز اليومية الخاصة بك',
+'سعراتك والماكروز والقواعد اللي فوق مفتوحين ليك طول التجربة.':'سعراتك والماكروز والقواعد أعلاه متاحة لك طوال فترة التجربة.',
+'7-10 آلاف خطوة في اليوم بيساعدوا في الحرق وصحة القلب من غير ما يأثروا على تعافيك.':'7-10 آلاف خطوة يوميًا تساعد على الحرق وصحة القلب دون التأثير على تعافيك.',
+'اتوزن مرة في الأسبوع، نفس اليوم، الصبح بعد الحمام وقبل الأكل — عشان الرقم يبقى صادق ومتغيرش بالأكل والمية.':'قِس وزنك مرة في الأسبوع، في اليوم نفسه، صباحًا بعد دخول الحمام وقبل الأكل — ليكون الرقم دقيقًا ولا يتأثر بالأكل والماء.',
+'كام تمرينة عايز تلعبها كل أسبوع؟ وهدفك تخسيس ولا ثبات ولا زيادة؟':'كم تمرينًا تريد في الأسبوع؟ وهل هدفك التخسيس أم الثبات أم الزيادة؟',
+'بياناتك بتتحفظ على حسابك وبتتزامن تلقائيًا لما النت يرجع — وتشتغل أوفلاين في التمرين.':'تُحفظ بياناتك على حسابك وتتزامن تلقائيًا عند عودة الإنترنت — ويعمل التطبيق دون اتصال أثناء التمرين.',
+'🗑️ امسح بياناتي':'🗑️ حذف بياناتي',
+'امسح بياناتي…':'حذف بياناتي…',
+'بيمسح تمارينك وأوزانك وقياساتك وصورك وأكلك وبروفايلك من الموبايل ومن السحابة. حسابك واشتراكك بيفضلوا زي ما هم. لو عايز تمسح الحساب نفسه ابعتلنا رسالة من الكارت اللي فوق.':'يحذف تمارينك وأوزانك وقياساتك وصورك وأكلك وملفك الشخصي من الجوال ومن السحابة. يبقى حسابك واشتراكك كما هما. لحذف الحساب نفسه أرسل لنا رسالة من البطاقة أعلاه.',
+'بياناتك محفوظة على المتصفح ده بس. لو مسحت بيانات المتصفح أو غيرت موبايلك هتضيع — اعمل نسخة كل فترة وابعتها لنفسك على واتساب أو Drive.':'بياناتك محفوظة على هذا المتصفح فقط. إذا مسحت بيانات المتصفح أو غيّرت جوالك ستضيع — احفظ نسخة من وقت لآخر وأرسلها لنفسك على واتساب أو Drive.',
+'لسه معملتش':'لم تقم بذلك بعد',
+'HM Fit — نسخة السحابة. بياناتك بتتزامن تلقائيًا لما النت يرجع.':'HM Fit — نسخة السحابة. تتزامن بياناتك تلقائيًا عند عودة الإنترنت.',
+'🧭 اعرض جولة التطبيق تاني':'🧭 اعرض جولة التطبيق مرة أخرى',
+'لو شايف الرقم ده يبقى دي أحدث نسخة':'إذا ظهر لك هذا الرقم فهذه أحدث نسخة',
+'قريت':'قرأت',
+'وموافق إن الاشتراك محتوى رقمي بيتفتح فورًا، و':'وأوافق على أن الاشتراك محتوى رقمي يُفتح فورًا، و',
+'ومفيش استرداد':'ولا يوجد استرداد',
+'2) ابعت سكرين التحويل على واتساب مع إيميلك:':'2) أرسل لقطة شاشة التحويل على واتساب مع بريدك الإلكتروني:',
+'أو أرسل لقطة الشاشة عبر واتساب بس':'أو أرسل لقطة الشاشة عبر واتساب فقط',
+'— أو ادفع يدوي: —':'— أو ادفع يدويًا: —',
+'اختار المدة ودوس ابدأ — التايمر هيعد تنازلي ويصفر لما تخلص، وتقدر توقفه مؤقتًا وتكمل. وبعدها خد راحتك بنفس مؤقت الراحة بتاعك.':'اختر المدة واضغط ابدأ — سيعدّ المؤقت تنازليًا ويُصدر صوتًا عند الانتهاء، ويمكنك إيقافه مؤقتًا ثم المتابعة. وبعدها خذ راحتك بنفس مؤقت الراحة الخاص بك.',
+'مشي سريع 20-45 دقيقة. ارفع الميل 5-10% عشان حرق أكتر من غير ضغط على الركبة، ومتسندش على الماسكات.':'مشي سريع 20-45 دقيقة. ارفع الميل 5-10% لحرق أكثر دون ضغط على الركبة، ولا تستند على المقابض.',
+'جري بسرعة تقدر تتكلم فيها بجمل قصيرة. انزل على نص رجلك وكتفك مرتاح، وزوّد المسافة تدريجي (مش أكتر من 10% في الأسبوع).':'جري بسرعة تستطيع معها الكلام بجمل قصيرة. اهبط على منتصف القدم وكتفاك مرتاحتان، وزِد المسافة تدريجيًا (لا أكثر من 10% في الأسبوع).',
+'اظبط الكرسي بحيث ركبتك فيها تنية بسيطة تحت. بدّل بمقاومة متوسطة 20-40 دقيقة — أريح كارديو على المفاصل.':'اضبط المقعد بحيث تبقى ركبتك منثنية قليلًا في الأسفل. دوّس بمقاومة متوسطة 20-40 دقيقة — أريح كارديو على المفاصل.',
+'خطوة كاملة واستخدم الماسكات عشان دراعك تشتغل كمان. 20-40 دقيقة بإيقاع ثابت — مفيش خبط على المفاصل.':'خطوة كاملة واستخدم المقابض ليعمل ذراعاك أيضًا. 20-40 دقيقة بإيقاع ثابت — دون صدمات على المفاصل.',
+'نط على مشط رجلك نطات صغيرة وكوعك جنب جسمك والرسغ هو اللي بيلف. ابدأ بجولات دقيقة مع 30 ثانية راحة.':'اقفز على مشط القدم قفزات صغيرة ومرفقاك بجانب جسمك، والرسغ هو الذي يدير الحبل. ابدأ بجولات دقيقة مع 30 ثانية راحة.',
+'اقعد في جهاز التجديف (أو الكابل) وامسك المقبض. ادفع برجلك واسحب المقبض لصدرك مع بعض، وارجع بتحكم.':'اجلس على جهاز التجديف (أو الكابل) وأمسك المقبض. ادفع برجليك واسحب المقبض نحو صدرك معًا، ثم ارجع بتحكم.',
+'نط مع فتح الرجلين ورفع الإيدين لفوق زي الرفرفة الجانبي، وانزل لجنب جسمك — وكرر بإيقاع ثابت.':'اقفز مع فتح الرجلين ورفع اليدين للأعلى كالرفرفة الجانبية، ثم أنزلهما بجانب جسمك — وكرر بإيقاع ثابت.',
+'اجري في مكانك وارفع ركبتك لفوق لحد ما تقرب من إيدك، والإيد التانية بتتحرك زي الجري — وبدّل بسرعة.':'اجرِ في مكانك وارفع ركبتك للأعلى حتى تقترب من يدك، واليد الأخرى تتحرك كما في الجري — وبدّل بسرعة.',
+'إزاي أشترك وأفعّل؟ (مصر — فودافون كاش)':'كيف أشترك وأفعّل؟ (مصر — فودافون كاش)',
+'2) دوس «كلمنا واتساب للاشتراك» — هنبعتلك':'2) اضغط «كلمنا واتساب للاشتراك» — سنرسل لك',
+'هنفعّلك أول ما التحويل يوصل (الشهر = 30 يوم من يوم التفعيل).':'سنفعّل اشتراكك فور وصول التحويل (الشهر = 30 يومًا من يوم التفعيل).',
+'إزاي أشترك وأفعّل؟ (الخليج والدولي — PayPal)':'كيف أشترك وأفعّل؟ (الخليج والدولي — PayPal)',
+'3) ابعت سكرين التحويل على واتساب مع إيميلك.':'3) أرسل لقطة شاشة التحويل على واتساب مع بريدك الإلكتروني.',
+'هنفعّلك خلال ساعات.':'سنفعّل اشتراكك خلال ساعات.',
+'التجربة المجانية فيها إيه؟':'ماذا تتضمن التجربة المجانية؟',
+'أغيّر برنامجي إزاي؟':'كيف أغيّر برنامجي؟',
+'من تبويب التمرين ابنِ برنامج جديد، أو استخدم الكوتش 🤖 (4 أسئلة) ودوس «اعتمد البرنامج». أوزانك المسجلة مش بتتمسح.':'من تبويب التمرين أنشئ برنامجًا جديدًا، أو استخدم الكوتش 🤖 (4 أسئلة) واضغط «اعتمد البرنامج». أوزانك المسجلة لا تُحذف.',
+'التغذية بتشتغل إزاي؟':'كيف تعمل التغذية؟',
+'كمّل وزنك وطولك وعمرك من «جسمي» → نحسب سعراتك (Mifflin). اختار قالب الوجبات وبدّل أي صنف، واستخدم الحاسبة لأي أكل بره نظامك.':'أكمل وزنك وطولك وعمرك من «جسمي» → نحسب سعراتك (Mifflin). اختر قالب الوجبات وبدّل أي صنف، واستخدم الحاسبة لأي طعام خارج نظامك.',
+'قياساتي اتقفلت — أعمل إيه؟':'قياساتي مقفلة — ماذا أفعل؟',
+'الطول والهدف والنشاط بيتفتحوا 24 ساعة مع كل تجديد اشتراك — ولو مشترك وفيه غلطة ابعتلنا واتساب وهنعدلهالك. الوزن حر دايمًا.':'يُفتح الطول والهدف والنشاط لمدة 24 ساعة مع كل تجديد للاشتراك — وإذا كنت مشتركًا ووجدت خطأ أرسل لنا على واتساب وسنعدّله لك. الوزن متاح للتعديل دائمًا.',
+'بياناتي بتضيع لو غيّرت موبايلي؟':'هل تضيع بياناتي إذا غيّرت جوالي؟',
+'لأ — كل حاجة بتتزامن على حسابك في السحابة. ادخل بنفس جوجل على الموبايل الجديد وكمّل من مكانك.':'لا — كل شيء يتزامن مع حسابك في السحابة. سجّل الدخول بنفس حساب جوجل على الجوال الجديد وأكمل من حيث توقفت.',
+'تلقائي = كل تمرين بياخد الراحة المناسبة ليه (المركب أطول والعزل أقصر).':'تلقائي = كل تمرين يأخذ الراحة المناسبة له (المركّب أطول والعزل أقصر).',
+'💡 خليك على ':'💡 ابقَ على ',
+'وزوّد عدة أو اتنين في كل مجموعة لحد ما توصل':'وزِد تكرارًا أو اثنين في كل مجموعة حتى تصل إلى',
+' — مش محسوب':' — لا يُحتسب',
 'جاهز تتمرن النهارده؟':'جاهز لتمرين اليوم؟',
 'تمرين — دوس وابدأ التسجيل':'تمرين — اضغط وابدأ التسجيل',
 'عاش يا وحش! قفلت هدف الأسبوع':'أحسنت يا بطل! حققت هدف الأسبوع',
@@ -1076,7 +1141,7 @@ const MSA={
 'تمام، ثبّته — اخفي الرسالة':'حسنا، ثبّته — إخفاء الرسالة',
 'دخول بجوجل':'تسجيل الدخول عبر جوجل',
 'مش مسجل دخول.':'لم يتم تسجيل الدخول.',
-'وضع أوفلاين — المزامنة محتاجةة نت.':'وضع عدم الاتصال — المزامنة تحتاج إنترنت.',
+'وضع أوفلاين — المزامنة محتاجة نت.':'وضع عدم الاتصال — المزامنة تحتاج إنترنت.',
 'مزامنة دلوقتي':'مزامنة الآن',
 'اتزامنت ✓':'تمت المزامنة ✓',
 'لسه متمتش — افتح النت':'لم تتم بعد — اتصل بالإنترنت',
@@ -1461,11 +1526,11 @@ function ceditHTML(){return '<div class="card"><h3>✏️ تعديل وصف ال
 function ceditSearch(){const q=(document.getElementById('ceQ').value||'').trim();const box=document.getElementById('ceList');if(!box)return;document.getElementById('ceForm').innerHTML='';if(q.length<2){box.innerHTML='';return;}
  const res=[];LIB.forEach(function(g){g[1].forEach(function(e){if(e[0].indexOf(q)>-1||String(exEN(e[0])).toLowerCase().indexOf(q.toLowerCase())>-1)res.push([g[0],e[0]]);});});
  box.innerHTML=res.slice(0,12).map(function(r,i){return '<button class="btn btn-sm" style="margin:4px 0 0 4px" onclick="ceditOpen('+i+')">'+esc(r[1])+' <span class="muted" style="font-size:11px">('+esc(r[0])+')</span></button>';}).join('')||'<p class="muted">مفيش تمرين بالاسم ده.</p>';view._ceRes=res.slice(0,12);}
-function ceditOpen(i){const r=(view._ceRes||[])[i];if(!r)return;const n=r[1];let ar='';LIB.forEach(function(g){g[1].forEach(function(e){if(e[0]===n)ar=e[1];});});const en=(EXDESC_EN&&EXDESC_EN[n])||'';view._ceName=n;
- document.getElementById('ceList').innerHTML='';document.getElementById('ceForm').innerHTML='<div class="admrow" style="display:block"><b>'+esc(n)+'</b> <span class="muted" dir="ltr">'+esc(exEN(n))+'</span><p class="sub" style="margin:8px 0 2px">الشرح العربي</p><textarea class="full" id="ceAr" rows="5" maxlength="900">'+esc(ar)+'</textarea><p class="sub" style="margin:8px 0 2px">الشرح الإنجليزي</p><textarea class="full" id="ceEn" rows="4" maxlength="900" dir="ltr">'+esc(en)+'</textarea><div class="row"><button class="btn btn-sm" onclick="document.getElementById(\'ceForm\').innerHTML=\'\'">إلغاء</button><button class="btn btn-neon btn-sm" style="flex:1" onclick="ceditSave()">💾 حفظ ونشر للمشتركين</button></div></div>';}
-function ceditSave(){const n=view._ceName;const ar=(document.getElementById('ceAr').value||'').trim(),en=(document.getElementById('ceEn').value||'').trim();if(!n)return;if(ar.length<20){noteSheet('الشرح العربي قصير أوي — اكتب الخطوات كاملة.');return;}
+function ceditOpen(i){const r=(view._ceRes||[])[i];if(!r)return;const n=r[1];let ar='';LIB.forEach(function(g){g[1].forEach(function(e){if(e[0]===n)ar=e[1];});});const en=(EXDESC_EN&&EXDESC_EN[n])||'';const gu=(EXDESC_GULF&&EXDESC_GULF[n])||'';view._ceName=n;
+ document.getElementById('ceList').innerHTML='';document.getElementById('ceForm').innerHTML='<div class="admrow" style="display:block"><b>'+esc(n)+'</b> <span class="muted" dir="ltr">'+esc(exEN(n))+'</span><p class="sub" style="margin:8px 0 2px">الشرح العربي</p><textarea class="full" id="ceAr" rows="5" maxlength="900">'+esc(ar)+'</textarea><p class="sub" style="margin:8px 0 2px">الشرح الإنجليزي</p><textarea class="full" id="ceEn" rows="4" maxlength="900" dir="ltr">'+esc(en)+'</textarea><p class="sub" style="margin:8px 0 2px">الشرح الفصحى (نسخة الخليج)</p><textarea class="full" id="ceGu" rows="5" maxlength="900">'+esc(gu)+'</textarea><div class="row"><button class="btn btn-sm" onclick="document.getElementById(\'ceForm\').innerHTML=\'\'">إلغاء</button><button class="btn btn-neon btn-sm" style="flex:1" onclick="ceditSave()">💾 حفظ ونشر للمشتركين</button></div></div>';}
+function ceditSave(){const n=view._ceName;const ar=(document.getElementById('ceAr').value||'').trim(),en=(document.getElementById('ceEn').value||'').trim(),gu=(document.getElementById('ceGu').value||'').trim();if(!n)return;if(ar.length<20){noteSheet('الشرح العربي قصير أوي — اكتب الخطوات كاملة.');return;}
  askSheet('نشر التعديل؟','هيتعدّل شرح <b>'+esc(n)+'</b> عند كل المشتركين.','نشر',false,function(){const ref=firebase.firestore().collection('content').doc('workout');
-  ref.get().then(function(d){if(!d.exists)throw new Error('مفيش محتوى على السحابة');const o=JSON.parse(d.data().json||'{}');let ok=false;(o.LIB||[]).forEach(function(g){g[1].forEach(function(e){if(e[0]===n){e[1]=ar;ok=true;}});});if(!ok)throw new Error('التمرين مش موجود في نسخة السحابة');if(!o.EXDESC_EN)o.EXDESC_EN={};if(en)o.EXDESC_EN[n]=en;
+  ref.get().then(function(d){if(!d.exists)throw new Error('مفيش محتوى على السحابة');const o=JSON.parse(d.data().json||'{}');let ok=false;(o.LIB||[]).forEach(function(g){g[1].forEach(function(e){if(e[0]===n){e[1]=ar;ok=true;}});});if(!ok)throw new Error('التمرين مش موجود في نسخة السحابة');if(!o.EXDESC_EN)o.EXDESC_EN={};if(en)o.EXDESC_EN[n]=en;if(!o.EXDESC_GULF)o.EXDESC_GULF={};if(gu)o.EXDESC_GULF[n]=gu;
    const now=Date.now();return ref.set({json:JSON.stringify(o),v:now,updatedAt:now,by:fbEmail(),lastAppEdit:now},{merge:true}).then(function(){return firebase.firestore().collection('content').doc('meta').set({vw:now,at:now},{merge:true});}).then(function(){applyContent({workout:o,nutrition:{FOODS_AR:FOODS_AR,FOODS_EN:FOODS_EN,FOODS_GULF:FOODS_GULF,CORE_AR:CORE_AR,CORE_EN:CORE_EN,CORE_GULF:CORE_GULF,CAL100:CAL100,CAL100_EN:CAL100_EN}});try{const c=contentCache(false);if(c){c.workout=o;c.vw=now;localStorage.setItem(CONTENT_KEY,JSON.stringify(c));}}catch(e){}});})
   .then(function(){document.getElementById('ceForm').innerHTML='';noteSheet('اتنشر ✅ — المشتركين هيشوفوا الشرح الجديد أول ما يفتحوا التطبيق.');})
   .catch(function(e){noteSheet('فشل: '+esc((e&&e.message)||''));});});}
@@ -1569,8 +1634,8 @@ function shareWeek(){const s=lastWeekStats();const EN=myRegion()==='en';const W=
    const u=URL.createObjectURL(bl);const a=document.createElement('a');a.href=u;a.download='hmfit-week.png';document.body.appendChild(a);a.click();setTimeout(function(){a.remove();URL.revokeObjectURL(u);},3000);},'image/png');}catch(e){noteSheet(EN?'Could not create the image.':'مقدرناش نعمل الصورة.');}};
  const img=new Image();let done=false;const go2=function(){if(done)return;done=true;build(img.complete&&img.naturalWidth?img:null);};img.onload=go2;img.onerror=go2;img.src='hm-logo-512.png?v=2';setTimeout(go2,2000);}
 /* ===== App Check (حماية من البوتات) — جاهز، بيشتغل بس لما يتحط مفتاح reCAPTCHA v3 هنا ويتفعل من Firebase Console ===== */
-const APPCHECK_KEY='';
-function appCheckInit(){if(!APPCHECK_KEY||window._acOn)return;window._acOn=true;const s=document.createElement('script');s.src='https://www.gstatic.com/firebasejs/10.12.2/firebase-app-check-compat.js';s.onload=function(){try{firebase.appCheck().activate(new firebase.appCheck.ReCaptchaV3Provider(APPCHECK_KEY),true);}catch(e){}};document.head.appendChild(s);}
+const APPCHECK_KEY='6LdJnDYuAAAAALNkXxkz8J7eF8gFqQLx-QZ2m1XG';
+function appCheckInit(){if(!APPCHECK_KEY||window._acOn)return;window._acOn=true;if(firebase.appCheck){try{firebase.appCheck().activate(new firebase.appCheck.ReCaptchaEnterpriseProvider(APPCHECK_KEY),true);}catch(e){}return;}const s=document.createElement('script');s.src='https://www.gstatic.com/firebasejs/10.12.2/firebase-app-check-compat.js';s.onload=function(){try{firebase.appCheck().activate(new firebase.appCheck.ReCaptchaEnterpriseProvider(APPCHECK_KEY),true);}catch(e){}};document.head.appendChild(s);}
 /* ===== رسالة "فيه تحديث جديد" ===== */
 function swSetup(){navigator.serviceWorker.register('sw.js').then(function(reg){
  const show=function(){if(document.getElementById('updBar'))return;const EN=myRegion()==='en';const d=document.createElement('div');d.id='updBar';d.setAttribute('role','status');d.style.cssText='position:fixed;left:12px;right:12px;bottom:calc(88px + env(safe-area-inset-bottom));z-index:9998;background:#0f1a17;border:1px solid var(--neon);border-radius:14px;padding:10px 12px;display:flex;gap:10px;align-items:center;box-shadow:0 10px 30px rgba(0,0,0,.5)';d.innerHTML='<span style="flex:1;font-size:13.5px">'+(EN?'✨ A new version of HM Fit is ready.':'✨ فيه نسخة جديدة من HM Fit جاهزة.')+'</span><button class="btn btn-neon btn-sm" onclick="location.reload()">'+(EN?'Update':'حدّث')+'</button>';document.body.appendChild(d);};
@@ -1758,6 +1823,8 @@ function render(){
   if(!db.profile.onboarded){a.innerHTML='';navOn('nav-home');return;}
   const v=view.name;
   if(v==='admin'){a.innerHTML=renderAdmin();navOn('nav-more');return;}
+  if(v==='comm'){a.innerHTML=renderComm();navOn('nav-more');return;}
+  if(v==='adm'){a.innerHTML=renderAdmSub();navOn('nav-more');return;}
   if(v==='coach'){a.innerHTML=coachHTML();navOn('nav-home');return;}
   if(v==='plans'){a.innerHTML=renderPaywall(false)+'<button class="btn" onclick="go(\'more\')">'+icon('back')+' رجوع</button>';navOn('nav-more');return;}
   if(v==='faq'){a.innerHTML=faqHTML();navOn('nav-more');return;}
@@ -1829,7 +1896,7 @@ function render(){
       /* الاسم في سطر لوحده والزراير تحته — عشان الاسم ميتعصرش على الموبايل */
       h+='<div class="card"><div class="row" style="flex-wrap:nowrap">'+exThumb(e.name)+exShow(e)+(e.muscle&&e.muscle!=='عام'?'<span class="meta" style="font-size:11.5px;color:var(--muted)">'+esc(END2?musEN(e.muscle):e.muscle)+'</span>':'')+'</div>';
       h+='<div class="row" style="justify-content:flex-end;margin-top:0"><button class="ibtn" aria-label="'+(END2?'Move up':'لفوق')+'" onclick="moveEx('+i+',-1)">'+icon('up')+'</button><button class="ibtn" aria-label="'+(END2?'Move down':'لتحت')+'" onclick="moveEx('+i+',1)">'+icon('down')+'</button><button class="ibtn" aria-label="'+(END2?'Rename':'تغيير الاسم')+'" onclick="renameEx('+i+')">'+icon('pen')+'</button><button class="ibtn danger" aria-label="'+(END2?'Delete':'حذف')+'" onclick="delEx('+i+')">'+icon('trash')+'</button></div>'+exMetaHTML(e);
-      h+='<p class="sub" style="margin:2px 0 4px;cursor:pointer" onclick="openLb(\''+e.name.replace(/'/g,"\\'")+'\')">'+esc(END2?(EXDESC_EN[e.name]||'Tap the image to view the exercise'):(e.desc||'دوس على الصورة عشان تشوف التمرين'))+'</p>';
+      h+='<p class="sub" style="margin:2px 0 4px;cursor:pointer" onclick="openLb(\''+e.name.replace(/'/g,"\\'")+'\')">'+esc(END2?(EXDESC_EN[e.name]||'Tap the image to view the exercise'):arDesc(e.name,e.desc||'دوس على الصورة عشان تشوف التمرين'))+'</p>';
       if(swapAltsOf(d,e.name).length)h+='<button class="btn btn-sm btn-block" style="margin-bottom:6px" onclick="swapExById(\''+d.id+'\','+i+')">'+icon('swap')+' '+(END2?'Swap for another exercise (same muscle)':'تبديل التمرين ببديل لنفس العضلة')+'</button>';
       e.sets.forEach(function(s,j){
         h+='<div class="setbox"><div class="row" style="flex-wrap:nowrap"><span class="snum">'+(j+1)+'</span><input class="w" style="flex:1;min-width:0;width:auto" type="number" inputmode="decimal" placeholder="'+(END2?'kg':'كجم')+'" value="'+esc(s.w)+'" onchange="setT('+i+','+j+',\'w\',this.value)"> <span class="muted">'+(END2?'kg':'كجم')+'</span><input class="r" style="flex:1;min-width:0;width:auto" type="number" inputmode="numeric" placeholder="'+(END2?'reps':'عدات')+'" value="'+esc(s.r)+'" onchange="setT('+i+','+j+',\'r\',this.value)"> <span class="muted">'+(END2?'reps':'عدة')+'</span><button class="ibtn danger" aria-label="'+(END2?'Delete set':'حذف الدور')+'" onclick="delSet('+i+','+j+')">'+icon('x')+'</button></div></div>';
@@ -2070,28 +2137,46 @@ const FB_CONFIG={apiKey:"AIzaSyA4ZzZSxvOro9cZpj8dH2Cp2MODyFV3Cj8",authDomain:(/^
 const ADMINS=["hmohsen282@gmail.com","7snmo7sen1998@gmail.com"];
 const TRIAL_DAYS=7, WAS_M=350, WAS_Y=4200;
 const P1_END=new Date(2027,0,5,23,59,59).getTime();
+/* ===== المسوقين: أسعار ما بعد العرض + خصم العميل (d) وعمولة المسوق (c) بأرقام ثابتة — بيشتغلوا بعد ما العرض يخلص ===== */
+const COMM_START=P1_END+1000;
+const COMM_BASE={EGP:{m:350,q:899,y:3500},USD:{m:8.99,q:22.99,y:89.99}};
+const COMM_DEF={EGP:{m:{d:50,c:100},q:{d:100,c:200},y:{d:400,c:600}},USD:{m:{d:1.5,c:2.5},q:{d:3,c:5},y:{d:10,c:15}}};
 function egPrices(){const n=Date.now();
  if(n<=P1_END)return{m:99,q:249,y:999,qw:1050,tag:'\u23f3 عرض الافتتاح \u2014 ساري حتى 5 يناير (الشهر بـ 99 بدل 350)'};
- return{m:350,q:899,y:3500,qw:1050,tag:'الأسعار الأساسية'};}
+ return{m:COMM_BASE.EGP.m,q:COMM_BASE.EGP.q,y:COMM_BASE.EGP.y,qw:1050,tag:'الأسعار الأساسية'};}
 function curPrices(){return isUSD()?usdPrices():egPrices();}
 function PRICE_M(){return curPrices().m;} function PRICE_Y(){return curPrices().y;}
 function pp(plan){const p=curPrices(),base=plan==='m'?p.m:(plan==='q'?p.q:p.y);const c=view.coupon;
+ if(c&&c.type==='affil'){if(Date.now()<COMM_START)return{base:base,final:base};const dd=(((c.d||{})[isUSD()?'USD':'EGP'])||{})[plan];const dv=+(dd&&dd.d!=null?dd.d:dd)||0;return{base:base,final:Math.max(1,Math.round((base-dv)*100)/100)};}
  if(c&&(c.plan==='both'||c.plan===plan)){if(c.type==='pct')return{base:base,final:Math.max(1,Math.round(base*(1-c.value/100)))};if(c.type==='flat')return{base:base,final:Math.max(1,base-c.value)};}return{base:base,final:base};}
 function saveMsg(plan){try{var r=pp(plan);var sv=Math.round((r.base-r.final)*100)/100;if(!(sv>0))return '';if(isUSD())return ' (you save $'+sv+')';return ' (وفّرت '+sv+' جنيه)';}catch(e){return '';}}
 function cpnMsg(){try{var c=view.coupon;if(!c||!(c.value>0))return '';var EN=myRegion()==='en';var parts=[];var plans=c.plan==='both'?['m','q','y']:[c.plan];var lbl={m:EN?'Monthly':'شهري',q:EN?'3 months':'3 شهور',y:EN?'Yearly':'سنوي'};plans.forEach(function(pl){var r=pp(pl);if(r.final<r.base)parts.push(lbl[pl]+' '+(EN?'$'+r.final+' (was $'+r.base+saveMsg(pl)+')':'<b style="color:#fff">'+r.final+'</b> بدل '+r.base+saveMsg(pl)));});if(!parts.length)return EN?'Code <b>'+esc(c.code)+'</b> active (tracking code)':'كود <b>'+esc(c.code)+'</b> شغال (كود متابعة)';var head=EN?('Code <b>'+esc(c.code)+'</b> works — '):('✅ كود <b>'+esc(c.code)+'</b> شغال — ');return '<p class="sub">'+head+parts.join(' • ')+'</p>';}catch(e){return '';}}
 function applyCoupon(){
  const i=document.getElementById('cpnIn');const code=((i&&i.value)||'').trim().toUpperCase().replace(/\s+/g,'');
- if(!code)return appAlert('اكتب الكود الأول');
+ if(!code)return appAlert(myRegion()==='en'?'Type the code first':'اكتب الكود الأول');
+ applyCouponCode(code,false);
+}
+/* silent=true: كود جاي من لينك المسوق — لو فيه مشكلة منزعجش العميل برسالة */
+function applyCouponCode(code,silent){
+ const EN=myRegion()==='en';
  firebase.firestore().collection('coupons').doc(code).get().then(function(d){
-  if(!d.exists)return appAlert('الكود ده مش موجود — اتأكد من الحروف');
+  if(!d.exists){if(!silent)appAlert(EN?'This code does not exist — check the letters':'الكود ده مش موجود — اتأكد من الحروف');return;}
   const o=d.data()||{};
-  if(o.active===false)return appAlert('الكود ده موقوف حاليًا');
-  if(o.maxUses>0&&(o.used||0)>=o.maxUses)return appAlert('الكود ده خلص (وصل للحد الأقصى)');
+  if(o.active===false){if(!silent)appAlert(EN?'This code is paused right now':'الكود ده موقوف حاليًا');return;}
+  if(o.type==='affil'){
+   if(Date.now()<COMM_START){if(!silent)appAlert(EN?'This code starts working on January 6 💚\nThe launch offer price is already lower right now.':'الكود ده هيشتغل من 6 يناير 💚\nسعر عرض الافتتاح دلوقتي أقل منه أصلًا.');return;}
+   view.coupon={code:code,type:'affil',d:o.d||{},value:1,plan:'both'};view.couponInput=code;render();return;
+  }
+  if(o.maxUses>0&&(o.used||0)>=o.maxUses){if(!silent)appAlert(EN?'This code has run out':'الكود ده خلص (وصل للحد الأقصى)');return;}
   view.coupon={code:code,type:o.type||'pct',value:+o.value||0,plan:o.plan||'both'};
   view.couponInput=code;render();
- }).catch(function(){appAlert('محتاج نت عشان أتحقق من الكود');});
+ }).catch(function(){if(!silent)appAlert(EN?'You need internet to check the code':'محتاج نت عشان أتحقق من الكود');});
 }
-function couponUse(){try{if(view.coupon&&fbOK&&fbUser){const code=view.coupon.code;const fs=firebase.firestore(),b=fs.batch();b.set(fs.collection('couponUses').doc(code+'_'+fbUser.uid),{code:code,uid:fbUser.uid,ts:Date.now()});b.update(fs.collection('coupons').doc(code),{used:firebase.firestore.FieldValue.increment(1)});b.commit().catch(function(){});const pl=view.payPlan||'m',pr=pp(pl).final;firebase.firestore().collection('refs').add({code:code,email:fbUser.email,plan:pl,price:pr,ts:Date.now()});}}catch(e){}}
+/* لينك المسوق: hm-fit.com/?code=XXXX — بيتحفظ على الجهاز ويتكتب لوحده في شاشة الدفع */
+(function(){try{const q=new URLSearchParams(location.search);const c=(q.get('code')||q.get('ref')||'').trim().toUpperCase().replace(/[^A-Z0-9_-]/g,'').slice(0,30);if(c){localStorage.setItem('hmfit_refcode',c);q.delete('code');q.delete('ref');const s=q.toString();history.replaceState(null,'',location.pathname+(s?'?'+s:'')+location.hash);}}catch(e){}})();
+let _refTried=false;
+function refAutoApply(){try{if(_refTried||view.coupon||!fbOK||!fbUser)return;const c=localStorage.getItem('hmfit_refcode');if(!c)return;_refTried=true;view.couponInput=c;applyCouponCode(c,true);}catch(e){}}
+function couponUse(){try{if(view.coupon&&fbOK&&fbUser){const code=view.coupon.code;const fs=firebase.firestore(),b=fs.batch();b.set(fs.collection('couponUses').doc(code+'_'+fbUser.uid),{code:code,uid:fbUser.uid,ts:Date.now()});b.update(fs.collection('coupons').doc(code),{used:firebase.firestore.FieldValue.increment(1)});b.commit().catch(function(){});}}catch(e){}}
 const PAY_VODA="01040957360", PAY_WA="201040957360";
 const PAYPAL_ME="https://paypal.me/hmfit98";
 const PAYPAL_CLIENT_ID="BAA-RxBadynNO3EqlIynRZIxadU-RAB08oRyEm_SsiGBQ7L-33SiOB-5DQ7b8I1vwyvLJAXUeg0cALhqUI";
@@ -2104,7 +2189,7 @@ function setRegion(r){try{localStorage.setItem('hmfit_region',r);}catch(e){} try
 function resetRegion(){if(fbUser&&!isAdmin())return;try{localStorage.removeItem('hmfit_region');}catch(e){} try{if(db.profile){delete db.profile.region;save();}}catch(e){} render();}
 function usdPrices(){const n=Date.now();
  if(n<=P1_END)return{m:4.99,q:11.99,y:29.99,mw:8.99,qw:26.99,yw:107.99,tag:'launch'};
- return{m:8.99,q:22.99,y:89.99,mw:8.99,qw:26.99,yw:107.99,tag:'base'};}
+ return{m:COMM_BASE.USD.m,q:COMM_BASE.USD.q,y:COMM_BASE.USD.y,mw:8.99,qw:26.99,yw:107.99,tag:'base'};}
 function money(v){return isUSD()?'$'+v:v+' جنيه';}
 function wasM(){return isUSD()?usdPrices().mw:WAS_M;}
 function wasQ(){return isUSD()?usdPrices().qw:1050;}
@@ -2132,7 +2217,10 @@ function renderPaywallUSD(full){
  const wa='https://wa.me/'+PAY_WA+'?text='+encodeURIComponent((EN?'HM Fit subscription — email: ':'اشتراك HM Fit — إيميلي: ')+(fbUser?fbUser.email:'')+' — '+(EN?'plan: ':'الباقة: ')+planName+' $'+planPrice+(view.coupon?((EN?' — coupon: ':' — كود الخصم: ')+view.coupon.code):'')+(EN?' — sent the screenshot':' — وبعت سكرين التحويل'));
  const payLink=PAYPAL_ME?('https://www.paypal.com/paypalme/'+PAYPAL_ME.replace(/^.*paypal\.me\//,'')):('https://wa.me/'+PAY_WA+'?text='+encodeURIComponent(EN?'Send me the PayPal payment link please':'ابعتلي لينك الدفع PayPal لو سمحت'));
  view._payWa=wa;let h=payReqStatusHTML()+whyHTML()+'<div class="card glow"><div class="loginhero" style="padding:10px 6px"><img src="hm-logo-192.png?v=2" alt="HM Fit">'
-  +'<h2>'+(EN?'Trial ended 😅':'التجربة خلصت 😅')+'</h2><p class="muted">'+(EN?'Keep your progress — activate in a minute:':'عشان تكمل تمرينك ومتخسرش تقدمك، فعّل اشتراكك في دقيقة:')+'</p></div>'
+  +(function(){const k=subState().k;
+     if(k==='trial')return '<h2>'+(EN?'Subscribe and keep going 💪':'اشترك وكمّل من غير توقف 💪')+'</h2><p class="muted">'+(EN?'You are still on your free trial — your plan starts from the day it is activated:':'لسه في فترة التجربة — اشترك دلوقتي والاشتراك هيبدأ من يوم التفعيل:')+'</p>';
+     if(k==='sub')return '<h2>'+(EN?'Renew your plan 💪':'جدّد اشتراكك 💪')+'</h2><p class="muted">'+(EN?'Your plan is active — renewing adds to the time you have left:':'اشتراكك شغال — التجديد بيتضاف على المدة اللي فاضلة ليك:')+'</p>';
+     return '<h2>'+(EN?'Trial ended 😅':'التجربة خلصت 😅')+'</h2><p class="muted">'+(EN?'Keep your progress — activate in a minute:':'عشان تكمل تمرينك ومتخسرش تقدمك، فعّل اشتراكك في دقيقة:')+'</p>';})()+'</div>'
   +'<p class="sub" style="text-align:center">'+offCdHTML()+'</p>'
   +'<div class="paybox hot"><b>'+(EN?'Monthly':'شهري')+' — $'+T.m+'</b>'+(T.m<T.mw?' <s class="muted">'+(EN?'was':'بدل')+' $'+T.mw+'</s>':'')+'</div>'
   +'<div class="paybox"><b>'+(EN?'Yearly':'سنوي')+' — $'+T.y+'</b>'+(T.y<T.yw?' <s class="muted">'+(EN?'was':'بدل')+' $'+T.yw+'</s>':'')+' <span class="badge">'+(EN?'Best value':'الأوفر — أوفر من الشهري')+'</span></div>'
@@ -2213,18 +2301,34 @@ function payAdminLoad(){
 function payReject(pid,email){askSheet('رفض طلب '+email+'؟','استخدمه لو التحويل موصلش أو الطلب غلط. العميل يقدر يبعت طلب جديد بعدها.','رفض',true,function(){firebase.firestore().collection('payreq').doc(pid).set({status:'rejected',by:fbEmail(),doneAt:Date.now()},{merge:true}).then(function(){noteSheet('اترفض');try{payAdminLoad();}catch(e){}}).catch(function(e){noteSheet('فشل: '+esc((e&&e.message)||''));});});}
 function payApprove(pid,email,plan){
  if(!email)return noteSheet('مفيش إيميل في الطلب');
- askSheet('تفعيل '+email+'؟','هتفعّل باقة <b>'+esc(plan)+'</b> من دلوقتي.','تفعيل',false,function(){
-  firebase.firestore().collection('users').where('email','==',email).limit(1).get().then(function(q){
-   if(q.empty){noteSheet('مفيش حساب مسجل بالإيميل ده');return;}
-   const doc=q.docs[0],o=doc.data()||{};
-   const now=Date.now(),D=86400000;
-   const days=plan==='y'?365:(plan==='q'?90:30);
-   const u={subUntil:Math.max(now,o.subUntil||0)+days*D,blocked:false,measUnlockUntil:now+24*3600000,actNote:now};
-   firebase.firestore().collection('users').doc(doc.id).set(u,{merge:true}).then(function(){
-    firebase.firestore().collection('payreq').doc(pid).set({status:'done',by:fbEmail(),doneAt:Date.now()},{merge:true}).then(function(){noteSheet('اتفعل ✅');try{payAdminLoad();adminLoad();}catch(e){}});
-   }).catch(function(e){noteSheet('فشل: '+(e&&e.message));});
-  }).catch(function(e){noteSheet('فشل: '+(e&&e.message));});
- });
+ const fs=firebase.firestore();
+ fs.collection('payreq').doc(pid).get().then(function(pd){
+  const pr=pd.exists?(pd.data()||{}):{};plan=pr.plan||plan;
+  const cur=(pr.region||'eg')==='eg'?'EGP':'USD';
+  return commFor(pr.coupon,plan,cur,Date.now()).then(function(cm){
+   const PN={m:'شهري',q:'3 شهور',y:'سنوي'}[plan]||plan;
+   let msg='هتفعّل باقة <b>'+PN+'</b> من دلوقتي.';
+   if(pr.price!=null)msg+='<br>المبلغ اللي العميل كتبه: <b>'+cmFmt(pr.price,cur)+'</b>';
+   if(cm)msg+='<br>🤝 كود <b dir="ltr">'+esc(cm.code)+'</b> ('+esc(cm.name)+')<br>المفروض العميل دفع <b>'+cmFmt(cm.paid,cur)+'</b> • عمولة المسوق <b>'+cmFmt(cm.comm,cur)+'</b>'+(pr.price!=null&&Math.abs((+pr.price)-cm.paid)>0.01?'<br><b style="color:#ffb74d">⚠️ المبلغ مختلف — راجع التحويل قبل التفعيل</b>':'');
+   else if(pr.coupon)msg+='<br>كود <b dir="ltr">'+esc(pr.coupon)+'</b> — من غير عمولة';
+   askSheet('تفعيل '+email+'؟',msg,'تفعيل',false,function(){
+    fs.collection('users').where('email','==',email).limit(1).get().then(function(q){
+     if(q.empty){noteSheet('مفيش حساب مسجل بالإيميل ده');return;}
+     const doc=q.docs[0],o=doc.data()||{};
+     const now=Date.now(),D=86400000;
+     const days=plan==='y'?365:(plan==='q'?90:30);
+     const u={subUntil:Math.max(now,o.subUntil||0)+days*D,blocked:false,measUnlockUntil:now+24*3600000,actNote:now};
+     fs.collection('users').doc(doc.id).set(u,{merge:true}).then(function(){
+      return fs.collection('payreq').doc(pid).set({status:'done',by:fbEmail(),doneAt:now},{merge:true});
+     }).then(function(){
+      if(!cm)return null;
+      return commSave(pid+'_'+(pr.ts||now),cm,{uid:doc.id,email:email,src:'payreq',method:pr.method||(pr.captureId?'pp':''),reported:pr.price!=null?+pr.price:null},now);
+     }).then(function(){noteSheet('اتفعل ✅'+(cm?'<br>🤝 اتسجلت عمولة '+cmFmt(cm.comm,cm.cur)+' لـ '+esc(cm.name):''));try{payAdminLoad();adminLoad();}catch(e){}})
+     .catch(function(e){noteSheet('فشل: '+esc((e&&e.message)||''));});
+    }).catch(function(e){noteSheet('فشل: '+esc((e&&e.message)||''));});
+   });
+  });
+ }).catch(function(e){noteSheet('فشل تحميل الطلب: '+esc((e&&e.message)||''));});
 }
 let fbUser=null,fbSub=null,fbReady=false,fbOK=false,_cloudT=null,_lastCloud=0;
 function fbEmail(){return (fbUser&&fbUser.email||'').toLowerCase();}
@@ -2333,6 +2437,7 @@ function fbGate(){
   return null;
 }
 function renderPaywall(full){
+  setTimeout(refAutoApply,60);
   if(isUSD())return renderPaywallUSD(full);
   const em=esc(fbUser?fbUser.email:'');
   const pm=pp('m'),pq=pp('q'),py=pp('y');
@@ -2422,7 +2527,7 @@ let contentReady=false,_contentLoading=false,_contentErr='';
 function applyContent(c){
  try{
   const w=c.workout||{},n=c.nutrition||{};
-  if(w.LIB)LIB=w.LIB;if(w.EXDESC_EN)EXDESC_EN=w.EXDESC_EN;if(w.SWAPS)SWAPS=w.SWAPS;if(w.BUILD)BUILD=w.BUILD;
+  if(w.LIB)LIB=w.LIB;if(w.EXDESC_EN)EXDESC_EN=w.EXDESC_EN;if(w.EXDESC_GULF)EXDESC_GULF=w.EXDESC_GULF;if(w.SWAPS)SWAPS=w.SWAPS;if(w.BUILD)BUILD=w.BUILD;
   if(n.FOODS_AR)FOODS_AR=n.FOODS_AR;if(n.FOODS_EN)FOODS_EN=n.FOODS_EN;if(n.FOODS_GULF)FOODS_GULF=n.FOODS_GULF;
   if(n.CORE_AR)CORE_AR=n.CORE_AR;if(n.CORE_EN)CORE_EN=n.CORE_EN;if(n.CORE_GULF)CORE_GULF=n.CORE_GULF;
   if(n.CAL100)CAL100=n.CAL100;if(n.CAL100_EN)CAL100_EN=n.CAL100_EN;
@@ -2615,7 +2720,7 @@ function profileFormHTML(){
 }
 function fbAccountHTML(){
  const EN=myRegion()==='en';
-  if(!fbOK)return EN?'<p class="sub">Offline — sync needs internet.</p>':'<p class="sub">وضع أوفلاين — المزامنة محتاجةة نت.</p>';
+  if(!fbOK)return EN?'<p class="sub">Offline — sync needs internet.</p>':'<p class="sub">وضع أوفلاين — المزامنة محتاجة نت.</p>';
   if(!fbUser)return EN?'<p class="sub">Not signed in.</p>':'<p class="sub">مش مسجل دخول.</p>';
   const st=subState();
   const sync=(_lastCloud||+localStorage.getItem('hmfit_sync')||0);
@@ -2712,31 +2817,57 @@ function plansCardEN(){
 function renderAdmin(){
   if(!isAdmin())return '<div class="card"><div class="empty">للأدمن بس.</div></div>';
   let h='<div class="section-head"><h2>لوحة الأدمن</h2><span class="badge">تحكم كامل</span></div>';
-  h+=backupCardHTML();
-  h+='<div id="admFollow"><div class="card"><p class="muted">جاري تحميل المتابعة…</p></div></div>';
-  h+='<div class="card"><h3>📨 اقتراحات ومشاكل من المشتركين</h3><div id="admFbk"><p class="muted">جاري التحميل…</p></div></div>';h+='<div class="card"><h3>🤔 ليه مشتركوش؟</h3><div id="admWhy"><p class="muted">جاري التحميل…</p></div></div>';h+=ceditHTML();h+='<div class="card"><h3>🐞 أعطال التطبيق</h3><div id="admErr"><p class="muted">جاري التحميل…</p></div></div>';
-  h+='<div class="card"><h3>رسالة جماعية \uD83D\uDCE9</h3><div class="row"><textarea class="full" id="anncIn" rows="1" style="flex:1;text-align:right;min-height:44px" placeholder="اكتب رسالة لكل المشتركين…"></textarea></div><div class="row"><button class="btn btn-neon btn-sm" style="flex:1" onclick="sendAnnc()">إرسال</button><button class="btn btn-sm" onclick="clearAnnc()">مسح</button></div><div id="anncCur"><p class="muted">جاري التحميل…</p></div><div id="anncReads"><p class="muted"></p></div></div>';
-  setTimeout(anncAdminLoad,50);setTimeout(anncReadsLoad,60);setTimeout(friendStateLoad,70);setTimeout(admFbkLoad,80);setTimeout(admErrLoad,90);setTimeout(admWhyLoad,100);
-  h+='<div class="card"><h3>\uD83E\uDD1D المسوقين (أفلييت)</h3><p class="sub">كود لكل مسوق: خصم للمشتري + عمولة تتحسب تلقائي.</p>'
-    +'<div class="row"><input class="full" id="afName" style="flex:1" placeholder="اسم المسوق (مثال: كوتش أشرف)"><input class="full" id="afCode" style="flex:1;max-width:130px" placeholder="الكود"></div>'
-    +'<div class="row"><select id="afPlan" style="flex:1" onchange="afSync(1)"><option value="m">شهري بس</option><option value="q">3 شهور بس</option><option value="y">سنوي بس</option></select></div><div class="row"><input class="w" style="flex:1" type="number" id="afDisc" value="0" placeholder="خصم % (حد أقصى 20)" oninput="afSync(1)"><input class="w" style="flex:1" type="number" id="afFlat" placeholder="خصم بالجنيه" oninput="afSync(0)"></div><div class="row"><input class="w" style="flex:1" type="number" id="afRate" value="15" placeholder="عمولة % (حد أقصى 30)" oninput="afSync(1)"><input class="w" style="flex:1" type="number" id="afAmt" placeholder="عمولة بالجنيه" oninput="afSync(0)"></div><p class="sub" id="afHint"></p><div class="row"><button class="btn btn-neon btn-sm" style="flex:1" onclick="affilCreate()">إضافة مسوق</button></div><div id="affList"><p class="muted">جاري التحميل…</p></div></div>';
-  h+='<div class="card"><h3>\u2B50 آراء المشتركين</h3><p class="sub">اللي تظهره هنا بيبان للعملاء في الرئيسية. لو فاضية مش هيظهر حاجة خالص.</p><div class="row"><input class="full" id="rvName" style="flex:1;max-width:140px" placeholder="الاسم"><input class="full" id="rvText" style="flex:2" placeholder="نص الرأي…"></div><div class="row"><input class="w" style="flex:1" id="rvBefore" placeholder="قبل (مثال: 95 كجم)"><input class="w" style="flex:1" id="rvAfter" placeholder="بعد (مثال: 80 كجم)"></div><div class="row"><input class="full" id="rvPhoto" style="flex:1" placeholder="رابط صورة قبل/بعد (اختياري)"></div><button class="btn btn-neon btn-sm btn-block" onclick="revCreate()">نشر الرأي</button><div id="revList"><p class="muted">جاري التحميل…</p></div></div>';
-  setTimeout(revAdminLoad,60);
-  h+='<div class="card"><h3>🎁 أكواد الصحاب</h3><p class="sub">SAHBY20 (مصر) • RAB3Y20 (الخليج) • BUDDY20 (دولي) — كل واحد خصم 20% على الشهري بس. بتشتغل وتقف من هنا بس، ولما تبقى شغالة بيظهر للعملاء كارت "ابعته لصاحبك".</p><p class="sub">الحالة: <b id="frState">…</b></p><div class="row" id="frBtns"></div></div>';
-  h+='<div class="card"><h3>أكواد الخصم</h3><p class="sub">كود يكتبه المستخدم في الاشتراك وياخد الخصم تلقائي. أكواد المسوقين عليها \uD83E\uDD1D.</p>'
-    +'<div class="row"><input class="full" id="cpCode" style="flex:1" placeholder="الكود (مثال: RAMADAN20)"><select id="cpPlan" style="flex:1" onchange="discSync(1)"><option value="m">شهري بس</option><option value="q">3 شهور بس</option><option value="y">سنوي بس</option></select></div>'
-    +'<div class="row"><input class="w" style="flex:1" type="number" id="cpPct" placeholder="% نسبة" oninput="discSync(1)"><input class="w" style="flex:1" type="number" id="cpFlat" placeholder="مبلغ ثابت" oninput="discSync(0)"><input class="w" style="flex:1" type="number" id="cpMax" placeholder="عدد مرات (فاضي = بلا حد)"></div>'
-    +'<p class="sub" id="discHint">اختار الباقة الأول، وبعدين اكتب النسبة أو المبلغ — التاني يتحسب تلقائي من سعرها.</p>'
-    +'<button class="btn btn-neon btn-sm btn-block" onclick="couponCreate()">إنشاء الكود</button><div id="cpnList"><p class="muted">جاري التحميل…</p></div></div>';
+  /* أقسام بتتفتح لوحدها — عشان الشاشة الرئيسية متبقاش زحمة */
+  const T=function(ic,title,sub,on,badgeId){return '<div class="card" style="cursor:pointer;padding:12px 14px;margin:8px 0" onclick="'+on+'"><div class="row" style="margin:0;align-items:center"><span style="font-size:24px">'+ic+'</span><span style="flex:1"><b style="font-size:15.5px">'+title+'</b>'+(badgeId?' <span class="badge" id="'+badgeId+'">…</span>':'')+'<br><span class="sub" style="margin:0">'+sub+'</span></span><span style="color:var(--neon);font-size:18px">◀</span></div></div>';};
+  h+=T('👥','المشتركين','بحث • تفعيل وإيقاف • تقدم كل مشترك • تصدير Excel',"admGo('users')",'admHubN');
+  h+=T('🤝','العمولات والمسوقين','ملف لكل مسوق • كشف شهري • اتدفع وتصفير • PDF • حاسبة',"view.cm=null;go('comm')");
+  h+=T('📩','الرسالة الجماعية','رسالة لكل المشتركين + مين قراها',"admGo('annc')");
+  h+=T('⭐','آراء المشتركين','اللي بيظهر للعملاء في صفحة البداية',"admGo('rev')");
+  h+=T('🎟️','أكواد الخصم والصحاب','أكواد الخصم العادية + أكواد «ابعته لصاحبك»',"admGo('codes')");
   h+='<div class="card"><h3>💳 طلبات الدفع (فودافون كاش + PayPal)</h3><div id="payList"><p class="muted">جاري التحميل…</p></div></div>';
- setTimeout(payAdminLoad,70);
- h+='<div class="card"><h3>الأسعار المعروضة</h3><p class="sub">مصر: شهري '+egPrices().m+' • 3 شهور '+egPrices().q+' • سنوي '+egPrices().y+'<br>دولي: شهري $'+usdPrices().m+' • 3 شهور $'+usdPrices().q+' • سنوي $'+usdPrices().y+'</p></div>';
-  h+='<div id="admActWrap"></div><div class="card"><div class="section-head" style="margin:0 0 4px"><h2>المشتركين</h2><span class="badge" id="admCount">…</span></div><div id="admStats"></div><input class="full" id="admQ" placeholder="ابحث بإيميل المشترك…" value="'+esc(view.admQ||'')+'" oninput="view.admQ=this.value;adminFilter()">'
-    +'<div class="row"><button class="btn btn-neon btn-sm" style="flex:1" onclick="adminLoad()">تحديث</button><button class="btn btn-sm" style="flex:1" onclick="exportUsers()">تصدير Excel</button></div><div id="admList"><p class="muted">جاري التحميل…</p></div></div>';
+  h+='<div id="admFollow"><div class="card"><p class="muted">جاري تحميل المتابعة…</p></div></div>';
+  h+='<div class="card"><h3>📨 اقتراحات ومشاكل من المشتركين</h3><div id="admFbk"><p class="muted">جاري التحميل…</p></div></div>';
+  h+='<div class="card"><h3>🤔 ليه مشتركوش؟</h3><div id="admWhy"><p class="muted">جاري التحميل…</p></div></div>';
+  h+='<div class="card"><h3>🐞 أعطال التطبيق</h3><div id="admErr"><p class="muted">جاري التحميل…</p></div></div>';
+  h+=ceditHTML();
+  h+=backupCardHTML();
+  h+='<div class="card"><h3>الأسعار المعروضة</h3><p class="sub">مصر: شهري '+egPrices().m+' • 3 شهور '+egPrices().q+' • سنوي '+egPrices().y+' جنيه<br>الخليج والعالمي: شهري $'+usdPrices().m+' • 3 شهور $'+usdPrices().q+' • سنوي $'+usdPrices().y+'</p></div>';
   h+='<button class="btn" onclick="go(\'more\')">'+icon('back')+' رجوع</button>';
-  setTimeout(adminLoad,50);
+  setTimeout(payAdminLoad,40);setTimeout(admFbkLoad,60);setTimeout(admErrLoad,80);setTimeout(admWhyLoad,100);setTimeout(adminLoad,50);
   return h;
 }
+function admGo(t){view.admTab=t;go('adm');try{window.scrollTo(0,0);}catch(e){}}
+function renderAdmSub(){
+  if(!isAdmin())return '<div class="card"><div class="empty">للأدمن بس.</div></div>';
+  const t=view.admTab||'users';let h='';
+  const head=function(title){return '<div class="section-head"><h2>'+title+'</h2><button class="btn btn-sm" onclick="go(\'admin\')">'+icon('back')+' اللوحة</button></div>';};
+  if(t==='users'){
+    h+=head('👥 المشتركين');
+    h+='<div id="admActWrap"></div><div class="card"><div class="section-head" style="margin:0 0 4px"><h2>القايمة</h2><span class="badge" id="admCount">…</span></div><div id="admStats"></div><input class="full" id="admQ" placeholder="ابحث بإيميل المشترك…" value="'+esc(view.admQ||'')+'" oninput="view.admQ=this.value;adminFilter()">'
+      +'<div class="row"><button class="btn btn-neon btn-sm" style="flex:1" onclick="adminLoad()">تحديث</button><button class="btn btn-sm" style="flex:1" onclick="exportUsers()">تصدير Excel</button></div><div id="admList"><p class="muted">جاري التحميل…</p></div></div>';
+    setTimeout(adminLoad,40);
+  }else if(t==='annc'){
+    h+=head('📩 الرسالة الجماعية');
+    h+='<div class="card"><p class="sub">الرسالة بتظهر لكل المشتركين أول ما يفتحوا التطبيق. الرسالة الجديدة بتشيل القديمة.</p><div class="row"><textarea class="full" id="anncIn" rows="3" style="flex:1;text-align:right;min-height:88px" placeholder="اكتب رسالة لكل المشتركين…"></textarea></div><div class="row"><button class="btn btn-neon btn-sm" style="flex:1" onclick="sendAnnc()">إرسال</button><button class="btn btn-sm" onclick="clearAnnc()">مسح الرسالة</button></div><div id="anncCur"><p class="muted">جاري التحميل…</p></div><div id="anncReads"><p class="muted"></p></div></div>';
+    setTimeout(anncAdminLoad,40);setTimeout(anncReadsLoad,60);
+  }else if(t==='rev'){
+    h+=head('⭐ آراء المشتركين');
+    h+='<div class="card"><p class="sub">اللي تنشره هنا بيظهر للعملاء في صفحة البداية. لو مفيش آراء، القسم مش بيظهر خالص.</p><div class="row"><input class="full" id="rvName" style="flex:1;max-width:140px" placeholder="الاسم"><input class="full" id="rvText" style="flex:2" placeholder="نص الرأي…"></div><div class="row"><input class="w" style="flex:1" id="rvBefore" placeholder="قبل (مثال: 95 كجم)"><input class="w" style="flex:1" id="rvAfter" placeholder="بعد (مثال: 80 كجم)"></div><div class="row"><input class="full" id="rvPhoto" style="flex:1" placeholder="رابط صورة قبل/بعد (اختياري)"></div><button class="btn btn-neon btn-sm btn-block" onclick="revCreate()">نشر الرأي</button><div id="revList"><p class="muted">جاري التحميل…</p></div></div>';
+    setTimeout(revAdminLoad,40);
+  }else if(t==='codes'){
+    h+=head('🎟️ أكواد الخصم والصحاب');
+    h+='<div class="card"><h3>🎁 أكواد الصحاب</h3><p class="sub">SAHBY20 (مصر) • RAB3Y20 (الخليج) • BUDDY20 (دولي) — كل واحد خصم 20% على الشهري بس. بتشتغل وتقف من هنا بس، ولما تبقى شغالة بيظهر للعملاء كارت «ابعته لصاحبك».</p><p class="sub">الحالة: <b id="frState">…</b></p><div class="row" id="frBtns"></div></div>';
+    h+='<div class="card"><h3>🎟️ أكواد الخصم</h3><p class="sub">كود يكتبه العميل وقت الاشتراك وياخد الخصم تلقائي. أكواد المسوقين عليها 🤝 وبتتظبط من تاب العمولات.</p>'
+      +'<div class="row"><input class="full" id="cpCode" style="flex:1" placeholder="الكود (مثال: RAMADAN20)"><select id="cpPlan" style="flex:1" onchange="discSync(1)"><option value="m">شهري بس</option><option value="q">3 شهور بس</option><option value="y">سنوي بس</option></select></div>'
+      +'<div class="row"><input class="w" style="flex:1" type="number" id="cpPct" placeholder="% نسبة" oninput="discSync(1)"><input class="w" style="flex:1" type="number" id="cpFlat" placeholder="مبلغ ثابت" oninput="discSync(0)"><input class="w" style="flex:1" type="number" id="cpMax" placeholder="عدد مرات (فاضي = بلا حد)"></div>'
+      +'<p class="sub" id="discHint">اختار الباقة الأول، وبعدين اكتب النسبة أو المبلغ — التاني بيتحسب تلقائي من سعرها.</p>'
+      +'<button class="btn btn-neon btn-sm btn-block" onclick="couponCreate()">إنشاء الكود</button><div id="cpnList"><p class="muted">جاري التحميل…</p></div></div>';
+    setTimeout(friendStateLoad,40);setTimeout(couponsLoad,50);
+  }
+  h+='<button class="btn" onclick="go(\'admin\')">'+icon('back')+' رجوع للوحة الأدمن</button>';
+  return h;
+}
+function couponsLoad(){const b=document.getElementById('cpnList');if(!b)return;firebase.firestore().collection('coupons').orderBy('createdAt','desc').limit(100).get().then(function(q){const a=[];q.forEach(function(d){const o=d.data()||{};o._id=d.id;a.push(o);});renderCoupons(a);}).catch(function(){const b2=document.getElementById('cpnList');if(b2)b2.innerHTML='<p class="muted">فشل تحميل الأكواد</p>';});}
 function planOf(o){if(!o||!o.createdAt)return{k:'new',label:'جديد'};if(o.blocked)return{k:'blocked',label:'\u26D4 موقوف'};const now=Date.now();if(o.subUntil&&now<o.subUntil){const left=o.subUntil-now,D=86400000;if(left>300*D)return{k:'y',label:'\u2705 سنوي'};if(left>60*D)return{k:'q',label:'\u2705 3 شهور'};return{k:'m',label:'\u2705 شهري'};}if(o.trialEnds&&now<o.trialEnds)return{k:'trial',label:'\U0001F193 تجربة'};return{k:'exp',label:'\u231B منتهي'};}
 function admStatus(s){
   if(!s||!s.createdAt)return 'جديد';
@@ -2761,7 +2892,7 @@ function fullBackup(){
  if(!isAdmin())return;
  noteSheet('جاري تجهيز النسخة الاحتياطية… ممكن تاخد دقيقة.');
  const fs=firebase.firestore(),out={app:'HM Fit',project:FB_CONFIG.projectId,at:new Date().toISOString(),collections:{}};
- const cols=['users','coupons','affils','refs','reviews','payreq','annc','anncReads','content','feedback','errors','surveys'];
+ const cols=['users','coupons','couponUses','affils','comms','commPay','refs','reviews','payreq','annc','anncReads','content','feedback','errors','surveys'];
  function grab(name){return fs.collection(name).get().then(function(q){const o={};q.forEach(function(d){o[d.id]=d.data();});out.collections[name]=o;}).catch(function(e){out.collections[name]={_error:(e&&e.code)||'failed'};});}
  Promise.all(cols.map(grab)).then(function(){
   const uids=Object.keys(out.collections.users||{}).filter(function(k){return k!=='_error';});out.userData={};
@@ -2798,14 +2929,14 @@ function admActHTML(){
  }catch(e){return '';}
 }
 function adminLoad(){
-  const box=document.getElementById('admList');if(!box)return;
-  box.innerHTML='<p class="muted">جاري التحميل…</p>';
-  firebase.firestore().collection('users').orderBy('createdAt','desc').limit(200).get().then(function(q){
+  if(!isAdmin())return;const box=document.getElementById('admList');
+  if(box)box.innerHTML='<p class="muted">جاري التحميل…</p>';
+  firebase.firestore().collection('users').orderBy('createdAt','desc').limit(500).get().then(function(q){
     const arr=[];q.forEach(function(d){const o=d.data()||{};o._id=d.id;arr.push(o);});
     view.admUsers=arr;const dc={};arr.forEach(function(o){(o.devices||[]).forEach(function(d){dc[d]=(dc[d]||0)+1;});});view.devCount=dc;adminFilter();
-    try{affilLoad();}catch(e){}
-    firebase.firestore().collection('coupons').orderBy('createdAt','desc').limit(100).get().then(function(q){const a=[];q.forEach(function(d){const o=d.data()||{};o._id=d.id;a.push(o);});renderCoupons(a);}).catch(function(){const b=document.getElementById('cpnList');if(b)b.innerHTML='<p class="muted">فشل تحميل الأكواد</p>';});
-  }).catch(function(e){box.innerHTML='<p class="muted">فشل التحميل: '+esc(e&&e.message)+'</p>';});
+    
+    try{couponsLoad();}catch(e){}
+  }).catch(function(e){const bx=document.getElementById('admList');if(bx)bx.innerHTML='<p class="muted">فشل التحميل: '+esc(e&&e.message)+'</p>';});
 }
 /* ===== أدمن: محتاجين متابعة + أرقام + تقدم كل مشترك ===== */
 function admFollowHTML(){const U=(view.admUsers||[]).filter(function(o){return ADMINS.indexOf((o.email||'').toLowerCase())<0;});const now=Date.now(),D=86400000;
@@ -2842,10 +2973,12 @@ function adminDelUser(uid,email){
  });
 }
 function adminFilter(){
-  const box=document.getElementById('admList');if(!box||!view.admUsers)return;
+  if(!view.admUsers)return;const box=document.getElementById('admList');
+  try{const hn=document.getElementById('admHubN');if(hn){const act=view.admUsers.filter(function(o){const k=planOf(o).k;return k==='m'||k==='q'||k==='y';}).length;hn.textContent=act+' مشترك • '+view.admUsers.length+' حساب';}}catch(e){}
   const q=(view.admQ||'').trim().toLowerCase();
   const arr=view.admUsers.filter(function(o){return !q||(o.email||'').toLowerCase().indexOf(q)>-1;});
     try{const cc2=document.getElementById('admStats');if(cc2)cc2.innerHTML=admStatsHTML();const aw=document.getElementById('admActWrap');if(aw)aw.innerHTML=admActHTML();const fw=document.getElementById('admFollow');if(fw)fw.innerHTML=admFollowHTML();}catch(e){}
+  if(!box)return;
   if(!arr.length){box.innerHTML='<p class="muted">مفيش نتائج</p>';return;}
   try{const cc=document.getElementById('admCount');if(cc&&view.admUsers){const act=view.admUsers.filter(function(o){const k=planOf(o).k;return k==='m'||k==='q'||k==='y';}).length,tr=view.admUsers.filter(function(o){return planOf(o).k==='trial';}).length;cc.textContent=act+' مشترك • '+tr+' تجربة';}}catch(e){}
   box.innerHTML='<p class="sub">'+arr.length+' مشترك</p>'+arr.map(function(o){
@@ -2963,10 +3096,227 @@ function renderCoupons(arr){
  box.innerHTML='<p class="sub">'+arr.length+' كود</p>'+arr.map(function(o){
   const left=o.maxUses>0?(o.maxUses-(o.used||0))+' متبقي':'مفتوح';
   const tag=o.affil?' affil':'';
-  return '<div class="admrow"><span style="flex:1;min-width:140px"><b dir="ltr">'+esc(o._id)+'</b>'+(o.affil?' 🤝':'')+'<br><span class="muted" style="font-size:11.5px">'+(o.type==='pct'?o.value+'%':o.value+' جنيه')+' • '+(o.plan==='m'?'شهري':o.plan==='q'?'3 شهور':o.plan==='y'?'سنوي':'كل الباقات')+' • استُخدم '+(o.used||0)+' • '+left+' • '+(o.active?'🟢 شغال':'🔴 موقوف')+'</span></span>'
+  return '<div class="admrow"><span style="flex:1;min-width:140px"><b dir="ltr">'+esc(o._id)+'</b>'+(o.affil?' 🤝':'')+'<br><span class="muted" style="font-size:11.5px">'+(o.type==='affil'?'مسوق — خصم ثابت من 6 يناير (من تاب العمولات)':(o.type==='pct'?o.value+'%':o.value+' جنيه'))+' • '+(o.plan==='m'?'شهري':o.plan==='q'?'3 شهور':o.plan==='y'?'سنوي':'كل الباقات')+' • استُخدم '+(o.used||0)+' • '+left+' • '+(o.active?'🟢 شغال':'🔴 موقوف')+'</span></span>'
   +'<button class="btn btn-sm" onclick="couponToggle(\''+esc(o._id)+'\','+(!o.active)+')">'+(o.active?'إيقاف':'تشغيل')+'</button>'
   +'<button class="btn btn-sm" onclick="couponDel(\''+esc(o._id)+'\')">مسح</button></div>';
  }).join('');
+}
+/* ============ العمولات والمسوقين (تاب لوحده) ============
+   comms/{id}: عمولة لكل تفعيل بكود مسوق (بتتسجل بس من الأدمن وقت التفعيل)
+   commPay/{CODE_YYYY-MM}: علامة «اتدفع» لشهر مسوق — الشهر بيقفل وتفاصيله بتفضل في الأرشيف لحد ما تمسحها بنفسك */
+const CM_MON=['يناير','فبراير','مارس','أبريل','مايو','يونيو','يوليو','أغسطس','سبتمبر','أكتوبر','نوفمبر','ديسمبر'];
+const CM_PL={m:'شهري',q:'3 شهور',y:'سنوي'};
+function cmR(x){return Math.round((+x||0)*100)/100;}
+function cmFmt(v,cur){v=cmR(v);return cur==='USD'?('$'+v):(v+' جنيه');}
+function monKey(t){const d=new Date(t||Date.now());return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0');}
+function cmMonName(k){const p=String(k||'').split('-');return (CM_MON[(+p[1]||1)-1]||'')+' '+(p[0]||'');}
+function cmMonShift(k,n){const p=k.split('-');const d=new Date(+p[0],(+p[1]-1)+n,1);return monKey(d.getTime());}
+function cmAmt(a){const o=JSON.parse(JSON.stringify(COMM_DEF));try{['EGP','USD'].forEach(function(c){['m','q','y'].forEach(function(p){const x=a&&a.amt&&a.amt[c]&&a.amt[c][p];if(x){if(x.d!=null&&x.d>=0)o[c][p].d=+x.d;if(x.c!=null&&x.c>=0)o[c][p].c=+x.c;}});});}catch(e){}return o;}
+function cmDiscOnly(A){const o={};['EGP','USD'].forEach(function(c){o[c]={};['m','q','y'].forEach(function(p){o[c][p]=A[c][p].d;});});return o;}
+function cmMask(e){e=String(e||'');const i=e.indexOf('@');if(i<1)return e;return e.slice(0,Math.min(3,i))+'***'+e.slice(i);}
+/* حساب عمولة تفعيل: null لو الكود مش لمسوق أو قبل بداية العمولات */
+function commFor(code,plan,cur,when){
+ code=String(code||'').trim().toUpperCase();
+ if(!code||!(when>=COMM_START)||!CM_PL[plan])return Promise.resolve(null);
+ return firebase.firestore().collection('affils').doc(code).get().then(function(d){
+  if(!d.exists)return null;const a=d.data()||{};const A=cmAmt(a)[cur][plan];const base=COMM_BASE[cur][plan];
+  return {code:code,name:a.name||code,plan:plan,cur:cur,base:base,disc:cmR(A.d),paid:cmR(base-A.d),comm:cmR(A.c)};
+ }).catch(function(){return null;});
+}
+function commSave(id,cm,extra,ts){const rec=Object.assign({},cm,extra||{},{month:monKey(ts),ts:ts,by:fbEmail()});return firebase.firestore().collection('comms').doc(id).set(rec);}
+/* ---- تحميل ---- */
+function commLoad(){
+ if(!isAdmin())return;view.cm=view.cm||{month:monKey(),open:null};view.cm.loading=true;
+ const fs=firebase.firestore(),from=cmMonShift(monKey(),-24);
+ Promise.all([
+  fs.collection('affils').get(),
+  fs.collection('comms').where('month','>=',from).get(),
+  fs.collection('commPay').get()
+ ]).then(function(r){
+  const affils=[],comms=[],pays={};
+  r[0].forEach(function(d){const o=d.data()||{};o._id=d.id;affils.push(o);});
+  r[1].forEach(function(d){const o=d.data()||{};o._id=d.id;comms.push(o);});
+  r[2].forEach(function(d){pays[d.id]=d.data()||{};});
+  affils.sort(function(a,b){return (b.createdAt||0)-(a.createdAt||0);});
+  comms.sort(function(a,b){return (a.ts||0)-(b.ts||0);});
+  view.cm.data={affils:affils,comms:comms,pays:pays};view.cm.loading=false;view.cm.err='';
+  cmUpgradeCoupons(affils);cmPaint();
+ }).catch(function(e){view.cm.loading=false;view.cm.err=(e&&e.message)||'خطأ';cmPaint();});
+}
+/* أكواد المسوقين القديمة (نسبة %) بتتحول للنظام الجديد (خصم ثابت من 6 يناير) */
+function cmUpgradeCoupons(affils){try{const fs=firebase.firestore();affils.forEach(function(a){fs.collection('coupons').doc(a._id).get().then(function(c){const o=c.exists?(c.data()||{}):null;if(o&&o.type==='affil')return;return fs.collection('coupons').doc(a._id).set({type:'affil',affil:true,d:cmDiscOnly(cmAmt(a)),start:COMM_START,active:a.active!==false,plan:'both',value:0,maxUses:0,used:(o&&o.used)||0,createdAt:(o&&o.createdAt)||a.createdAt||Date.now()},{merge:true});}).catch(function(){});});}catch(e){}}
+function cmStat(code,M){
+ const L=((view.cm.data||{}).comms||[]).filter(function(r){return r.code===code&&r.month===M;});
+ const z=function(){return {n:0,base:0,disc:0,paid:0,comm:0,pl:{m:0,q:0,y:0}};};const s={n:L.length,L:L,EGP:z(),USD:z()};
+ L.forEach(function(r){const t=s[r.cur==='USD'?'USD':'EGP'];t.n++;t.base+=+r.base||0;t.disc+=+r.disc||0;t.paid+=+r.paid||0;t.comm+=+r.comm||0;t.pl[r.plan]=(t.pl[r.plan]||0)+1;});
+ ['EGP','USD'].forEach(function(c){['base','disc','paid','comm'].forEach(function(k){s[c][k]=cmR(s[c][k]);});});
+ return s;
+}
+function cmPay(code,M){return ((view.cm.data||{}).pays||{})[code+'_'+M]||null;}
+function cmMoney2(s){const a=[];if(s.EGP.comm>0||s.EGP.n)a.push(cmFmt(s.EGP.comm,'EGP'));if(s.USD.comm>0||s.USD.n)a.push(cmFmt(s.USD.comm,'USD'));return a.join(' + ')||'0';}
+/* شهور فاتت فيها عمولة ومتدفعتش */
+function cmArrears(code,M){const ms={};((view.cm.data||{}).comms||[]).forEach(function(r){if(r.code===code&&r.month<M)ms[r.month]=1;});return Object.keys(ms).sort().filter(function(k){return !cmPay(code,k);}).map(function(k){return {m:k,s:cmStat(code,k)};});}
+/* ---- الشاشة ---- */
+function renderComm(){
+ if(!isAdmin())return '<div class="card"><div class="empty">للأدمن بس.</div></div>';
+ if(!view.cm)view.cm={month:monKey(),open:null};
+ if(!view.cm.data&&!view.cm.loading)setTimeout(commLoad,30);
+ return '<div class="section-head"><h2>🤝 العمولات والمسوقين</h2><span class="badge">'+cmMonName(view.cm.month)+'</span></div><div id="cmBox">'+cmBoxHTML()+'</div><button class="btn" onclick="go(\'admin\')">'+icon('back')+' رجوع للوحة الأدمن</button>';
+}
+function cmPaint(){const b=document.getElementById('cmBox');if(b)b.innerHTML=cmBoxHTML();}
+function cmGoMonth(n){view.cm.month=cmMonShift(view.cm.month,n);view.cm.open=null;render();}
+function cmBoxHTML(){
+ const C=view.cm;if(C.err)return '<div class="card"><p class="muted">فشل التحميل: '+esc(C.err)+'</p><button class="btn btn-sm" onclick="commLoad()">حاول تاني</button></div>';
+ if(!C.data)return '<div class="card"><p class="muted">جاري التحميل…</p></div>';
+ const M=C.month,cur=monKey(),A=C.data.affils;
+ let h='';
+ if(Date.now()<COMM_START)h+='<div class="card" style="border-color:#ffb74d"><p class="sub" style="margin:0">⏳ العمولات وخصم أكواد المسوقين بيبدأوا <b style="color:#fff">6 يناير</b> (بعد عرض الافتتاح). أي تفعيل قبلها مش بيتحسب له عمولة.</p></div>';
+ /* اختيار الشهر */
+ h+='<div class="card"><div class="row" style="margin:0;align-items:center"><button class="btn btn-sm" onclick="cmGoMonth(-1)">◀ اللي قبله</button><b style="flex:1;text-align:center;font-size:17px">'+cmMonName(M)+(M===cur?' <span class="badge">الحالي</span>':'')+'</b><button class="btn btn-sm" onclick="cmGoMonth(1)"'+(M>=cur?' disabled':'')+'>اللي بعده ▶</button></div>';
+ /* إجمالي الشهر */
+ const T={EGP:{n:0,paid:0,comm:0,out:0},USD:{n:0,paid:0,comm:0,out:0}};const rank=[];
+ A.forEach(function(a){const s=cmStat(a._id,M);const pd=cmPay(a._id,M);['EGP','USD'].forEach(function(c){T[c].n+=s[c].n;T[c].paid+=s[c].paid;T[c].comm+=s[c].comm;if(pd)T[c].out+=s[c].comm;});if(s.n)rank.push({a:a,s:s});});
+ const box=function(c){const t=T[c];return '<div class="admrow" style="display:block"><b>'+(c==='EGP'?'🇪🇬 مصر — جنيه':'🌍 الخليج والعالمي — دولار')+'</b><br><span class="muted" style="font-size:12.5px">'+t.n+' اشتراك • العملاء دفعوا '+cmFmt(t.paid,c)+'<br>العمولات '+cmFmt(t.comm,c)+' • اتدفع '+cmFmt(t.out,c)+' • <b style="color:#fff">لسه عليك '+cmFmt(t.comm-t.out,c)+'</b><br>صافي HM Fit بعد العمولات '+cmFmt(t.paid-t.comm,c)+'</span></div>';};
+ h+=box('EGP')+box('USD');
+ h+='<div class="row"><button class="btn btn-neon btn-sm" style="flex:1" onclick="cmPdf(\'\')">📄 PDF كل المسوقين</button><button class="btn btn-sm" style="flex:1" onclick="cmCalc(\'\')">🧮 حاسبة</button><button class="btn btn-sm" onclick="commLoad()">↻</button></div></div>';
+ /* ترتيب أفضل المسوقين */
+ if(rank.length){rank.sort(function(x,y){return y.s.n-x.s.n||((y.s.EGP.comm+y.s.USD.comm*50)-(x.s.EGP.comm+x.s.USD.comm*50));});const md=['🥇','🥈','🥉'];
+  h+='<div class="card"><h3>🏆 أفضل المسوقين — '+cmMonName(M)+'</h3>'+rank.slice(0,5).map(function(r,i){return '<div class="admrow"><span style="flex:1">'+(md[i]||('#'+(i+1)))+' <b>'+esc(r.a.name||r.a._id)+'</b> <span dir="ltr" class="muted">'+esc(r.a._id)+'</span></span><span class="muted" style="font-size:12.5px">'+r.s.n+' اشتراك • '+cmMoney2(r.s)+'</span></div>';}).join('')+'</div>';}
+ /* إضافة مسوق */
+ const D=COMM_DEF;
+ h+='<div class="card"><h3>➕ مسوق أو كابتن جديد</h3><div class="row"><input class="full" id="cmName" style="flex:1" placeholder="الاسم (مثال: كوتش أشرف)"><input class="full" id="cmCode" dir="ltr" style="flex:1;max-width:140px;text-transform:uppercase" placeholder="الكود"></div><div class="row"><input class="full" id="cmWa" dir="ltr" style="flex:1" placeholder="رقم واتساب (مثال: 2010xxxxxxxx)"></div><p class="sub">الأرقام الافتراضية (تقدر تغيّرها لكل مسوق من ملفه):<br>🇪🇬 خصم العميل '+D.EGP.m.d+' / '+D.EGP.q.d+' / '+D.EGP.y.d+' جنيه • العمولة '+D.EGP.m.c+' / '+D.EGP.q.c+' / '+D.EGP.y.c+' جنيه<br>🌍 خصم العميل $'+D.USD.m.d+' / $'+D.USD.q.d+' / $'+D.USD.y.d+' • العمولة $'+D.USD.m.c+' / $'+D.USD.q.c+' / $'+D.USD.y.c+'<br><span class="muted">(شهري / 3 شهور / سنوي)</span></p><button class="btn btn-neon btn-sm btn-block" onclick="cmAdd()">إضافة</button></div>';
+ /* ملفات المسوقين */
+ h+='<div class="section-head"><h2>ملفات المسوقين</h2><span class="badge">'+A.length+'</span></div>';
+ if(!A.length)h+='<div class="card"><p class="muted">لسه مفيش مسوقين — ضيف أول واحد من فوق.</p></div>';
+ A.forEach(function(a){h+=cmFileHTML(a,M);});
+ return h;
+}
+function cmFileHTML(a,M){
+ const code=a._id,s=cmStat(code,M),pd=cmPay(code,M),open=view.cm.open===code,arr=cmArrears(code,M);
+ const st=!s.n?'<span class="muted">—</span>':(pd?'<span style="color:var(--neon)">✅ اتدفع</span>':'<span style="color:#ffb74d">⏳ مستحق</span>');
+ let h='<div class="card" style="padding:12px"><div class="affhead" style="cursor:pointer;display:flex;align-items:center;gap:8px" onclick="cmToggle(\''+esc(code)+'\')"><span style="flex:1"><b>'+esc(a.name||code)+'</b> <span dir="ltr" style="color:var(--neon)">'+esc(code)+'</span>'+(a.active===false?' <span class="badge">🔴 موقوف</span>':'')+'<br><span class="muted" style="font-size:12px">'+s.n+' اشتراك • عمولة '+cmMoney2(s)+' • '+st+(arr.length?' • <b style="color:#ff6b6b">متأخر '+arr.length+' شهر</b>':'')+'</span></span><button class="btn btn-sm">'+(open?'قفل ▲':'افتح ▼')+'</button></div>';
+ if(!open)return h+'</div>';
+ const A=cmAmt(a),link='https://hm-fit.com/?code='+encodeURIComponent(code);
+ h+='<div style="margin-top:10px">';
+ h+='<p class="sub" style="margin:0 0 6px">🔗 لينك المسوق: <b dir="ltr" style="color:#fff;word-break:break-all">'+link+'</b></p><div class="row"><button class="btn btn-sm" style="flex:1" onclick="cmCopy(\''+esc(code)+'\')">نسخ اللينك</button><button class="btn btn-sm" style="flex:1" onclick="cmEditWa(\''+esc(code)+'\')">📱 '+(a.wa?esc(a.wa):'ضيف واتساب')+'</button></div>';
+ h+='<p class="sub" style="margin:6px 0">الأرقام: 🇪🇬 خصم '+A.EGP.m.d+'/'+A.EGP.q.d+'/'+A.EGP.y.d+' • عمولة '+A.EGP.m.c+'/'+A.EGP.q.c+'/'+A.EGP.y.c+' جنيه — 🌍 خصم $'+A.USD.m.d+'/$'+A.USD.q.d+'/$'+A.USD.y.d+' • عمولة $'+A.USD.m.c+'/$'+A.USD.q.c+'/$'+A.USD.y.c+'</p>';
+ if(arr.length)h+='<div class="admrow" style="display:block;border-color:#ff6b6b"><b style="color:#ff6b6b">⚠️ شهور فاتت لسه متدفعتش</b><br>'+arr.map(function(x){return '<span class="muted">• '+cmMonName(x.m)+': '+x.s.n+' اشتراك — '+cmMoney2(x.s)+'</span> <button class="btn btn-sm" onclick="view.cm.month=\''+x.m+'\';view.cm.open=\''+esc(code)+'\';render()">افتح</button>';}).join('<br>')+'</div>';
+ /* كشف الشهر */
+ h+='<h3 style="margin:10px 0 6px">كشف '+cmMonName(M)+'</h3>';
+ if(!s.n)h+='<p class="muted">مفيش اشتراكات بالكود ده في الشهر ده.</p>';
+ else{
+  h+=s.L.map(function(r,i){return '<div class="admrow" style="display:block"><span style="font-size:12.5px"><b>'+(i+1)+'.</b> '+new Date(r.ts).toLocaleDateString('ar-EG')+' • <span dir="ltr">'+esc(r.email||'')+'</span> • '+(CM_PL[r.plan]||r.plan)+(r.src==='manual'?' • يدوي':'')+'<br><span class="muted">'+cmFmt(r.base,r.cur)+' − خصم '+cmFmt(r.disc,r.cur)+' = دفع '+cmFmt(r.paid,r.cur)+'</span> • <b style="color:var(--neon)">عمولة '+cmFmt(r.comm,r.cur)+'</b></span></div>';}).join('');
+  ['EGP','USD'].forEach(function(c){const t=s[c];if(!t.n)return;h+='<div class="admrow" style="display:block"><b>الإجمالي '+(c==='EGP'?'بالجنيه':'بالدولار')+'</b><br><span class="muted" style="font-size:12.5px">'+t.n+' اشتراك (شهري '+t.pl.m+' • 3 شهور '+t.pl.q+' • سنوي '+t.pl.y+')<br>قبل الخصم '+cmFmt(t.base,c)+' − خصم العملاء '+cmFmt(t.disc,c)+' = العملاء دفعوا '+cmFmt(t.paid,c)+'</span><br><b style="font-size:15px">عمولة '+esc(a.name||code)+': '+cmFmt(t.comm,c)+'</b> <span class="muted">• صافي HM Fit '+cmFmt(t.paid-t.comm,c)+'</span></div>';});
+  if(pd)h+='<p class="sub" style="color:var(--neon)">✅ اتدفع يوم '+new Date(pd.paidAt||0).toLocaleDateString('ar-EG')+' — '+[pd.egp?cmFmt(pd.egp,'EGP'):'',pd.usd?cmFmt(pd.usd,'USD'):''].filter(Boolean).join(' + ')+'</p>';
+ }
+ h+='<div class="row">'+(s.n?(pd?'<button class="btn btn-sm" style="flex:1" onclick="cmUnpay(\''+esc(code)+'\')">↩️ إلغاء علامة الدفع</button>':'<button class="btn btn-neon btn-sm" style="flex:1" onclick="cmMarkPaid(\''+esc(code)+'\')">✅ اتدفع — صفّر الشهر</button>'):'')+'<button class="btn btn-sm" style="flex:1" onclick="cmPdf(\''+esc(code)+'\')">📄 PDF</button><button class="btn btn-sm" style="flex:1" onclick="cmWa(\''+esc(code)+'\')">💬 واتساب</button></div>';
+ h+='<div class="row"><button class="btn btn-sm" style="flex:1" onclick="cmCalc(\''+esc(code)+'\')">🧮 حاسبة</button><button class="btn btn-sm" style="flex:1" onclick="cmEditAmt(\''+esc(code)+'\')">✏️ الأرقام</button><button class="btn btn-sm" style="flex:1" onclick="cmActive(\''+esc(code)+'\','+(a.active===false)+')">'+(a.active===false?'▶️ شغّل الكود':'⏸ وقّف الكود')+'</button></div>';
+ h+='<div class="row">'+(s.n?'<button class="btn btn-sm" style="flex:1" onclick="cmDelMonth(\''+esc(code)+'\')">🗑 مسح كشف الشهر ده</button>':'')+'<button class="btn btn-sm" style="flex:1" onclick="cmDelAff(\''+esc(code)+'\')">مسح المسوق</button></div>';
+ return h+'</div></div>';
+}
+function cmToggle(code){view.cm.open=view.cm.open===code?null:code;cmPaint();}
+function cmAff(code){return ((view.cm.data||{}).affils||[]).find(function(a){return a._id===code;})||null;}
+/* ---- إضافة / تعديل ---- */
+function cmAdd(){
+ const g=function(id){const e=document.getElementById(id);return e?e.value.trim():'';};
+ const name=g('cmName'),code=g('cmCode').toUpperCase().replace(/[^A-Z0-9_-]/g,''),wa=g('cmWa').replace(/[^0-9]/g,'');
+ if(!name||!code)return noteSheet('اكتب الاسم والكود الأول');
+ if(code.length<3)return noteSheet('الكود لازم 3 حروف على الأقل');
+ const fs=firebase.firestore();
+ fs.collection('coupons').doc(code).get().then(function(c){
+  if(c.exists){noteSheet('الكود <b dir="ltr">'+esc(code)+'</b> مستخدم قبل كده — اختار كود تاني');return;}
+  const now=Date.now();
+  return fs.collection('affils').doc(code).set({name:name,wa:wa,active:true,createdAt:now}).then(function(){
+   return fs.collection('coupons').doc(code).set({type:'affil',affil:true,d:cmDiscOnly(COMM_DEF),start:COMM_START,active:true,plan:'both',value:0,maxUses:0,used:0,createdAt:now});
+  }).then(function(){noteSheet('اتضاف ✅ '+esc(name)+'<br>الكود: <b dir="ltr">'+esc(code)+'</b><br>اللينك: <span dir="ltr">hm-fit.com/?code='+esc(code)+'</span>');view.cm.open=code;commLoad();});
+ }).catch(function(e){noteSheet('فشل: '+esc((e&&e.message)||''));});
+}
+function cmActive(code,on){const fs=firebase.firestore();fs.collection('affils').doc(code).set({active:on},{merge:true}).then(function(){return fs.collection('coupons').doc(code).set({active:on},{merge:true});}).then(function(){noteSheet(on?'الكود اشتغل ✅':'الكود اتوقف ⏸ — العملاء مش هيقدروا يستخدموه');commLoad();}).catch(function(e){noteSheet('فشل: '+esc((e&&e.message)||''));});}
+function cmEditWa(code){const a=cmAff(code)||{};inputSheet('رقم واتساب '+(a.name||code),a.wa||'',[],'حفظ',function(v){v=String(v||'').replace(/[^0-9]/g,'');firebase.firestore().collection('affils').doc(code).set({wa:v},{merge:true}).then(function(){commLoad();}).catch(function(e){noteSheet('فشل: '+esc((e&&e.message)||''));});});}
+function cmCopy(code){const t='https://hm-fit.com/?code='+code;try{navigator.clipboard.writeText(t).then(function(){noteSheet('اتنسخ ✅<br><span dir="ltr">'+esc(t)+'</span>');},function(){noteSheet('<span dir="ltr">'+esc(t)+'</span>');});}catch(e){noteSheet('<span dir="ltr">'+esc(t)+'</span>');}}
+function cmEditAmt(code){
+ const a=cmAff(code)||{},A=cmAmt(a);
+ const inp=function(c,p,k){return '<input class="w" type="number" step="0.01" min="0" id="cmA_'+c+p+k+'" value="'+A[c][p][k]+'" style="flex:1;min-width:0">';};
+ const blk=function(c){return '<p class="sub" style="margin:8px 0 2px"><b>'+(c==='EGP'?'🇪🇬 مصر (جنيه)':'🌍 الخليج والعالمي (دولار)')+'</b> — السعر '+COMM_BASE[c].m+' / '+COMM_BASE[c].q+' / '+COMM_BASE[c].y+'</p>'+['m','q','y'].map(function(p){return '<div class="row" style="margin:2px 0;align-items:center"><span style="width:62px;font-size:12.5px">'+CM_PL[p]+'</span><span class="muted" style="font-size:11px">خصم</span>'+inp(c,p,'d')+'<span class="muted" style="font-size:11px">عمولة</span>'+inp(c,p,'c')+'</div>';}).join('');};
+ _sheetFn=function(){
+  const amt={EGP:{},USD:{}};let bad='';
+  ['EGP','USD'].forEach(function(c){['m','q','y'].forEach(function(p){const d=cmR(window._cmA[c+p+'d']),cc=cmR(window._cmA[c+p+'c']);if(d<0||cc<0||d>=COMM_BASE[c][p]||cc>COMM_BASE[c][p]-d)bad=CM_PL[p]+' '+(c==='EGP'?'جنيه':'دولار');amt[c][p]={d:d,c:cc};});});
+  if(bad)return noteSheet('الأرقام مش منطقية في: '+bad+'<br>الخصم + العمولة لازم يبقوا أقل من السعر.');
+  const fs=firebase.firestore();
+  fs.collection('affils').doc(code).set({amt:amt},{merge:true}).then(function(){return fs.collection('coupons').doc(code).set({type:'affil',affil:true,d:cmDiscOnly(amt),start:COMM_START},{merge:true});}).then(function(){noteSheet('اتحفظ ✅<br><span class="sub">الأرقام الجديدة بتسري على التفعيلات الجاية بس — اللي اتسجل قبل كده مش بيتغير.</span>');commLoad();}).catch(function(e){noteSheet('فشل: '+esc((e&&e.message)||''));});
+ };
+ openSheet('أرقام '+(a.name||code),blk('EGP')+blk('USD')+'<div class="row"><button class="btn btn-sm" style="flex:1" onclick="cmResetAmt()">الافتراضي</button></div><div class="row"><button class="btn" style="flex:1" onclick="closePicker()">إلغاء</button><button class="btn btn-neon" style="flex:1" onclick="cmGrabAmt();sheetGo()">حفظ</button></div>');
+}
+function cmGrabAmt(){window._cmA={};['EGP','USD'].forEach(function(c){['m','q','y'].forEach(function(p){['d','c'].forEach(function(k){const e=document.getElementById('cmA_'+c+p+k);window._cmA[c+p+k]=e?e.value:0;});});});}
+function cmResetAmt(){['EGP','USD'].forEach(function(c){['m','q','y'].forEach(function(p){['d','c'].forEach(function(k){const e=document.getElementById('cmA_'+c+p+k);if(e)e.value=COMM_DEF[c][p][k];});});});}
+/* ---- الدفع والتصفير ---- */
+function cmMarkPaid(code){
+ const M=view.cm.month,a=cmAff(code)||{},s=cmStat(code,M);
+ askSheet('دفعت عمولة '+(a.name||code)+'؟','شهر <b>'+cmMonName(M)+'</b><br>'+s.n+' اشتراك • <b>'+cmMoney2(s)+'</b><br><span class="sub">الشهر هيتقفل ويتصفّر، وتفاصيله هتفضل في الأرشيف وتقدر تنزّل الـPDF بتاعه في أي وقت.</span>','أيوه اتدفع',false,function(){
+  firebase.firestore().collection('commPay').doc(code+'_'+M).set({code:code,month:M,egp:s.EGP.comm,usd:s.USD.comm,n:s.n,paidAt:Date.now(),by:fbEmail()}).then(function(){noteSheet('اتسجل إنه اتدفع ✅');commLoad();}).catch(function(e){noteSheet('فشل: '+esc((e&&e.message)||''));});
+ });
+}
+function cmUnpay(code){const M=view.cm.month;askSheet('إلغاء علامة الدفع؟','الشهر ده هيرجع «مستحق» تاني.','إلغاء العلامة',true,function(){firebase.firestore().collection('commPay').doc(code+'_'+M).delete().then(function(){commLoad();}).catch(function(e){noteSheet('فشل: '+esc((e&&e.message)||''));});});}
+function cmDelMonth(code){
+ const M=view.cm.month,a=cmAff(code)||{},s=cmStat(code,M);
+ askSheet('مسح كشف '+cmMonName(M)+'؟','هتمسح '+s.n+' عمولة لـ <b>'+esc(a.name||code)+'</b> في الشهر ده نهائيًا.<br><b style="color:#ff6b6b">المسح مش بيرجع</b> — نزّل الـPDF الأول لو محتاجه.','كمّل',true,function(){
+  setTimeout(function(){askSheet('متأكد؟ آخر تأكيد','مسح كشف <b>'+esc(a.name||code)+'</b> — '+cmMonName(M)+' نهائيًا.','امسح نهائيًا',true,function(){
+   const fs=firebase.firestore(),b=fs.batch();s.L.forEach(function(r){b.delete(fs.collection('comms').doc(r._id));});b.delete(fs.collection('commPay').doc(code+'_'+M));
+   b.commit().then(function(){noteSheet('اتمسح');commLoad();}).catch(function(e){noteSheet('فشل: '+esc((e&&e.message)||''));});
+  });},250);
+ });
+}
+function cmDelAff(code){const a=cmAff(code)||{};askSheet('مسح '+(a.name||code)+'؟','الكود هيتشال وميشتغلش تاني.<br>كشوف العمولات القديمة بتاعته هتفضل محفوظة.','مسح',true,function(){const fs=firebase.firestore();Promise.all([fs.collection('affils').doc(code).delete(),fs.collection('coupons').doc(code).delete()]).then(function(){view.cm.open=null;noteSheet('اتمسح');commLoad();}).catch(function(e){noteSheet('فشل: '+esc((e&&e.message)||''));});});}
+/* ---- الحاسبة ---- */
+function cmCalc(code){
+ const a=code?cmAff(code):null,A=cmAmt(a);window._cmCalcA=A;
+ openSheet('🧮 حاسبة'+(a?' — '+(a.name||code):''),'<div class="row"><select id="ccCur" style="flex:1" onchange="cmCalcUpd()"><option value="EGP">🇪🇬 جنيه</option><option value="USD">🌍 دولار</option></select></div><div class="row" style="align-items:center"><span style="flex:1">شهري</span><input class="w" type="number" min="0" id="ccm" value="5" style="flex:1" oninput="cmCalcUpd()"></div><div class="row" style="align-items:center"><span style="flex:1">3 شهور</span><input class="w" type="number" min="0" id="ccq" value="0" style="flex:1" oninput="cmCalcUpd()"></div><div class="row" style="align-items:center"><span style="flex:1">سنوي</span><input class="w" type="number" min="0" id="ccy" value="0" style="flex:1" oninput="cmCalcUpd()"></div><div id="ccOut" class="admrow" style="display:block;line-height:2"></div><button class="btn btn-neon btn-block" onclick="closePicker()">تمام</button>');
+ setTimeout(cmCalcUpd,30);
+}
+function cmCalcUpd(){try{
+ const A=window._cmCalcA||COMM_DEF,c=(document.getElementById('ccCur')||{}).value||'EGP';
+ let n=0,base=0,disc=0,comm=0,lines=[];
+ ['m','q','y'].forEach(function(p){const k=Math.max(0,Math.floor(+((document.getElementById('cc'+p)||{}).value)||0));if(!k)return;n+=k;const b=COMM_BASE[c][p],d=A[c][p].d,cc=A[c][p].c;base+=k*b;disc+=k*d;comm+=k*cc;lines.push(k+' '+CM_PL[p]+' × '+cmFmt(b,c)+' = '+cmFmt(k*b,c));});
+ const o=document.getElementById('ccOut');if(!o)return;
+ if(!n){o.innerHTML='<span class="muted">اكتب عدد الاشتراكات</span>';return;}
+ o.innerHTML=lines.join('<br>')+'<br>خصم العملاء: − '+cmFmt(disc,c)+'<br>العملاء دفعوا: <b>'+cmFmt(base-disc,c)+'</b><br>عمولة المسوق: <b style="color:var(--neon);font-size:16px">'+cmFmt(comm,c)+'</b><br>صافي HM Fit: <b>'+cmFmt(base-disc-comm,c)+'</b>';
+}catch(e){}}
+/* ---- واتساب ---- */
+function cmWa(code){
+ const M=view.cm.month,a=cmAff(code)||{},s=cmStat(code,M),pd=cmPay(code,M);
+ let t='أهلاً '+(a.name||'')+' 👋\nكشف عمولاتك من HM Fit — شهر '+cmMonName(M)+'\nالكود: '+code+'\n';
+ ['EGP','USD'].forEach(function(c){const x=s[c];if(!x.n)return;t+='\n'+(c==='EGP'?'🇪🇬 مصر':'🌍 دولي')+': '+x.n+' اشتراك (شهري '+x.pl.m+' • 3 شهور '+x.pl.q+' • سنوي '+x.pl.y+')\nعمولتك: '+cmFmt(x.comm,c)+'\n';});
+ if(!s.n)t+='\nمفيش اشتراكات الشهر ده لسه — يلا نكسّر الدنيا الشهر الجاي 💪\n';
+ t+='\nالحالة: '+(pd?('✅ اتحولت يوم '+new Date(pd.paidAt).toLocaleDateString('ar-EG')):'⏳ هتتحول قريب')+'\nلينكك: hm-fit.com/?code='+code+'\nشكرًا ليك 💚';
+ const n=String(a.wa||'').replace(/[^0-9]/g,'');
+ window.open('https://wa.me/'+n+'?text='+encodeURIComponent(t),'_blank');
+}
+/* ---- PDF (نافذة طباعة → حفظ PDF) ---- */
+function cmPdf(code){
+ const M=view.cm.month,A=((view.cm.data||{}).affils||[]).filter(function(a){return code?a._id===code:cmStat(a._id,M).n>0;});
+ if(!A.length)return noteSheet('مفيش عمولات في '+cmMonName(M)+' تتطبع.');
+ const e=function(x){return esc(x==null?'':String(x));};
+ const css='@page{size:A4;margin:14mm}body{font-family:Tajawal,Tahoma,Arial,sans-serif;direction:rtl;color:#111;margin:0}h1{font-size:20px;margin:0 0 4px}h2{font-size:16px;margin:14px 0 6px}.pg{page-break-after:always}.pg:last-child{page-break-after:auto}.top{display:flex;justify-content:space-between;align-items:flex-start;border-bottom:3px solid #00b85c;padding-bottom:8px;margin-bottom:10px}.brand{font-weight:900;font-size:22px}.brand i{font-style:normal;color:#00b85c}.mut{color:#555;font-size:12px}table{width:100%;border-collapse:collapse;font-size:12px;margin:6px 0}th,td{border:1px solid #bbb;padding:5px 6px;text-align:center}th{background:#eafaf1}tfoot td{font-weight:700;background:#f6f6f6}.tot{border:2px solid #00b85c;border-radius:8px;padding:8px 12px;margin:8px 0;font-size:14px}.tot b{font-size:17px}.sig{display:flex;gap:30px;margin-top:28px;font-size:13px}.sig div{flex:1;border-top:1px solid #333;padding-top:6px}.paid{color:#00a050;font-weight:700}.due{color:#c77700;font-weight:700}';
+ const head=function(t){return '<div class="top"><div><div class="brand">HM <i>Fit</i></div><div class="mut">hm-fit.com</div></div><div style="text-align:left"><h1>'+t+'</h1><div class="mut">شهر '+cmMonName(M)+' • اتطبع '+new Date().toLocaleDateString('ar-EG')+'</div></div></div>';};
+ let body='';
+ if(!code&&A.length>1){
+  let rows='',T={EGP:{n:0,c:0},USD:{n:0,c:0}};
+  A.forEach(function(a,i){const s=cmStat(a._id,M),pd=cmPay(a._id,M);['EGP','USD'].forEach(function(c){T[c].n+=s[c].n;T[c].c+=s[c].comm;});rows+='<tr><td>'+(i+1)+'</td><td>'+e(a.name)+'</td><td dir="ltr">'+e(a._id)+'</td><td>'+s.n+'</td><td>'+(s.EGP.comm?cmFmt(s.EGP.comm,'EGP'):'—')+'</td><td>'+(s.USD.comm?cmFmt(s.USD.comm,'USD'):'—')+'</td><td class="'+(pd?'paid':'due')+'">'+(pd?'اتدفع':'مستحق')+'</td></tr>';});
+  body+='<div class="pg">'+head('ملخص عمولات المسوقين')+'<table><thead><tr><th>#</th><th>المسوق</th><th>الكود</th><th>اشتراكات</th><th>العمولة (جنيه)</th><th>العمولة (دولار)</th><th>الحالة</th></tr></thead><tbody>'+rows+'</tbody><tfoot><tr><td colspan="3">الإجمالي</td><td>'+(T.EGP.n+T.USD.n)+'</td><td>'+cmFmt(T.EGP.c,'EGP')+'</td><td>'+cmFmt(T.USD.c,'USD')+'</td><td></td></tr></tfoot></table></div>';
+ }
+ A.forEach(function(a){
+  const s=cmStat(a._id,M),pd=cmPay(a._id,M);
+  body+='<div class="pg">'+head('كشف عمولات')+'<h2>'+e(a.name)+' — الكود <span dir="ltr">'+e(a._id)+'</span></h2>';
+  ['EGP','USD'].forEach(function(c){const L=s.L.filter(function(r){return (r.cur==='USD'?'USD':'EGP')===c;});if(!L.length)return;const t=s[c];
+   body+='<p class="mut" style="margin:10px 0 0"><b>'+(c==='EGP'?'🇪🇬 مصر — بالجنيه':'🌍 الخليج والعالمي — بالدولار')+'</b></p><table><thead><tr><th>#</th><th>التاريخ</th><th>العميل</th><th>الباقة</th><th>السعر</th><th>خصم العميل</th><th>دفع</th><th>العمولة</th></tr></thead><tbody>'+L.map(function(r,i){return '<tr><td>'+(i+1)+'</td><td>'+new Date(r.ts).toLocaleDateString('ar-EG')+'</td><td dir="ltr">'+e(cmMask(r.email))+'</td><td>'+(CM_PL[r.plan]||r.plan)+'</td><td>'+cmFmt(r.base,c)+'</td><td>'+cmFmt(r.disc,c)+'</td><td>'+cmFmt(r.paid,c)+'</td><td><b>'+cmFmt(r.comm,c)+'</b></td></tr>';}).join('')+'</tbody><tfoot><tr><td colspan="4">الإجمالي ('+t.n+' اشتراك)</td><td>'+cmFmt(t.base,c)+'</td><td>'+cmFmt(t.disc,c)+'</td><td>'+cmFmt(t.paid,c)+'</td><td>'+cmFmt(t.comm,c)+'</td></tr></tfoot></table>'
+    +'<div class="tot">'+t.n+' اشتراك (شهري '+t.pl.m+' • 3 شهور '+t.pl.q+' • سنوي '+t.pl.y+') — العملاء دفعوا '+cmFmt(t.paid,c)+'<br>عمولة '+e(a.name)+': <b>'+cmFmt(t.comm,c)+'</b></div>';});
+  if(!s.n)body+='<p>مفيش اشتراكات بالكود ده في الشهر ده.</p>';
+  body+='<p>الحالة: '+(pd?'<span class="paid">✅ اتدفع يوم '+new Date(pd.paidAt).toLocaleDateString('ar-EG')+'</span>':'<span class="due">⏳ مستحق</span>')+'</p><div class="sig"><div>توقيع المسوق</div><div>توقيع الإدارة</div><div>التاريخ</div></div></div>';
+ });
+ const w=window.open('','_blank');
+ if(!w)return noteSheet('المتصفح منع النافذة — اسمح بالنوافذ المنبثقة لـ hm-fit.com وجرّب تاني.');
+ w.document.open();w.document.write('<!doctype html><html lang="ar" dir="rtl"><head><meta charset="utf-8"><title>HM-Fit-'+(code||'commissions')+'-'+M+'</title><link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;800&display=swap" rel="stylesheet"><style>'+css+'</style></head><body>'+body+'</body></html>');w.document.close();
+ setTimeout(function(){try{w.focus();w.print();}catch(x){}},900);
 }
 function adminActGo(btn){try{var sl=btn.parentNode.querySelector(".actsel");if(!sl)return;var id=sl.getAttribute("data-uid");adminAct(id,sl.value);}catch(e){}}
 function adminAct(uid,act){
@@ -2982,6 +3332,19 @@ function adminAct(uid,act){
     /* الطول والهدف والنشاط بيتفتحوا 24 ساعة مع كل اشتراك جديد بس (مش مع تمديد الأسبوع) */
     if(act==='block')u={blocked:!o.blocked};else{u.actNote=now;if(act!=='week')u.measUnlockUntil=now+24*3600000;}
     const label=act==='month'?'تفعيل شهر لـ ':act==='quarter'?'تفعيل 3 شهور لـ ':act==='year'?'تفعيل سنة لـ ':act==='week'?'تمديد أسبوع لـ ':'تغيير حالة ';
+    /* تفعيل يدوي بكود مسوق (اختياري) — العمولة بتتسجل بعملة نسخة العميل */
+    const apl=act==='month'?'m':act==='quarter'?'q':act==='year'?'y':'';
+    if(apl){
+     const cur=(o.region||'eg')==='eg'?'EGP':'USD';
+     _sheetFn=function(){const code=String(window._actCode||'').trim().toUpperCase().replace(/\s+/g,'');window._actCode='';
+      ref.set(u,{merge:true}).then(function(){
+       if(!code)return null;
+       return commFor(code,apl,cur,now).then(function(cm){if(!cm){noteSheet('اتفعل ✅<br><b style="color:#ffb74d">الكود '+esc(code)+' مش لمسوق'+(now<COMM_START?' (أو العمولات لسه مبدأتش — بتبدأ 6 يناير)':'')+' — مفيش عمولة.</b>');return 'x';}
+        return commSave('man_'+uid+'_'+now,cm,{uid:uid,email:o.email||'',src:'manual',method:'manual',reported:null},now).then(function(){noteSheet('اتفعل ✅<br>🤝 اتسجلت عمولة '+cmFmt(cm.comm,cur)+' لـ '+esc(cm.name));return 'x';});});
+      }).then(function(r){adminLoad();}).catch(function(e){noteSheet('فشل: '+esc((e&&e.message)||''));});};
+     openSheet('تأكيد','<p class="sub" style="text-align:center;line-height:2.1">هل '+label+'<b>'+esc(o.email||uid)+'</b>؟<br>النسخة: '+(cur==='EGP'?'🇪🇬 مصر (جنيه)':'🌍 دولار')+'</p><input class="full" id="actCode" dir="ltr" placeholder="كود المسوق (اختياري)" style="text-transform:uppercase"><div class="row"><button class="btn" style="flex:1" onclick="closePicker()">إلغاء</button><button class="btn btn-neon" style="flex:1" onclick="window._actCode=(document.getElementById(\'actCode\')||{}).value||\'\';sheetGo()">تأكيد</button></div>');
+     return;
+    }
     _sheetFn=function(){ref.set(u,{merge:true}).then(function(){adminLoad();}).catch(function(e){noteSheet('فشل: '+(e&&e.message));});};
     askSheet('تأكيد','هل '+label+'<b>'+esc(o.email||uid)+'</b>؟','تأكيد',act==='block',function(){ref.set(u,{merge:true}).then(function(){adminLoad();}).catch(function(e){noteSheet('فشل: '+(e&&e.message));});});
     return;
